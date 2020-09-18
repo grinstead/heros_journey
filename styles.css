@@ -1,0 +1,18 @@
+body {
+  background-color: #e5d4bd;
+  color: #fffefa;
+}
+
+#full {
+  position: relative;
+  width: 960px;
+  height: 640px;
+  margin: auto;
+  box-shadow: 0px 0px 10px #c3c0b6;
+}
+
+canvas {
+  width: 960px;
+  height: 640px;
+  background-color: #fffefa;
+}
