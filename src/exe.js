@@ -97,20 +97,31 @@ function onLoad() {
   })
 
   let prevRun = Date.now() / 1000;
+  let fps = 60;
+
+  let percentageDoneTime = -1;
 
   let percentage = 0;
 
   function render() {
     renderInProgram(program, (gl) => {
-      percentage = Math.min(objects.length, percentage + 1 / (0.2 * 60));
-      let zoom = 1; //10 * (Math.sin(prevRun) + 1) + 1;
+      percentage = percentage + 1 / (0.5 * 60);
+
+      if (percentage >= objects.length && percentageDoneTime === -1) {
+        percentageDoneTime = prevRun;
+      }
+
+      let zoom =
+        percentageDoneTime !== -1
+          ? 10 * ((1 - Math.cos(prevRun - percentageDoneTime)) / 2) + 1
+          : 1;
 
       // prettier-ignore
       program.inputs.projection.set(
         zoom * 2/960, 0, 0, 0,
         0, zoom * 2/640, 0, 0,
         0, 0, 1, 0,
-        zoom * -1, zoom * .1, 0, 1,
+        zoom * -1.1, zoom * .05, 0, 1,
       );
 
       gl.clearColor(
@@ -144,12 +155,10 @@ function onLoad() {
     if (fpsNode) {
       const now = Date.now() / 1000;
       const diff = now - prevRun;
-      const fps = 1 / diff;
-      if (fps > 58) {
-        fpsNode.innerText = "~60 fps";
-      } else {
-        fpsNode.innerText = `${Math.round(fps)} fps`;
-      }
+      const nowFps = 1 / diff;
+      const weight = 0.2;
+      fps = nowFps * weight + fps * (1 - weight);
+      fpsNode.innerText = `${Math.round(fps)} fps`;
       prevRun = now;
     }
 
