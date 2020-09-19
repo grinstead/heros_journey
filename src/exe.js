@@ -4,6 +4,8 @@ import {
   renderInProgram,
 } from "../wattle/engine/src/swagl/Program.js";
 import { Mat4fv } from "../wattle/engine/src/swagl/ProgramInput.js";
+import { TEST_DATA } from "./data.js";
+import { hexToBuffer } from "./hex.js";
 
 function onLoad() {
   const maybeCanvas = document.getElementById("canvas");
@@ -23,8 +25,9 @@ function onLoad() {
   ];
 
   const ratio = window.devicePixelRatio || 1;
-  canvas.width = ratio * canvas.width;
-  canvas.height = ratio * canvas.height;
+  canvas.width = ratio * parseInt(computedStyle.getPropertyValue("width"), 10);
+  canvas.height =
+    ratio * parseInt(computedStyle.getPropertyValue("height"), 10);
 
   const gl = canvas.getContext("webgl2", { antialias: false, alpha: false });
 
@@ -65,26 +68,29 @@ function onLoad() {
   });
 
   // prettier-ignore
-  const testData = [
-    1, 0, 0,
-    0, 1, 0,
-    -1, 0, 0,
-    0, -1, 0,
-  ];
+  // const testData = new Float32Array([
+  //   400, 0, 0,
+  //   0, 100, 0,
+  //   -400, 0, 0,
+  //   0, -100, 0,
+  // ]);
+  const testData = new Float32Array(hexToBuffer(TEST_DATA.positions));
 
   // const texture = gl.createTexture();
 
   const buffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(testData), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, testData, gl.STATIC_DRAW);
+
+  console.log(testData);
 
   renderInProgram(program, (gl) => {
     // prettier-ignore
     program.inputs.projection.set(
-      .5, 0, 0, 0,
-      0, 1, 0, 0,
+      2/960, 0, 0, 0,
+      0, 2/640, 0, 0,
       0, 0, 1, 0,
-      0, 0, 0, 1,
+      -1, 1, 0, 1,
     );
 
     gl.clearColor(
@@ -103,7 +109,7 @@ function onLoad() {
     gl.drawArrays(gl.LINE_LOOP, 0, testData.length / 3);
   });
 
-  console.log("hola");
+  console.log("hola2");
 }
 
 window["onload"] = onLoad;
