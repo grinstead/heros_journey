@@ -8,7 +8,10 @@ function main() {
   const match = /<path d="([^"]+)"/.exec(data);
   const path = match[1];
 
-  const { positions, cells } = svgMesh3d(path, { normalize: false, scale: 1 });
+  const { positions, cells } = svgMesh3d(path, {
+    normalize: false,
+    scale: 100,
+  });
 
   const posData = new Float32Array(3 * positions.length);
   positions.forEach(([x, y, z], i) => {
@@ -37,6 +40,7 @@ function main() {
   }`;
 
   console.log(object);
+  console.log(`Created object with ${cells.length} triangles`);
 }
 
 main();

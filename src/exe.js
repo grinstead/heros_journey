@@ -12,6 +12,8 @@ function onLoad() {
   /** @type {HTMLCanvasElement} */
   const canvas = maybeCanvas instanceof HTMLCanvasElement ? maybeCanvas : null;
 
+  const fpsNode = document.getElementById("fps");
+
   const computedStyle = getComputedStyle(canvas);
 
   const baseBackgroundColor = /rgb\((\d+), (\d+), (\d+)\)/.exec(
@@ -74,42 +76,67 @@ function onLoad() {
   //   -400, 0, 0,
   //   0, -100, 0,
   // ]);
-  const testData = new Float32Array(hexToBuffer(TEST_DATA.positions));
+  const testVertexData = new Float32Array(hexToBuffer(TEST_DATA.positions));
+  const testIndexData = new Uint16Array(hexToBuffer(TEST_DATA.cells));
 
   // const texture = gl.createTexture();
 
-  const buffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-  gl.bufferData(gl.ARRAY_BUFFER, testData, gl.STATIC_DRAW);
+  const vertexBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, testVertexData, gl.STATIC_DRAW);
 
-  console.log(testData);
+  const indexBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, testIndexData, gl.STATIC_DRAW);
 
-  renderInProgram(program, (gl) => {
-    // prettier-ignore
-    program.inputs.projection.set(
-      2/960, 0, 0, 0,
-      0, 2/640, 0, 0,
-      0, 0, 1, 0,
-      -1, 1, 0, 1,
-    );
+  console.log(testVertexData);
 
-    gl.clearColor(
-      backgroundColor[0],
-      backgroundColor[1],
-      backgroundColor[2],
-      1
-    );
-    gl.clear(gl.COLOR_BUFFER_BIT);
+  let prevRun = Date.now() / 1000;
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  function render() {
+    renderInProgram(program, (gl) => {
+      let zoom = 10 * (Math.sin(prevRun) + 1) + 1;
 
-    const position = program.attr("a_position");
-    gl.enableVertexAttribArray(position);
-    gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 0, 0);
-    gl.drawArrays(gl.LINE_LOOP, 0, testData.length / 3);
-  });
+      // prettier-ignore
+      program.inputs.projection.set(
+        zoom * 2/960, 0, 0, 0,
+        0, zoom * 2/640, 0, 0,
+        0, 0, 1, 0,
+        zoom * -1, zoom * .1, 0, 1,
+      );
 
-  console.log("hola2");
+      gl.clearColor(
+        backgroundColor[0],
+        backgroundColor[1],
+        backgroundColor[2],
+        1
+      );
+      gl.clear(gl.COLOR_BUFFER_BIT);
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+
+      const position = program.attr("a_position");
+      gl.enableVertexAttribArray(position);
+      gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 0, 0);
+      gl.drawElements(gl.TRIANGLES, testIndexData.length, gl.UNSIGNED_SHORT, 0);
+    });
+
+    if (fpsNode) {
+      const now = Date.now() / 1000;
+      const diff = now - prevRun;
+      const fps = 1 / diff;
+      if (fps > 58) {
+        fpsNode.innerText = "~60 fps";
+      } else {
+        fpsNode.innerText = `${Math.round(fps)} fps`;
+      }
+      prevRun = now;
+    }
+
+    requestAnimationFrame(render);
+  }
+
+  requestAnimationFrame(render);
 }
 
 window["onload"] = onLoad;
