@@ -76,26 +76,34 @@ function onLoad() {
   //   -400, 0, 0,
   //   0, -100, 0,
   // ]);
-  const testVertexData = new Float32Array(hexToBuffer(TEST_DATA.positions));
-  const testIndexData = new Uint16Array(hexToBuffer(TEST_DATA.cells));
 
-  // const texture = gl.createTexture();
+  const objects = TEST_DATA.map(({positions, cells}) => {
+    const posData = new Float32Array(hexToBuffer(positions));
+    const cellData = new Uint16Array(hexToBuffer(cells));
 
-  const vertexBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, testVertexData, gl.STATIC_DRAW);
+    const vertexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, posData, gl.STATIC_DRAW);
 
-  const indexBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, testIndexData, gl.STATIC_DRAW);
+    const indexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, cellData, gl.STATIC_DRAW);
 
-  console.log(testVertexData);
+    return {
+      vertexBuffer,
+      indexBuffer,
+      numPoints: cellData.length,
+    };
+  })
 
   let prevRun = Date.now() / 1000;
 
+  let percentage = 0;
+
   function render() {
     renderInProgram(program, (gl) => {
-      let zoom = 10 * (Math.sin(prevRun) + 1) + 1;
+      percentage = Math.min(objects.length, percentage + 1 / (0.2 * 60));
+      let zoom = 1; //10 * (Math.sin(prevRun) + 1) + 1;
 
       // prettier-ignore
       program.inputs.projection.set(
@@ -113,12 +121,24 @@ function onLoad() {
       );
       gl.clear(gl.COLOR_BUFFER_BIT);
 
-      gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-
       const position = program.attr("a_position");
       gl.enableVertexAttribArray(position);
-      gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 0, 0);
-      gl.drawElements(gl.TRIANGLES, testIndexData.length, gl.UNSIGNED_SHORT, 0);
+
+      objects.forEach((obj, index) => {
+        let numPoints = obj.numPoints;
+        const objPer = Math.max(percentage - index, 0);
+        if (objPer < 1) {
+          numPoints = 3 * Math.floor((numPoints / 3) * objPer);
+        }
+
+        if (numPoints === 0) return;
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexBuffer);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj.indexBuffer);
+        gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 0, 0);
+
+        gl.drawElements(gl.TRIANGLES, numPoints, gl.UNSIGNED_SHORT, 0);
+      });
     });
 
     if (fpsNode) {
