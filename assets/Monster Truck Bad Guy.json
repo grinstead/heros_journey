@@ -1,0 +1,123 @@
+﻿{"frames": [
+
+{
+	"filename": "Monster Truck Bad Guy.swf0000",
+	"frame": {"x":0,"y":0,"w":286,"h":378},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":286,"h":378},
+	"sourceSize": {"w":286,"h":378}
+}
+,{
+	"filename": "Monster Truck Bad Guy.swf0001",
+	"frame": {"x":286,"y":0,"w":286,"h":378},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":286,"h":378},
+	"sourceSize": {"w":286,"h":378}
+}
+,{
+	"filename": "Monster Truck Bad Guy.swf0002",
+	"frame": {"x":572,"y":0,"w":286,"h":378},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":286,"h":378},
+	"sourceSize": {"w":286,"h":378}
+}
+,{
+	"filename": "Monster Truck Bad Guy.swf0003",
+	"frame": {"x":858,"y":0,"w":286,"h":378},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":286,"h":378},
+	"sourceSize": {"w":286,"h":378}
+}
+,{
+	"filename": "Monster Truck Bad Guy.swf0004",
+	"frame": {"x":1144,"y":0,"w":286,"h":378},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":286,"h":378},
+	"sourceSize": {"w":286,"h":378}
+}
+,{
+	"filename": "Monster Truck Bad Guy.swf0005",
+	"frame": {"x":1430,"y":0,"w":286,"h":378},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":286,"h":378},
+	"sourceSize": {"w":286,"h":378}
+}
+,{
+	"filename": "Monster Truck Bad Guy.swf0006",
+	"frame": {"x":1716,"y":0,"w":286,"h":378},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":286,"h":378},
+	"sourceSize": {"w":286,"h":378}
+}
+,{
+	"filename": "Monster Truck Bad Guy.swf0007",
+	"frame": {"x":0,"y":378,"w":286,"h":378},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":286,"h":378},
+	"sourceSize": {"w":286,"h":378}
+}
+,{
+	"filename": "Monster Truck Bad Guy.swf0008",
+	"frame": {"x":286,"y":378,"w":286,"h":378},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":286,"h":378},
+	"sourceSize": {"w":286,"h":378}
+}
+,{
+	"filename": "Monster Truck Bad Guy.swf0009",
+	"frame": {"x":572,"y":378,"w":286,"h":378},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":286,"h":378},
+	"sourceSize": {"w":286,"h":378}
+}
+,{
+	"filename": "Monster Truck Bad Guy.swf0010",
+	"frame": {"x":858,"y":378,"w":286,"h":378},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":286,"h":378},
+	"sourceSize": {"w":286,"h":378}
+}
+,{
+	"filename": "Monster Truck Bad Guy.swf0011",
+	"frame": {"x":1144,"y":378,"w":286,"h":378},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":286,"h":378},
+	"sourceSize": {"w":286,"h":378}
+}
+,{
+	"filename": "Monster Truck Bad Guy.swf0012",
+	"frame": {"x":1430,"y":378,"w":286,"h":378},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":286,"h":378},
+	"sourceSize": {"w":286,"h":378}
+}
+,{
+	"filename": "Monster Truck Bad Guy.swf0013",
+	"frame": {"x":1716,"y":378,"w":286,"h":378},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":286,"h":378},
+	"sourceSize": {"w":286,"h":378}
+}],
+"meta": {
+	"app": "Adobe Animate",
+	"version": "20.5.1.31044",
+	"image": "Monster Truck Bad Guy.png",
+	"format": "RGBA8888",
+	"size": {"w":2048,"h":1024},
+	"scale": "1"
+}
+}
