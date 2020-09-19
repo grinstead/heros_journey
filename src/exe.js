@@ -12,6 +12,7 @@ import {
   useMatrixStack,
   applyMatrixOperation,
   scaleAxes,
+  shiftContent,
 } from "../wattle/engine/src/swagl/MatrixStack.js";
 
 async function onLoad() {
@@ -76,7 +77,7 @@ async function onLoad() {
   out vec4 output_color;
   
   void main() {
-    output_color = vec4(0.f, 0.f, 0.f, 1.0f);
+    output_color = vec4(0.9f, 0.9f, 0.9f, 1.0f);
   }`,
       },
     },
@@ -170,9 +171,9 @@ void main() {
   let percentageDoneTime = -1;
 
   let percentage = 0;
-  let zoom = 1;
-  let x = 1;
-  let y = 0.3;
+  let zoom = 5.9;
+  let x = 0;
+  let y = 0;
 
   function render() {
     percentage = percentage + 1 / (0.2 * 60);
@@ -181,23 +182,11 @@ void main() {
       percentageDoneTime = prevRun;
     }
 
-    zoom += 0.01 * input.getSignOfAction("down", "up");
+    y += 0.01 * input.getSignOfAction("down", "up");
     x += 0.01 * input.getSignOfAction("left", "right");
 
     renderInProgram(svgProgram, (gl) => {
       useMatrixStack(svgProgram.inputs.projection);
-
-      applyMatrixOperation(
-        // prettier-ignore
-        new Float32Array([
-          2/960, 0, 0, 0,
-          0, -2/640, 0, 0,
-          0, 0, 1, 0,
-          -1, 1, 0, 1,
-        ])
-      );
-
-      scaleAxes(zoom, zoom, 0);
 
       gl.clearColor(
         backgroundColor[0],
@@ -207,39 +196,32 @@ void main() {
       );
       gl.clear(gl.COLOR_BUFFER_BIT);
 
+      scaleAxes(zoom, zoom, 0);
+
+      shiftContent(-0.35, -0.85, 0);
+
+      shiftContent(-1, 1, 0);
+      scaleAxes(2 / 960, -2 / 640, 1);
+
       const position = svgProgram.attr("a_position");
       gl.enableVertexAttribArray(position);
 
       objects.forEach((obj, index) => {
-        let numPoints = obj.numPoints;
-        const objPer = Math.max(percentage - index, 0);
-        if (objPer < 1) {
-          numPoints = 3 * Math.floor((numPoints / 3) * objPer);
-        }
-
-        if (numPoints === 0) return;
-
         gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexBuffer);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj.indexBuffer);
         gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 0, 0);
 
-        gl.drawElements(
-          gl.TRIANGLES,
-          numPoints,
-          gl.UNSIGNED_SHORT,
-          2 * (obj.numPoints - numPoints)
-        );
+        gl.drawElements(gl.TRIANGLES, obj.numPoints, gl.UNSIGNED_SHORT, 0);
       });
     });
 
     renderInProgram(rasterProgram, (gl) => {
-      // prettier-ignore
-      rasterProgram.inputs.projection.set(
-        zoom * 2/960, 0, 0, 0,
-        0, zoom * -2/640, 0, 0,
-        0, 0, 1, 0,
-        zoom * -x, zoom * -y, 0, 1,
-      );
+      useMatrixStack(rasterProgram.inputs.projection);
+
+      shiftContent(x, y, 0);
+
+      shiftContent(-1, 1, 0);
+      scaleAxes(2 / 960, -2 / 640, 1);
 
       const position = rasterProgram.attr("a_position");
       gl.enableVertexAttribArray(position);
