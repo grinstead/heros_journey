@@ -3,12 +3,13 @@ import {
   makeAndLinkProgram,
   renderInProgram,
 } from "../wattle/engine/src/swagl/Program.js";
-import { Mat4fv } from "../wattle/engine/src/swagl/ProgramInput.js";
+import { Mat4fv, SingleInt } from "../wattle/engine/src/swagl/ProgramInput.js";
 import { TEST_DATA } from "./data.js";
 import { hexToBuffer } from "./hex.js";
 import { InputManager } from "../wattle/engine/src/InputManager.js";
+import { loadTextureFromImgUrl } from "../wattle/engine/src/swagl/Texture.js";
 
-function onLoad() {
+async function onLoad() {
   const input = new InputManager(document.body);
   input.setKeysForAction("up", ["w", "ArrowUp"]);
   input.setKeysForAction("down", ["s", "ArrowDown"]);
@@ -45,8 +46,8 @@ function onLoad() {
   gl.depthFunc(gl.LEQUAL);
 
   /** @type {!Program<{projection:Mat4fv}>} */
-  const program = makeAndLinkProgram({
-    name: "main",
+  const svgProgram = makeAndLinkProgram({
+    name: "svg",
     gl,
     inputs: {
       projection: new Mat4fv("u_projection"),
@@ -70,21 +71,76 @@ function onLoad() {
   out vec4 output_color;
   
   void main() {
-    output_color = vec4(0.f, 0.f, 0.f, 1.f);
+    output_color = vec4(0.f, 0.f, 0.f, 1.0f);
   }`,
       },
     },
   });
 
-  // prettier-ignore
-  // const testData = new Float32Array([
-  //   400, 0, 0,
-  //   0, 100, 0,
-  //   -400, 0, 0,
-  //   0, -100, 0,
-  // ]);
+  /** @type {!Program<{projection:Mat4fv,texture:SingleInt}>} */
+  const rasterProgram = makeAndLinkProgram({
+    name: "raster",
+    gl,
+    inputs: {
+      projection: new Mat4fv("u_projection"),
+      texture: new SingleInt("u_texture"),
+    },
+    shaders: {
+      vertex: {
+        name: "vertex",
+        code: `#version 300 es
+in vec3 a_position;
+in vec2 a_texturePosition;
 
-  const objects = TEST_DATA.map(({positions, cells}) => {
+uniform mat4 u_projection;
+
+out vec4 v_clipSpace;
+out vec2 v_texturePosition;
+
+void main() {
+  gl_Position = u_projection * vec4(a_position, 1);
+  v_texturePosition = a_texturePosition;
+}`,
+      },
+      fragment: {
+        name: "fragment",
+        code: `#version 300 es
+precision highp float;
+
+uniform sampler2D u_texture;
+
+in vec2 v_texturePosition;
+out vec4 output_color;
+
+void main() {
+  vec4 color = texture(u_texture, v_texturePosition.st);
+  if (color.a == 0.0) {
+      discard;
+  }
+
+  output_color = color;
+}`,
+      },
+    },
+  });
+
+  const head = await loadTextureFromImgUrl({
+    src: "assets/Hero-Head.png",
+    name: "Head Normal",
+    gl,
+  });
+
+  const HeadSquare = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, HeadSquare);
+  // prettier-ignore
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+    0, 0, 0, 0, 0,
+    0, head.h / 2, 0, 0, 1,
+    head.w / 2, 0, 0, 1, 0,
+    head.w / 2, head.h / 2, 0, 1, 1,
+  ]), gl.STATIC_DRAW);
+
+  const objects = TEST_DATA.map(({ positions, cells }) => {
     const posData = new Float32Array(hexToBuffer(positions));
     const cellData = new Uint16Array(hexToBuffer(cells));
 
@@ -101,7 +157,7 @@ function onLoad() {
       indexBuffer,
       numPoints: cellData.length,
     };
-  })
+  });
 
   let prevRun = Date.now() / 1000;
   let fps = 60;
@@ -110,22 +166,22 @@ function onLoad() {
 
   let percentage = 0;
   let zoom = 1;
-  let x = 1.1;
-  let y = -0.1;
+  let x = 1;
+  let y = 0.3;
 
   function render() {
-    renderInProgram(program, (gl) => {
-      percentage = percentage + 1 / (0.2 * 60);
+    percentage = percentage + 1 / (0.2 * 60);
 
-      if (percentage >= objects.length && percentageDoneTime === -1) {
-        percentageDoneTime = prevRun;
-      }
+    if (percentage >= objects.length && percentageDoneTime === -1) {
+      percentageDoneTime = prevRun;
+    }
 
-      zoom += 0.01 * input.getSignOfAction("down", "up");
-      x += 0.01 * input.getSignOfAction("left", "right");
+    zoom += 0.01 * input.getSignOfAction("down", "up");
+    x += 0.01 * input.getSignOfAction("left", "right");
 
+    renderInProgram(svgProgram, (gl) => {
       // prettier-ignore
-      program.inputs.projection.set(
+      svgProgram.inputs.projection.set(
         zoom * 2/960, 0, 0, 0,
         0, zoom * -2/640, 0, 0,
         0, 0, 1, 0,
@@ -140,7 +196,7 @@ function onLoad() {
       );
       gl.clear(gl.COLOR_BUFFER_BIT);
 
-      const position = program.attr("a_position");
+      const position = svgProgram.attr("a_position");
       gl.enableVertexAttribArray(position);
 
       objects.forEach((obj, index) => {
@@ -163,6 +219,29 @@ function onLoad() {
           2 * (obj.numPoints - numPoints)
         );
       });
+    });
+
+    renderInProgram(rasterProgram, (gl) => {
+      // prettier-ignore
+      rasterProgram.inputs.projection.set(
+        zoom * 2/960, 0, 0, 0,
+        0, zoom * -2/640, 0, 0,
+        0, 0, 1, 0,
+        zoom * -x, zoom * -y, 0, 1,
+      );
+
+      const position = rasterProgram.attr("a_position");
+      gl.enableVertexAttribArray(position);
+      const texturePosition = rasterProgram.attr("a_texturePosition");
+      gl.enableVertexAttribArray(texturePosition);
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, HeadSquare);
+      gl.activeTexture(gl.TEXTURE0);
+      head.bindTexture();
+      rasterProgram.inputs.texture.set(0);
+      gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 20, 0);
+      gl.vertexAttribPointer(texturePosition, 2, gl.FLOAT, false, 20, 12);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     });
 
     if (fpsNode) {
