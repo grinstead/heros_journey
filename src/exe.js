@@ -6,8 +6,15 @@ import {
 import { Mat4fv } from "../wattle/engine/src/swagl/ProgramInput.js";
 import { TEST_DATA } from "./data.js";
 import { hexToBuffer } from "./hex.js";
+import { InputManager } from "../wattle/engine/src/InputManager.js";
 
 function onLoad() {
+  const input = new InputManager(document.body);
+  input.setKeysForAction("up", ["w", "ArrowUp"]);
+  input.setKeysForAction("down", ["s", "ArrowDown"]);
+  input.setKeysForAction("left", ["a", "ArrowLeft"]);
+  input.setKeysForAction("right", ["d", "ArrowRight"]);
+
   const maybeCanvas = document.getElementById("canvas");
   /** @type {HTMLCanvasElement} */
   const canvas = maybeCanvas instanceof HTMLCanvasElement ? maybeCanvas : null;
@@ -102,6 +109,9 @@ function onLoad() {
   let percentageDoneTime = -1;
 
   let percentage = 0;
+  let zoom = 1;
+  let x = 1.1;
+  let y = -0.1;
 
   function render() {
     renderInProgram(program, (gl) => {
@@ -111,17 +121,15 @@ function onLoad() {
         percentageDoneTime = prevRun;
       }
 
-      let zoom =
-        percentageDoneTime !== -1
-          ? 10 * ((1 - Math.cos(prevRun - percentageDoneTime)) / 2) + 1
-          : 1;
+      zoom += 0.01 * input.getSignOfAction("down", "up");
+      x += 0.01 * input.getSignOfAction("left", "right");
 
       // prettier-ignore
       program.inputs.projection.set(
         zoom * 2/960, 0, 0, 0,
         0, zoom * -2/640, 0, 0,
         0, 0, 1, 0,
-        zoom * -1.1, zoom * .1, 0, 1,
+        zoom * -x, zoom * y, 0, 1,
       );
 
       gl.clearColor(
