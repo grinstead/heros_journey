@@ -8,6 +8,11 @@ import { TEST_DATA } from "./data.js";
 import { hexToBuffer } from "./hex.js";
 import { InputManager } from "../wattle/engine/src/InputManager.js";
 import { loadTextureFromImgUrl } from "../wattle/engine/src/swagl/Texture.js";
+import {
+  useMatrixStack,
+  applyMatrixOperation,
+  scaleAxes,
+} from "../wattle/engine/src/swagl/MatrixStack.js";
 
 async function onLoad() {
   const input = new InputManager(document.body);
@@ -45,7 +50,7 @@ async function onLoad() {
   gl.enable(gl.DEPTH_TEST);
   gl.depthFunc(gl.LEQUAL);
 
-  /** @type {!Program<{projection:Mat4fv}>} */
+  /** @type {!Program<{projection:!Mat4fv}>} */
   const svgProgram = makeAndLinkProgram({
     name: "svg",
     gl,
@@ -77,7 +82,7 @@ async function onLoad() {
     },
   });
 
-  /** @type {!Program<{projection:Mat4fv,texture:SingleInt}>} */
+  /** @type {!Program<{projection:!Mat4fv,texture:!SingleInt}>} */
   const rasterProgram = makeAndLinkProgram({
     name: "raster",
     gl,
@@ -180,13 +185,19 @@ void main() {
     x += 0.01 * input.getSignOfAction("left", "right");
 
     renderInProgram(svgProgram, (gl) => {
-      // prettier-ignore
-      svgProgram.inputs.projection.set(
-        zoom * 2/960, 0, 0, 0,
-        0, zoom * -2/640, 0, 0,
-        0, 0, 1, 0,
-        zoom * -x, zoom * y, 0, 1,
+      useMatrixStack(svgProgram.inputs.projection);
+
+      applyMatrixOperation(
+        // prettier-ignore
+        new Float32Array([
+          2/960, 0, 0, 0,
+          0, -2/640, 0, 0,
+          0, 0, 1, 0,
+          -1, 1, 0, 1,
+        ])
       );
+
+      scaleAxes(zoom, zoom, 0);
 
       gl.clearColor(
         backgroundColor[0],
