@@ -7,12 +7,17 @@ import { Mat4fv, SingleInt } from "../wattle/engine/src/swagl/ProgramInput.js";
 import { TEST_DATA } from "./data.js";
 import { hexToBuffer } from "./hex.js";
 import { InputManager } from "../wattle/engine/src/InputManager.js";
-import { loadTextureFromImgUrl } from "../wattle/engine/src/swagl/Texture.js";
+import {
+  loadTextureFromImgUrl,
+  Texture,
+} from "../wattle/engine/src/swagl/Texture.js";
 import {
   useMatrixStack,
   applyMatrixOperation,
   scaleAxes,
   shiftContent,
+  subrender,
+  rotateAboutZ,
 } from "../wattle/engine/src/swagl/MatrixStack.js";
 
 async function onLoad() {
@@ -40,10 +45,15 @@ async function onLoad() {
     baseBackgroundColor[3] / 255, // implicit conversion
   ];
 
+  const widthPx = parseInt(computedStyle.getPropertyValue("width"), 10);
+  const heightPx = parseInt(computedStyle.getPropertyValue("height"), 10);
+
+  let mouseX = 0;
+  let mouseY = 0;
+
   const ratio = window.devicePixelRatio || 1;
-  canvas.width = ratio * parseInt(computedStyle.getPropertyValue("width"), 10);
-  canvas.height =
-    ratio * parseInt(computedStyle.getPropertyValue("height"), 10);
+  canvas.width = ratio * widthPx;
+  canvas.height = ratio * heightPx;
 
   const gl = canvas.getContext("webgl2", { antialias: false, alpha: false });
 
@@ -130,21 +140,16 @@ void main() {
     },
   });
 
-  const head = await loadTextureFromImgUrl({
-    src: "assets/Hero-Head.png",
-    name: "Head Normal",
-    gl,
-  });
-
-  const HeadSquare = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, HeadSquare);
-  // prettier-ignore
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-    0, 0, 0, 0, 0,
-    0, head.h / 2, 0, 0, 1,
-    head.w / 2, 0, 0, 1, 0,
-    head.w / 2, head.h / 2, 0, 1, 1,
-  ]), gl.STATIC_DRAW);
+  const [head, pistol] = await Promise.all([
+    makeSquareSprite({ src: "assets/Hero-Head.png", name: "Head Normal", gl }),
+    makeSquareSprite({
+      src: "assets/Pistol Arm.png",
+      name: "Pistol",
+      gl,
+      originX: 60,
+      originY: 112,
+    }),
+  ]);
 
   const objects = TEST_DATA.map(({ positions, cells }) => {
     const posData = new Float32Array(hexToBuffer(positions));
@@ -182,8 +187,8 @@ void main() {
       percentageDoneTime = prevRun;
     }
 
-    y += 0.01 * input.getSignOfAction("down", "up");
-    x += 0.01 * input.getSignOfAction("left", "right");
+    y += 6 * input.getSignOfAction("down", "up");
+    x += 6 * input.getSignOfAction("left", "right");
 
     renderInProgram(svgProgram, (gl) => {
       useMatrixStack(svgProgram.inputs.projection);
@@ -216,22 +221,36 @@ void main() {
     });
 
     renderInProgram(rasterProgram, (gl) => {
-      useMatrixStack(rasterProgram.inputs.projection);
-
-      shiftContent(x, y, 0);
-
-      shiftContent(-1, 1, 0);
-      scaleAxes(2 / 960, -2 / 640, 1);
+      gl.activeTexture(gl.TEXTURE0);
+      rasterProgram.inputs.texture.set(0);
 
       const position = rasterProgram.attr("a_position");
       gl.enableVertexAttribArray(position);
       const texturePosition = rasterProgram.attr("a_texturePosition");
       gl.enableVertexAttribArray(texturePosition);
 
-      gl.bindBuffer(gl.ARRAY_BUFFER, HeadSquare);
-      gl.activeTexture(gl.TEXTURE0);
-      head.bindTexture();
-      rasterProgram.inputs.texture.set(0);
+      useMatrixStack(rasterProgram.inputs.projection);
+
+      // shiftContent(-1, 1, 0);
+      scaleAxes(2 / 960, 2 / 640, 1);
+
+      shiftContent(x, y, 0);
+
+      subrender(() => {
+        const xDiff = 10;
+        const yDiff = 30;
+        shiftContent(xDiff, yDiff, 0);
+        rotateAboutZ(arctan(mouseY - (y + yDiff), mouseX - (x + xDiff)) - 0.3);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, pistol.buffer);
+        pistol.texture.bindTexture();
+        gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 20, 0);
+        gl.vertexAttribPointer(texturePosition, 2, gl.FLOAT, false, 20, 12);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      });
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, head.buffer);
+      head.texture.bindTexture();
       gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 20, 0);
       gl.vertexAttribPointer(texturePosition, 2, gl.FLOAT, false, 20, 12);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
@@ -251,6 +270,78 @@ void main() {
   }
 
   requestAnimationFrame(render);
+
+  canvas.onmousemove = (event) => {
+    mouseX = event.offsetX - widthPx / 2;
+    mouseY = heightPx / 2 - event.offsetY;
+  };
 }
 
 window["onload"] = onLoad;
+
+/**
+ *
+ * @param {Object} options
+ * @param {string} options.src
+ * @param {string} options.name
+ * @param {WebGL} options.gl
+ * @param {number=} options.originX
+ * @param {number=} options.originY
+ * @returns {{texture: Texture, buffer: number}}
+ */
+async function makeSquareSprite(options) {
+  const gl = options.gl;
+  const texture = await loadTextureFromImgUrl({
+    src: options.src,
+    name: options.name,
+    gl,
+  });
+
+  const rescale = 0.5;
+
+  let width = texture.w;
+  let height = texture.h;
+  let { originX = width / 2, originY = height } = options;
+
+  width *= rescale;
+  height *= rescale;
+  originX *= rescale;
+  originY *= rescale;
+
+  const buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  // prettier-ignore
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+    -originX, originY, 0, 0, 0,
+    -originX, originY - height, 0, 0, 1,
+    width - originX, originY, 0, 1, 0,
+    width - originX, originY - height, 0, 1, 1,
+  ]), gl.STATIC_DRAW);
+
+  return {
+    texture,
+    buffer,
+  };
+}
+
+/**
+ * Returns the angle given the opposite and adjacent sides. If both are 0, then the angle 0 is returned.
+ * @param {number} opposite - The "opposite" side of the triangle (most likely, the y difference)
+ * @param {number} adjacent - The "adjacent" side of the triangle (most likely, the x difference)
+ * @returns {number} The angle
+ */
+export function arctan(opposite, adjacent) {
+  if (adjacent > 0) {
+    return Math.atan(opposite / adjacent);
+  } else if (adjacent === 0) {
+    if (opposite > 0) {
+      return Math.PI / 2;
+    } else if (opposite === 0) {
+      return 0; // dunno what is best here
+    } else {
+      return -Math.PI / 2;
+    }
+  } else {
+    return Math.atan(opposite / adjacent) + Math.PI;
+  }
+}
