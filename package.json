@@ -10,6 +10,10 @@
   "devDependencies": {
     "chokidar-cli": "^2.1.0",
     "google-closure-compiler": "^20200830.0.0",
-    "svg-mesh-3d": "^1.1.0"
-  }
+    "parse-svg-path": "^0.1.2",
+    "simplify-path": "^1.1.0",
+    "svg-path-contours": "^2.0.0",
+    "tess2": "^1.0.0"
+  },
+  "dependencies": {}
 }

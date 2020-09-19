@@ -105,7 +105,7 @@ function onLoad() {
 
   function render() {
     renderInProgram(program, (gl) => {
-      percentage = percentage + 1 / (0.5 * 60);
+      percentage = percentage + 1 / (0.2 * 60);
 
       if (percentage >= objects.length && percentageDoneTime === -1) {
         percentageDoneTime = prevRun;
@@ -119,9 +119,9 @@ function onLoad() {
       // prettier-ignore
       program.inputs.projection.set(
         zoom * 2/960, 0, 0, 0,
-        0, zoom * 2/640, 0, 0,
+        0, zoom * -2/640, 0, 0,
         0, 0, 1, 0,
-        zoom * -1.1, zoom * .05, 0, 1,
+        zoom * -1.1, zoom * .1, 0, 1,
       );
 
       gl.clearColor(
@@ -148,7 +148,12 @@ function onLoad() {
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj.indexBuffer);
         gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 0, 0);
 
-        gl.drawElements(gl.TRIANGLES, numPoints, gl.UNSIGNED_SHORT, 0);
+        gl.drawElements(
+          gl.TRIANGLES,
+          numPoints,
+          gl.UNSIGNED_SHORT,
+          2 * (obj.numPoints - numPoints)
+        );
       });
     });
 
