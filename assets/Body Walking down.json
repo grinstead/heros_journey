@@ -1,0 +1,75 @@
+﻿{"frames": [
+
+{
+	"filename": "Down Body Walk.swf0000",
+	"frame": {"x":0,"y":0,"w":87,"h":53},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":87,"h":53},
+	"sourceSize": {"w":87,"h":53}
+}
+,{
+	"filename": "Down Body Walk.swf0001",
+	"frame": {"x":0,"y":0,"w":87,"h":53},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":87,"h":53},
+	"sourceSize": {"w":87,"h":53}
+}
+,{
+	"filename": "Down Body Walk.swf0002",
+	"frame": {"x":87,"y":0,"w":87,"h":53},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":87,"h":53},
+	"sourceSize": {"w":87,"h":53}
+}
+,{
+	"filename": "Down Body Walk.swf0003",
+	"frame": {"x":87,"y":0,"w":87,"h":53},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":87,"h":53},
+	"sourceSize": {"w":87,"h":53}
+}
+,{
+	"filename": "Down Body Walk.swf0004",
+	"frame": {"x":0,"y":53,"w":87,"h":53},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":87,"h":53},
+	"sourceSize": {"w":87,"h":53}
+}
+,{
+	"filename": "Down Body Walk.swf0005",
+	"frame": {"x":0,"y":53,"w":87,"h":53},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":87,"h":53},
+	"sourceSize": {"w":87,"h":53}
+}
+,{
+	"filename": "Down Body Walk.swf0006",
+	"frame": {"x":87,"y":53,"w":87,"h":53},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":87,"h":53},
+	"sourceSize": {"w":87,"h":53}
+}
+,{
+	"filename": "Down Body Walk.swf0007",
+	"frame": {"x":87,"y":53,"w":87,"h":53},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":87,"h":53},
+	"sourceSize": {"w":87,"h":53}
+}],
+"meta": {
+	"app": "Adobe Animate",
+	"version": "20.5.1.31044",
+	"image": "Body Walking down.png",
+	"format": "RGBA8888",
+	"size": {"w":256,"h":128},
+	"scale": "1"
+}
+}

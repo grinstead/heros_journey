@@ -1,0 +1,75 @@
+﻿{"frames": [
+
+{
+	"filename": "Hero Body Walking Up.swf0000",
+	"frame": {"x":0,"y":0,"w":68,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":68,"h":51},
+	"sourceSize": {"w":68,"h":51}
+}
+,{
+	"filename": "Hero Body Walking Up.swf0001",
+	"frame": {"x":0,"y":0,"w":68,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":68,"h":51},
+	"sourceSize": {"w":68,"h":51}
+}
+,{
+	"filename": "Hero Body Walking Up.swf0002",
+	"frame": {"x":68,"y":0,"w":68,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":68,"h":51},
+	"sourceSize": {"w":68,"h":51}
+}
+,{
+	"filename": "Hero Body Walking Up.swf0003",
+	"frame": {"x":68,"y":0,"w":68,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":68,"h":51},
+	"sourceSize": {"w":68,"h":51}
+}
+,{
+	"filename": "Hero Body Walking Up.swf0004",
+	"frame": {"x":136,"y":0,"w":68,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":68,"h":51},
+	"sourceSize": {"w":68,"h":51}
+}
+,{
+	"filename": "Hero Body Walking Up.swf0005",
+	"frame": {"x":136,"y":0,"w":68,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":68,"h":51},
+	"sourceSize": {"w":68,"h":51}
+}
+,{
+	"filename": "Hero Body Walking Up.swf0006",
+	"frame": {"x":0,"y":51,"w":68,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":68,"h":51},
+	"sourceSize": {"w":68,"h":51}
+}
+,{
+	"filename": "Hero Body Walking Up.swf0007",
+	"frame": {"x":0,"y":51,"w":68,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":68,"h":51},
+	"sourceSize": {"w":68,"h":51}
+}],
+"meta": {
+	"app": "Adobe Animate",
+	"version": "20.5.1.31044",
+	"image": "Hero Body Walking Up.png",
+	"format": "RGBA8888",
+	"size": {"w":256,"h":128},
+	"scale": "1"
+}
+}
