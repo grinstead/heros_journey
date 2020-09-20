@@ -140,14 +140,27 @@ void main() {
     },
   });
 
-  const [head, pistol] = await Promise.all([
+  const [head, pistol, body, bullet, runningBody] = await Promise.all([
     makeSquareSprite({ src: "assets/Hero-Head.png", name: "Head Normal", gl }),
     makeSquareSprite({
       src: "assets/Pistol Arm.png",
-      name: "Pistol",
       gl,
       originX: 60,
       originY: 112,
+    }),
+    makeSquareSprite({
+      src: "assets/Hero-Body-Static.png",
+      gl,
+    }),
+    makeSquareSprite({
+      src: "assets/Bullet.png",
+      gl,
+      originX: 32,
+      originY: 23 / 2,
+    }),
+    makeAnimSprite({
+      src: "assets/Body Hero Running.png",
+      gl,
     }),
   ]);
 
@@ -187,8 +200,15 @@ void main() {
       percentageDoneTime = prevRun;
     }
 
-    y += 6 * input.getSignOfAction("down", "up");
-    x += 6 * input.getSignOfAction("left", "right");
+    let dx = input.getSignOfAction("left", "right");
+    let dy = input.getSignOfAction("down", "up");
+    if (dy && dx) {
+      const sqrt2inv = 0.7071;
+      dx *= sqrt2inv;
+      dy *= sqrt2inv;
+    }
+    x += 6 * dx;
+    y += 6 * dy;
 
     renderInProgram(svgProgram, (gl) => {
       useMatrixStack(svgProgram.inputs.projection);
@@ -234,13 +254,28 @@ void main() {
       // shiftContent(-1, 1, 0);
       scaleAxes(2 / 960, 2 / 640, 1);
 
+      gl.bindBuffer(gl.ARRAY_BUFFER, bullet.buffer);
+      bullet.texture.bindTexture();
+      gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 20, 0);
+      gl.vertexAttribPointer(texturePosition, 2, gl.FLOAT, false, 20, 12);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
       shiftContent(x, y, 0);
 
+      const mirrorX = mouseX < x;
+      if (mirrorX) {
+        scaleAxes(-1, 1, 1);
+      }
+
       subrender(() => {
-        const xDiff = 10;
-        const yDiff = 30;
+        const xDiff = 0;
+        const yDiff = 40;
         shiftContent(xDiff, yDiff, 0);
-        rotateAboutZ(arctan(mouseY - (y + yDiff), mouseX - (x + xDiff)) - 0.3);
+        const angle = mirrorX
+          ? arctan(mouseY - (y + yDiff), x + xDiff - mouseX) - 0.3
+          : arctan(mouseY - (y + yDiff), mouseX - (x + xDiff)) - 0.3;
+
+        rotateAboutZ(angle);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, pistol.buffer);
         pistol.texture.bindTexture();
@@ -248,6 +283,22 @@ void main() {
         gl.vertexAttribPointer(texturePosition, 2, gl.FLOAT, false, 20, 12);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       });
+
+      if (dx || dy) {
+        const frame =
+          Math.floor(prevRun * 12) % runningBody.startIndices.length;
+        gl.bindBuffer(gl.ARRAY_BUFFER, runningBody.buffer);
+        runningBody.texture.bindTexture();
+        gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 20, 0);
+        gl.vertexAttribPointer(texturePosition, 2, gl.FLOAT, false, 20, 12);
+        gl.drawArrays(gl.TRIANGLE_STRIP, runningBody.startIndices[frame], 4);
+      } else {
+        gl.bindBuffer(gl.ARRAY_BUFFER, body.buffer);
+        body.texture.bindTexture();
+        gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 20, 0);
+        gl.vertexAttribPointer(texturePosition, 2, gl.FLOAT, false, 20, 12);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      }
 
       gl.bindBuffer(gl.ARRAY_BUFFER, head.buffer);
       head.texture.bindTexture();
@@ -283,17 +334,17 @@ window["onload"] = onLoad;
  *
  * @param {Object} options
  * @param {string} options.src
- * @param {string} options.name
+ * @param {string=} options.name
  * @param {WebGL} options.gl
  * @param {number=} options.originX
  * @param {number=} options.originY
- * @returns {{texture: Texture, buffer: number}}
+ * @returns Promise<{{texture: Texture, buffer: number}}>
  */
 async function makeSquareSprite(options) {
   const gl = options.gl;
   const texture = await loadTextureFromImgUrl({
     src: options.src,
-    name: options.name,
+    name: options.name || options.src,
     gl,
   });
 
@@ -325,6 +376,63 @@ async function makeSquareSprite(options) {
 }
 
 /**
+ *
+ * @param {Object} options
+ * @param {string} options.src
+ * @param {string=} options.name
+ * @param {WebGL} options.gl
+ * @param {number=} options.originX
+ * @param {number=} options.originY
+ * @returns Promise<{{texture: Texture, buffer: number}}>
+ */
+async function makeAnimSprite(options) {
+  const gl = options.gl;
+  const texture = await loadTextureFromImgUrl({
+    src: options.src,
+    name: options.name || options.src,
+    gl,
+  });
+
+  const rescale = 0.5;
+  const firstFrame = BODY_RUNNING_DATA.frames[0];
+
+  let width = firstFrame.sourceSize.w;
+  let height = firstFrame.sourceSize.h;
+  let { originX = width / 2, originY = height } = options;
+
+  width *= rescale;
+  height *= rescale;
+  originX *= rescale;
+  originY *= rescale;
+
+  const bufferData = [];
+  const startIndices = [];
+  BODY_RUNNING_DATA.frames.forEach(({ frame }, index) => {
+    const x = frame.x / texture.w;
+    const w = frame.w / texture.w;
+    const y = frame.y / texture.h;
+    const h = frame.h / texture.h;
+
+    startIndices.push(index * 4);
+    bufferData.push(-originX, originY, 0, x, y);
+    bufferData.push(-originX, originY - height, 0, x, y + h);
+    bufferData.push(width - originX, originY, 0, x + w, y);
+    bufferData.push(width - originX, originY - height, 0, x + w, y + h);
+  });
+
+  const buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  // prettier-ignore
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW);
+
+  return {
+    texture,
+    buffer,
+    startIndices,
+  };
+}
+
+/**
  * Returns the angle given the opposite and adjacent sides. If both are 0, then the angle 0 is returned.
  * @param {number} opposite - The "opposite" side of the triangle (most likely, the y difference)
  * @param {number} adjacent - The "adjacent" side of the triangle (most likely, the x difference)
@@ -345,3 +453,72 @@ export function arctan(opposite, adjacent) {
     return Math.atan(opposite / adjacent) + Math.PI;
   }
 }
+
+const BODY_RUNNING_DATA = {
+  frames: [
+    {
+      filename: "Body Running.swf0000",
+      frame: { x: 0, y: 0, w: 88, h: 89 },
+      rotated: false,
+      trimmed: false,
+      spriteSourceSize: { x: 0, y: 0, w: 88, h: 89 },
+      sourceSize: { w: 88, h: 89 },
+    },
+    {
+      filename: "Body Running.swf0001",
+      frame: { x: 0, y: 0, w: 88, h: 89 },
+      rotated: false,
+      trimmed: false,
+      spriteSourceSize: { x: 0, y: 0, w: 88, h: 89 },
+      sourceSize: { w: 88, h: 89 },
+    },
+    {
+      filename: "Body Running.swf0002",
+      frame: { x: 88, y: 0, w: 88, h: 89 },
+      rotated: false,
+      trimmed: false,
+      spriteSourceSize: { x: 0, y: 0, w: 88, h: 89 },
+      sourceSize: { w: 88, h: 89 },
+    },
+    {
+      filename: "Body Running.swf0003",
+      frame: { x: 88, y: 0, w: 88, h: 89 },
+      rotated: false,
+      trimmed: false,
+      spriteSourceSize: { x: 0, y: 0, w: 88, h: 89 },
+      sourceSize: { w: 88, h: 89 },
+    },
+    {
+      filename: "Body Running.swf0004",
+      frame: { x: 0, y: 89, w: 88, h: 89 },
+      rotated: false,
+      trimmed: false,
+      spriteSourceSize: { x: 0, y: 0, w: 88, h: 89 },
+      sourceSize: { w: 88, h: 89 },
+    },
+    {
+      filename: "Body Running.swf0005",
+      frame: { x: 0, y: 89, w: 88, h: 89 },
+      rotated: false,
+      trimmed: false,
+      spriteSourceSize: { x: 0, y: 0, w: 88, h: 89 },
+      sourceSize: { w: 88, h: 89 },
+    },
+    {
+      filename: "Body Running.swf0006",
+      frame: { x: 88, y: 89, w: 88, h: 89 },
+      rotated: false,
+      trimmed: false,
+      spriteSourceSize: { x: 0, y: 0, w: 88, h: 89 },
+      sourceSize: { w: 88, h: 89 },
+    },
+  ],
+  meta: {
+    app: "Adobe Animate",
+    version: "20.5.1.31044",
+    image: "Body Hero Running.png",
+    format: "RGBA8888",
+    size: { w: 256, h: 256 },
+    scale: "1",
+  },
+};
