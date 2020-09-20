@@ -20,8 +20,11 @@ import {
   rotateAboutZ,
   subrenderEach,
 } from "../wattle/engine/src/swagl/MatrixStack.js";
+import { makeMonsterTruck } from "./assets.js";
+import { loadAllSpriteTextures } from "./Sprite.js";
+import { WebGL } from "../wattle/engine/src/swagl/types.js";
 
-const RESCALE = 0.5;
+const RESCALE = 2;
 
 async function onLoad() {
   const input = new InputManager(document.body);
@@ -49,16 +52,23 @@ async function onLoad() {
     baseBackgroundColor[3] / 255, // implicit conversion
   ];
 
-  const widthPx = parseInt(computedStyle.getPropertyValue("width"), 10);
-  const heightPx = parseInt(computedStyle.getPropertyValue("height"), 10);
+  const widthPx =
+    parseInt(computedStyle.getPropertyValue("width"), 10) * RESCALE;
+  const heightPx =
+    parseInt(computedStyle.getPropertyValue("height"), 10) * RESCALE;
 
   let mouseX = 0;
   let mouseY = 0;
 
   const ratio = window.devicePixelRatio || 1;
-  canvas.width = ratio * widthPx;
-  canvas.height = ratio * heightPx;
+  canvas.width = (ratio * widthPx) / RESCALE;
+  canvas.height = (ratio * heightPx) / RESCALE;
 
+  /**
+   * Not sure why, but closure is crapping up here
+   * @suppress {checkTypes}
+   * @type {!WebGL}
+   */
   const gl = canvas.getContext("webgl2", { antialias: false, alpha: false });
 
   gl.enable(gl.BLEND);
@@ -166,6 +176,7 @@ void main() {
       src: "assets/Body Hero Running.png",
       gl,
     }),
+    loadAllSpriteTextures(gl),
   ]);
 
   const objects = TEST_DATA.map(({ positions, cells }) => {
@@ -192,11 +203,11 @@ void main() {
 
   let percentageDoneTime = -1;
 
-  const NOZZLE_X = 96 * RESCALE;
-  const NOZZLE_Y = 50 * RESCALE;
+  const NOZZLE_X = 96;
+  const NOZZLE_Y = 50;
   const ARM_POS = {
     x: 0,
-    y: 40,
+    y: -80,
     nozzleAngleFromShoulder: Math.atan(NOZZLE_Y / NOZZLE_X),
     nozzleDistanceFromShoulder: Math.sqrt(
       NOZZLE_X * NOZZLE_X + NOZZLE_Y * NOZZLE_Y
@@ -213,6 +224,8 @@ void main() {
     mirrorX: false,
     armDirection: 0,
   };
+
+  const monsterTruck = makeMonsterTruck(now);
 
   /** @type {!Array<{x: number, y: number, direction: number, speed: number, startTime: number, dead: boolean}>} */
   let bullets = [];
@@ -236,20 +249,20 @@ void main() {
     }
 
     let dx = input.getSignOfAction("left", "right");
-    let dy = input.getSignOfAction("down", "up");
+    let dy = input.getSignOfAction("up", "down");
     if (dy && dx) {
       const sqrt2inv = 0.7071;
       dx *= sqrt2inv;
       dy *= sqrt2inv;
     }
-    const heroChange = 320 * stepTime;
+    const heroChange = 640 * stepTime;
     hero.x += hero.dx = heroChange * dx;
     hero.y += hero.dy = heroChange * dy;
 
     const mirrorX = mouseX < hero.x;
     const targetDy = mouseY - (hero.y + ARM_POS.y);
     const targetDx = mouseX - (hero.x + ARM_POS.x);
-    const angle = arctan(targetDy, mirrorX ? -targetDx : targetDx) - 0.3;
+    const angle = arctan(targetDy, mirrorX ? -targetDx : targetDx) + 0.3;
 
     hero.mirrorX = mirrorX;
     hero.armDirection = angle;
@@ -270,9 +283,9 @@ void main() {
         y:
           hero.y +
           ARM_POS.y +
-          ARM_POS.nozzleDistanceFromShoulder * Math.sin(direction + angle),
+          ARM_POS.nozzleDistanceFromShoulder * Math.sin(-(direction + angle)),
         direction,
-        speed: 200,
+        speed: 400,
         startTime: now,
         dead: false,
       });
@@ -349,7 +362,11 @@ void main() {
 
       useMatrixStack(rasterProgram.inputs.projection);
 
-      scaleAxes(2 / 960, 2 / 640, 1);
+      scaleAxes(2 / widthPx, -2 / heightPx, 1);
+
+      monsterTruck.updateTime(now);
+      monsterTruck.bindSpriteType(position, texturePosition);
+      monsterTruck.renderSprite();
 
       gl.bindBuffer(gl.ARRAY_BUFFER, bulletSprite.buffer);
       bulletSprite.texture.bindTexture();
@@ -405,8 +422,8 @@ void main() {
   requestAnimationFrame(performStep);
 
   canvas.onmousemove = (event) => {
-    mouseX = event.offsetX - widthPx / 2;
-    mouseY = heightPx / 2 - event.offsetY;
+    mouseX = event.offsetX * RESCALE - widthPx / 2;
+    mouseY = event.offsetY * RESCALE - heightPx / 2;
   };
 }
 
@@ -434,19 +451,14 @@ async function makeSquareSprite(options) {
   let height = texture.h;
   let { originX = width / 2, originY = height } = options;
 
-  width *= RESCALE;
-  height *= RESCALE;
-  originX *= RESCALE;
-  originY *= RESCALE;
-
   const buffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
   // prettier-ignore
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-    -originX, originY, 0, 0, 0,
-    -originX, originY - height, 0, 0, 1,
-    width - originX, originY, 0, 1, 0,
-    width - originX, originY - height, 0, 1, 1,
+    -originX, -originY, 0, 0, 0,
+    -originX, height - originY, 0, 0, 1,
+    width - originX, -originY, 0, 1, 0,
+    width - originX, height - originY, 0, 1, 1,
   ]), gl.STATIC_DRAW);
 
   return {
@@ -479,11 +491,6 @@ async function makeAnimSprite(options) {
   let height = firstFrame.sourceSize.h;
   let { originX = width / 2, originY = height } = options;
 
-  width *= RESCALE;
-  height *= RESCALE;
-  originX *= RESCALE;
-  originY *= RESCALE;
-
   const bufferData = [];
   const startIndices = [];
   BODY_RUNNING_DATA.frames.forEach(({ frame }, index) => {
@@ -493,10 +500,10 @@ async function makeAnimSprite(options) {
     const h = frame.h / texture.h;
 
     startIndices.push(index * 4);
-    bufferData.push(-originX, originY, 0, x, y);
-    bufferData.push(-originX, originY - height, 0, x, y + h);
-    bufferData.push(width - originX, originY, 0, x + w, y);
-    bufferData.push(width - originX, originY - height, 0, x + w, y + h);
+    bufferData.push(-originX, -originY, 0, x, y);
+    bufferData.push(-originX, height - originY, 0, x, y + h);
+    bufferData.push(width - originX, -originY, 0, x + w, y);
+    bufferData.push(width - originX, height - originY, 0, x + w, y + h);
   });
 
   const buffer = gl.createBuffer();
