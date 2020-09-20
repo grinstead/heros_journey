@@ -18,7 +18,10 @@ import {
   shiftContent,
   subrender,
   rotateAboutZ,
+  subrenderEach,
 } from "../wattle/engine/src/swagl/MatrixStack.js";
+
+const RESCALE = 0.5;
 
 async function onLoad() {
   const input = new InputManager(document.body);
@@ -26,6 +29,7 @@ async function onLoad() {
   input.setKeysForAction("down", ["s", "ArrowDown"]);
   input.setKeysForAction("left", ["a", "ArrowLeft"]);
   input.setKeysForAction("right", ["d", "ArrowRight"]);
+  input.setKeysForAction("shoot", ["h", " "]);
 
   const maybeCanvas = document.getElementById("canvas");
   /** @type {HTMLCanvasElement} */
@@ -140,7 +144,7 @@ void main() {
     },
   });
 
-  const [head, pistol, body, bullet, runningBody] = await Promise.all([
+  const [head, pistol, body, bulletSprite, runningBody] = await Promise.all([
     makeSquareSprite({ src: "assets/Hero-Head.png", name: "Head Normal", gl }),
     makeSquareSprite({
       src: "assets/Pistol Arm.png",
@@ -183,17 +187,48 @@ void main() {
     };
   });
 
-  let prevRun = Date.now() / 1000;
+  let now = Date.now() / 1000;
   let fps = 60;
 
   let percentageDoneTime = -1;
 
+  const NOZZLE_X = 96 * RESCALE;
+  const NOZZLE_Y = 50 * RESCALE;
+  const ARM_POS = {
+    x: 0,
+    y: 40,
+    nozzleAngleFromShoulder: Math.atan(NOZZLE_Y / NOZZLE_X),
+    nozzleDistanceFromShoulder: Math.sqrt(
+      NOZZLE_X * NOZZLE_X + NOZZLE_Y * NOZZLE_Y
+    ),
+  };
+
   let percentage = 0;
   let zoom = 5.9;
-  let x = 0;
-  let y = 0;
+  const hero = {
+    x: 0,
+    y: 0,
+    dx: 0,
+    dy: 0,
+    mirrorX: false,
+    armDirection: 0,
+  };
 
-  function render() {
+  /** @type {!Array<{x: number, y: number, direction: number, speed: number, startTime: number, dead: boolean}>} */
+  let bullets = [];
+
+  function performStep() {
+    const prevRun = now;
+    now = Date.now() / 1000;
+    const stepTime = now - prevRun;
+
+    if (fpsNode) {
+      const nowFps = 1 / stepTime;
+      const weight = 0.1;
+      fps = nowFps * weight + fps * (1 - weight);
+      fpsNode.innerText = `${Math.round(fps)} fps`;
+    }
+
     percentage = percentage + 1 / (0.2 * 60);
 
     if (percentage >= objects.length && percentageDoneTime === -1) {
@@ -207,9 +242,72 @@ void main() {
       dx *= sqrt2inv;
       dy *= sqrt2inv;
     }
-    x += 6 * dx;
-    y += 6 * dy;
+    const heroChange = 320 * stepTime;
+    hero.x += hero.dx = heroChange * dx;
+    hero.y += hero.dy = heroChange * dy;
 
+    const mirrorX = mouseX < hero.x;
+    const targetDy = mouseY - (hero.y + ARM_POS.y);
+    const targetDx = mouseX - (hero.x + ARM_POS.x);
+    const angle = arctan(targetDy, mirrorX ? -targetDx : targetDx) - 0.3;
+
+    hero.mirrorX = mirrorX;
+    hero.armDirection = angle;
+
+    if (input.numPresses("shoot")) {
+      let direction = hero.armDirection;
+      let angle = ARM_POS.nozzleAngleFromShoulder;
+      if (mirrorX) {
+        direction = Math.PI - direction;
+        angle = -angle;
+      }
+
+      bullets.push({
+        x:
+          hero.x +
+          (mirrorX ? -ARM_POS.x : ARM_POS.x) +
+          ARM_POS.nozzleDistanceFromShoulder * Math.cos(direction + angle),
+        y:
+          hero.y +
+          ARM_POS.y +
+          ARM_POS.nozzleDistanceFromShoulder * Math.sin(direction + angle),
+        direction,
+        speed: 200,
+        startTime: now,
+        dead: false,
+      });
+    }
+
+    let numDead = 0;
+    bullets.forEach((bullet) => {
+      if (bullet.dead) {
+        numDead++;
+        return;
+      }
+
+      const { speed, direction } = bullet;
+      const change = speed * stepTime;
+      const dx = change * Math.cos(direction);
+      const dy = change * Math.sin(direction);
+      bullet.x += dx;
+      bullet.y += dy;
+
+      if (bullet.startTime <= now - 4) {
+        bullet.dead = true;
+        numDead++;
+      }
+    });
+
+    if (numDead > 100) {
+      bullets = bullets.filter((b) => !b.dead);
+    }
+
+    render();
+
+    requestAnimationFrame(performStep);
+  }
+
+  function render() {
     renderInProgram(svgProgram, (gl) => {
       useMatrixStack(svgProgram.inputs.projection);
 
@@ -251,31 +349,28 @@ void main() {
 
       useMatrixStack(rasterProgram.inputs.projection);
 
-      // shiftContent(-1, 1, 0);
       scaleAxes(2 / 960, 2 / 640, 1);
 
-      gl.bindBuffer(gl.ARRAY_BUFFER, bullet.buffer);
-      bullet.texture.bindTexture();
+      gl.bindBuffer(gl.ARRAY_BUFFER, bulletSprite.buffer);
+      bulletSprite.texture.bindTexture();
       gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 20, 0);
       gl.vertexAttribPointer(texturePosition, 2, gl.FLOAT, false, 20, 12);
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      subrenderEach(bullets, (bullet) => {
+        if (bullet.dead) return;
 
+        shiftContent(bullet.x, bullet.y, 0);
+        rotateAboutZ(bullet.direction);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      });
+
+      const { x, y } = hero;
       shiftContent(x, y, 0);
 
-      const mirrorX = mouseX < x;
-      if (mirrorX) {
-        scaleAxes(-1, 1, 1);
-      }
+      if (hero.mirrorX) scaleAxes(-1, 1, 1);
 
       subrender(() => {
-        const xDiff = 0;
-        const yDiff = 40;
-        shiftContent(xDiff, yDiff, 0);
-        const angle = mirrorX
-          ? arctan(mouseY - (y + yDiff), x + xDiff - mouseX) - 0.3
-          : arctan(mouseY - (y + yDiff), mouseX - (x + xDiff)) - 0.3;
-
-        rotateAboutZ(angle);
+        shiftContent(ARM_POS.x, ARM_POS.y, 0);
+        rotateAboutZ(hero.armDirection);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, pistol.buffer);
         pistol.texture.bindTexture();
@@ -284,9 +379,8 @@ void main() {
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       });
 
-      if (dx || dy) {
-        const frame =
-          Math.floor(prevRun * 12) % runningBody.startIndices.length;
+      if (hero.dx || hero.dy) {
+        const frame = Math.floor(now * 12) % runningBody.startIndices.length;
         gl.bindBuffer(gl.ARRAY_BUFFER, runningBody.buffer);
         runningBody.texture.bindTexture();
         gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 20, 0);
@@ -306,21 +400,9 @@ void main() {
       gl.vertexAttribPointer(texturePosition, 2, gl.FLOAT, false, 20, 12);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     });
-
-    if (fpsNode) {
-      const now = Date.now() / 1000;
-      const diff = now - prevRun;
-      const nowFps = 1 / diff;
-      const weight = 0.2;
-      fps = nowFps * weight + fps * (1 - weight);
-      fpsNode.innerText = `${Math.round(fps)} fps`;
-      prevRun = now;
-    }
-
-    requestAnimationFrame(render);
   }
 
-  requestAnimationFrame(render);
+  requestAnimationFrame(performStep);
 
   canvas.onmousemove = (event) => {
     mouseX = event.offsetX - widthPx / 2;
@@ -348,16 +430,14 @@ async function makeSquareSprite(options) {
     gl,
   });
 
-  const rescale = 0.5;
-
   let width = texture.w;
   let height = texture.h;
   let { originX = width / 2, originY = height } = options;
 
-  width *= rescale;
-  height *= rescale;
-  originX *= rescale;
-  originY *= rescale;
+  width *= RESCALE;
+  height *= RESCALE;
+  originX *= RESCALE;
+  originY *= RESCALE;
 
   const buffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -393,17 +473,16 @@ async function makeAnimSprite(options) {
     gl,
   });
 
-  const rescale = 0.5;
   const firstFrame = BODY_RUNNING_DATA.frames[0];
 
   let width = firstFrame.sourceSize.w;
   let height = firstFrame.sourceSize.h;
   let { originX = width / 2, originY = height } = options;
 
-  width *= rescale;
-  height *= rescale;
-  originX *= rescale;
-  originY *= rescale;
+  width *= RESCALE;
+  height *= RESCALE;
+  originX *= RESCALE;
+  originY *= RESCALE;
 
   const bufferData = [];
   const startIndices = [];
