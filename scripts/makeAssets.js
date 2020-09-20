@@ -1,7 +1,33 @@
 import { readFileSync, writeFileSync } from "fs";
 import { bufferToHex, hexToBuffer } from "../src/hex.js";
 
-const RESCALE = 1;
+const ASSETS = [
+  { type: "anim", src: "Monster Truck Bad Guy" },
+  { type: "anim", src: "Hero Running Backwards" },
+  { type: "anim", src: "Bullet Dodge" },
+  { type: "anim", src: "Big Bad Guy Landing" },
+  { type: "anim", src: "Big Bad Guy Marching" },
+];
+
+function main() {
+  const lines = ASSETS.map((asset) => {
+    const type = asset.type;
+
+    if (type === "anim") {
+      return processSpriteAtlas(`./assets/${asset.src}`);
+    } else {
+      throw new Error(`Unrecognized asset type "${type}"`);
+    }
+  });
+
+  const fileText = `// \x40generated from makeAssets.js
+import {defineAnimatedSprite, SpriteBuilder} from './Sprite.js';
+
+${lines.join("\n\n")}
+`;
+
+  writeFileSync("src/assets.js", fileText);
+}
 
 function processSpriteAtlas(folder) {
   const rawAnim = JSON.parse(
@@ -61,7 +87,7 @@ function processSpriteAtlas(folder) {
       const m = readOrThrow(element, "Matrix3D");
 
       // prettier-ignore
-      const matrix = [
+      let matrix = [
         m.m00, m.m01, m.m02, m.m03,
         m.m10, m.m11, m.m12, m.m13,
         m.m20, m.m21, m.m22, m.m23,
@@ -92,9 +118,9 @@ function processSpriteAtlas(folder) {
     const y2 = y + h;
 
     bufferData.push(0, 0, 0, x / size.w, y / size.h);
-    bufferData.push(0, y2 - y, 0, x / size.w, y2 / size.h);
-    bufferData.push(x2 - x, 0, 0, x2 / size.w, y / size.h);
-    bufferData.push(x2 - x, y2 - y, 0, x2 / size.w, y2 / size.h);
+    bufferData.push(0, h, 0, x / size.w, y2 / size.h);
+    bufferData.push(w, 0, 0, x2 / size.w, y / size.h);
+    bufferData.push(w, h, 0, x2 / size.w, y2 / size.h);
   });
 
   const result = {
@@ -112,23 +138,6 @@ function processSpriteAtlas(folder) {
   return `/** @type {SpriteBuilder} */
 export const make${name} = defineAnimatedSprite(${printSimple(result)})`;
 }
-
-function main() {
-  const lines = [];
-
-  lines.push(processSpriteAtlas("./assets/Monster Truck Bad Guy"));
-  lines.push(processSpriteAtlas("./assets/Hero Running Backwards"));
-
-  const fileText = `// \x40generated from makeAssets.js
-import {defineAnimatedSprite, SpriteBuilder} from './Sprite.js';
-
-${lines.join("\n\n")}
-`;
-
-  writeFileSync("src/assets.js", fileText);
-}
-
-main();
 
 function assert(condition, error) {
   if (!condition) {
@@ -196,3 +205,5 @@ function printSimple(val) {
     throw new Error(`Bad val: ${JSON.stringify(val)}`);
   }
 }
+
+main();

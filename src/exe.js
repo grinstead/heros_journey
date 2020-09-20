@@ -7,21 +7,17 @@ import { Mat4fv, SingleInt } from "../wattle/engine/src/swagl/ProgramInput.js";
 import { TEST_DATA } from "./data.js";
 import { hexToBuffer } from "./hex.js";
 import { InputManager } from "../wattle/engine/src/InputManager.js";
-import {
-  loadTextureFromImgUrl,
-  Texture,
-} from "../wattle/engine/src/swagl/Texture.js";
+import { loadTextureFromImgUrl } from "../wattle/engine/src/swagl/Texture.js";
 import {
   useMatrixStack,
-  applyMatrixOperation,
   scaleAxes,
   shiftContent,
   subrender,
   rotateAboutZ,
   subrenderEach,
 } from "../wattle/engine/src/swagl/MatrixStack.js";
-import { makeMonsterTruck } from "./assets.js";
-import { loadAllSpriteTextures } from "./Sprite.js";
+import { makeMonsterTruck, makeHeroJump } from "./assets.js";
+import { loadAllSpriteTextures, subrenderSprite } from "./Sprite.js";
 import { WebGL } from "../wattle/engine/src/swagl/types.js";
 
 const RESCALE = 2;
@@ -207,7 +203,7 @@ void main() {
   const NOZZLE_Y = 50;
   const ARM_POS = {
     x: 0,
-    y: -80,
+    y: 80,
     nozzleAngleFromShoulder: Math.atan(NOZZLE_Y / NOZZLE_X),
     nozzleDistanceFromShoulder: Math.sqrt(
       NOZZLE_X * NOZZLE_X + NOZZLE_Y * NOZZLE_Y
@@ -225,7 +221,7 @@ void main() {
     armDirection: 0,
   };
 
-  const monsterTruck = makeMonsterTruck(now);
+  const monsterTruck = makeHeroJump(now);
 
   /** @type {!Array<{x: number, y: number, direction: number, speed: number, startTime: number, dead: boolean}>} */
   let bullets = [];
@@ -249,7 +245,7 @@ void main() {
     }
 
     let dx = input.getSignOfAction("left", "right");
-    let dy = input.getSignOfAction("up", "down");
+    let dy = input.getSignOfAction("down", "up");
     if (dy && dx) {
       const sqrt2inv = 0.7071;
       dx *= sqrt2inv;
@@ -262,10 +258,9 @@ void main() {
     const mirrorX = mouseX < hero.x;
     const targetDy = mouseY - (hero.y + ARM_POS.y);
     const targetDx = mouseX - (hero.x + ARM_POS.x);
-    const angle = arctan(targetDy, mirrorX ? -targetDx : targetDx) + 0.3;
 
     hero.mirrorX = mirrorX;
-    hero.armDirection = angle;
+    hero.armDirection = arctan(targetDy, mirrorX ? -targetDx : targetDx) - 0.3;
 
     if (input.numPresses("shoot")) {
       let direction = hero.armDirection;
@@ -283,7 +278,7 @@ void main() {
         y:
           hero.y +
           ARM_POS.y +
-          ARM_POS.nozzleDistanceFromShoulder * Math.sin(-(direction + angle)),
+          ARM_POS.nozzleDistanceFromShoulder * Math.sin(direction + angle),
         direction,
         speed: 400,
         startTime: now,
@@ -362,11 +357,11 @@ void main() {
 
       useMatrixStack(rasterProgram.inputs.projection);
 
-      scaleAxes(2 / widthPx, -2 / heightPx, 1);
+      scaleAxes(2 / widthPx, 2 / heightPx, 1);
 
       monsterTruck.updateTime(now);
       monsterTruck.bindSpriteType(position, texturePosition);
-      monsterTruck.renderSprite();
+      subrenderSprite(monsterTruck);
 
       gl.bindBuffer(gl.ARRAY_BUFFER, bulletSprite.buffer);
       bulletSprite.texture.bindTexture();
@@ -423,7 +418,7 @@ void main() {
 
   canvas.onmousemove = (event) => {
     mouseX = event.offsetX * RESCALE - widthPx / 2;
-    mouseY = event.offsetY * RESCALE - heightPx / 2;
+    mouseY = -(event.offsetY * RESCALE - heightPx / 2);
   };
 }
 
@@ -455,10 +450,10 @@ async function makeSquareSprite(options) {
   gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
   // prettier-ignore
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-    -originX, -originY, 0, 0, 0,
-    -originX, height - originY, 0, 0, 1,
-    width - originX, -originY, 0, 1, 0,
-    width - originX, height - originY, 0, 1, 1,
+    -originX, originY, 0, 0, 0,
+    -originX, originY - height, 0, 0, 1,
+    width - originX, originY, 0, 1, 0,
+    width - originX, originY - height, 0, 1, 1,
   ]), gl.STATIC_DRAW);
 
   return {
@@ -500,10 +495,10 @@ async function makeAnimSprite(options) {
     const h = frame.h / texture.h;
 
     startIndices.push(index * 4);
-    bufferData.push(-originX, -originY, 0, x, y);
-    bufferData.push(-originX, height - originY, 0, x, y + h);
-    bufferData.push(width - originX, -originY, 0, x + w, y);
-    bufferData.push(width - originX, height - originY, 0, x + w, y + h);
+    bufferData.push(-originX, originY, 0, x, y);
+    bufferData.push(-originX, originY - height, 0, x, y + h);
+    bufferData.push(width - originX, originY, 0, x + w, y);
+    bufferData.push(width - originX, originY - height, 0, x + w, y + h);
   });
 
   const buffer = gl.createBuffer();

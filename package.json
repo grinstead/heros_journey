@@ -5,6 +5,7 @@
     "build_base": "yarn google-closure-compiler --js='src/**.js' --js='wattle/engine/src/**.js' --language_out=ECMASCRIPT_2019 --strict_mode_input --assume_function_wrapper --entry_point=src/exe.js --dependency_mode=PRUNE",
     "build": "mkdir -p bin && yarn copy_other_into bin && yarn build_base --compilation_level=SIMPLE  --js_output_file=bin/full.js",
     "release": "yarn copy_other_into packaged && yarn build_base --compilation_level=ADVANCED --js_output_file=packaged/full.js",
+    "assets": "node scripts/makeAssets.js",
     "copy_other_into": "cp -r index.html styles.css assets"
   },
   "devDependencies": {

@@ -6,6 +6,8 @@ import { WebGL } from "../wattle/engine/src/swagl/types.js";
 import {
   subrenderEach,
   applyMatrixOperation,
+  scaleAxes,
+  subrenderWithArg,
 } from "../wattle/engine/src/swagl/MatrixStack.js";
 
 /**
@@ -152,16 +154,6 @@ export class Sprite {
     gl.vertexAttribPointer(textureBufferPos, 2, gl.FLOAT, false, 20, 12);
   }
 
-  renderSprite() {
-    /** @type {WebGL} */
-    const gl = this.texture.gl;
-    const index = this._frameIndex;
-    subrenderEach(this._frameElements[index], ({ i, m }) => {
-      applyMatrixOperation(m);
-      gl.drawArrays(gl.TRIANGLE_STRIP, i, 4);
-    });
-  }
-
   /**
    * Returns the name, primarily for debugging
    * @returns {string} The name (given in the options earlier)
@@ -255,4 +247,18 @@ export function loadAllSpriteTextures(gl) {
   });
 
   return Promise.all(promises);
+}
+
+export function subrenderSprite(sprite) {
+  subrenderWithArg(renderSprite, sprite);
+}
+
+function renderSprite(sprite) {
+  scaleAxes(1, -1, 1);
+
+  const index = sprite._frameIndex;
+  subrenderEach(sprite._frameElements[index], ({ i, m }, gl) => {
+    applyMatrixOperation(m);
+    gl.drawArrays(gl.TRIANGLE_STRIP, i, 4);
+  });
 }
