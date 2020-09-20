@@ -19,7 +19,8 @@ import {
  * @property {boolean|number} loops - The number of times a sprite loops, false (or 0) if it does not, and true if it loops forever
  * @property {Array<number> | number} frameTime - The time (in seconds) a frame (or each frame) should stay on screen
  * @property {?Array<*>} perFrameData - If you have meta-data for each frame, you can supply it and query it directly from the Sprite's frameData() method
- * @property {!Array<!Array<{i: number, m: !Float32Array}>>} frameElements - The elements that need to be drawn
+ * @property {?Array<number>} transform - A transform to run when rendering the sprite
+ * @property {!Array<!Array<{i: number, m: ?Float32Array}>>} frameElements - The elements that need to be drawn
  */
 let SpriteDefinition;
 
@@ -42,7 +43,7 @@ export class Sprite {
    * @param {WebGLBuffer} buffer - The buffer containing all the vertex data
    */
   constructor(options, frameTimes, time, tex, buffer) {
-    const { loops } = options;
+    const { loops, transform } = options;
 
     // set the name immediately so that the possible errors print nicely
     /** @private {string} _name - The name of this Sprite, for debugging */
@@ -67,6 +68,8 @@ export class Sprite {
     this._frameElements = options.frameElements;
     /** @private {WebGLBuffer} */
     this._buffer = buffer;
+    /** @private {?Float32Array} */
+    this._transform = transform ? new Float32Array(transform) : null;
   }
 
   /**
@@ -181,11 +184,10 @@ const spriteIdToTexture = new Map();
 let nextSpriteId = 1;
 
 /**
- *
  * @param {SpriteDefinition} def
  * @returns {SpriteBuilder}
  */
-export function defineAnimatedSprite(def) {
+export function defineSprite(def) {
   const spriteId = nextSpriteId++;
 
   spriteIdToTexture.set(spriteId, def.src);
@@ -254,11 +256,12 @@ export function subrenderSprite(sprite) {
 }
 
 function renderSprite(sprite) {
-  scaleAxes(1, -1, 1);
+  const transform = sprite._transform;
+  if (transform) applyMatrixOperation(transform);
 
   const index = sprite._frameIndex;
   subrenderEach(sprite._frameElements[index], ({ i, m }, gl) => {
-    applyMatrixOperation(m);
+    if (m) applyMatrixOperation(m);
     gl.drawArrays(gl.TRIANGLE_STRIP, i, 4);
   });
 }

@@ -16,7 +16,14 @@ import {
   rotateAboutZ,
   subrenderEach,
 } from "../wattle/engine/src/swagl/MatrixStack.js";
-import { makeMonsterTruck, makeHeroJump } from "./assets.js";
+import {
+  makeMonsterTruck,
+  makeHeroJump,
+  makeHeroHead,
+  makePistolArm,
+  makeBullet,
+  makeHeroBodyStatic,
+} from "./assets.js";
 import { loadAllSpriteTextures, subrenderSprite } from "./Sprite.js";
 import { WebGL } from "../wattle/engine/src/swagl/types.js";
 
@@ -150,24 +157,7 @@ void main() {
     },
   });
 
-  const [head, pistol, body, bulletSprite, runningBody] = await Promise.all([
-    makeSquareSprite({ src: "assets/Hero-Head.png", name: "Head Normal", gl }),
-    makeSquareSprite({
-      src: "assets/Pistol Arm.png",
-      gl,
-      originX: 60,
-      originY: 112,
-    }),
-    makeSquareSprite({
-      src: "assets/Hero-Body-Static.png",
-      gl,
-    }),
-    makeSquareSprite({
-      src: "assets/Bullet.png",
-      gl,
-      originX: 32,
-      originY: 23 / 2,
-    }),
+  const [runningBody] = await Promise.all([
     makeAnimSprite({
       src: "assets/Body Hero Running.png",
       gl,
@@ -221,7 +211,11 @@ void main() {
     armDirection: 0,
   };
 
+  const head = makeHeroHead(now);
+  const pistol = makePistolArm(now);
+  const bulletSprite = makeBullet(now);
   const monsterTruck = makeHeroJump(now);
+  const body = makeHeroBodyStatic(now);
 
   /** @type {!Array<{x: number, y: number, direction: number, speed: number, startTime: number, dead: boolean}>} */
   let bullets = [];
@@ -363,16 +357,13 @@ void main() {
       monsterTruck.bindSpriteType(position, texturePosition);
       subrenderSprite(monsterTruck);
 
-      gl.bindBuffer(gl.ARRAY_BUFFER, bulletSprite.buffer);
-      bulletSprite.texture.bindTexture();
-      gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 20, 0);
-      gl.vertexAttribPointer(texturePosition, 2, gl.FLOAT, false, 20, 12);
+      bulletSprite.bindSpriteType(position, texturePosition);
       subrenderEach(bullets, (bullet) => {
         if (bullet.dead) return;
 
         shiftContent(bullet.x, bullet.y, 0);
         rotateAboutZ(bullet.direction);
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        subrenderSprite(bulletSprite);
       });
 
       const { x, y } = hero;
@@ -383,12 +374,8 @@ void main() {
       subrender(() => {
         shiftContent(ARM_POS.x, ARM_POS.y, 0);
         rotateAboutZ(hero.armDirection);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, pistol.buffer);
-        pistol.texture.bindTexture();
-        gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 20, 0);
-        gl.vertexAttribPointer(texturePosition, 2, gl.FLOAT, false, 20, 12);
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        pistol.bindSpriteType(position, texturePosition);
+        subrenderSprite(pistol);
       });
 
       if (hero.dx || hero.dy) {
@@ -399,18 +386,12 @@ void main() {
         gl.vertexAttribPointer(texturePosition, 2, gl.FLOAT, false, 20, 12);
         gl.drawArrays(gl.TRIANGLE_STRIP, runningBody.startIndices[frame], 4);
       } else {
-        gl.bindBuffer(gl.ARRAY_BUFFER, body.buffer);
-        body.texture.bindTexture();
-        gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 20, 0);
-        gl.vertexAttribPointer(texturePosition, 2, gl.FLOAT, false, 20, 12);
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        body.bindSpriteType(position, texturePosition);
+        subrenderSprite(body);
       }
 
-      gl.bindBuffer(gl.ARRAY_BUFFER, head.buffer);
-      head.texture.bindTexture();
-      gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 20, 0);
-      gl.vertexAttribPointer(texturePosition, 2, gl.FLOAT, false, 20, 12);
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      head.bindSpriteType(position, texturePosition);
+      subrenderSprite(head);
     });
   }
 

@@ -1,12 +1,37 @@
 import { readFileSync, writeFileSync } from "fs";
-import { bufferToHex, hexToBuffer } from "../src/hex.js";
+import sizeOf from "image-size";
 
 const ASSETS = [
   { type: "anim", src: "Monster Truck Bad Guy" },
   { type: "anim", src: "Hero Running Backwards" },
-  { type: "anim", src: "Bullet Dodge" },
+  { type: "anim", src: "Bullet Dodge", originX: 100, originY: 200 },
   { type: "anim", src: "Big Bad Guy Landing" },
   { type: "anim", src: "Big Bad Guy Marching" },
+  {
+    type: "static",
+    src: "Pistol Arm.png",
+    name: "PistolArm",
+    originX: 60,
+    originY: 112,
+  },
+  { type: "static", src: "Hero-Head.png", name: "HeroHead" },
+  { type: "static", src: "Hero-Body-Static.png", name: "HeroBodyStatic" },
+  {
+    type: "static",
+    src: "Bullet.png",
+    name: "Bullet",
+    originX: 32,
+    originY: 23 / 2,
+  },
+];
+
+// flip y
+// prettier-ignore
+const BASE_TRANSFORM = [
+  1, 0, 0, 0,
+  0, -1, 0, 0,
+  0, 0, 1, 0,
+  0, 0, 0, 1,
 ];
 
 function main() {
@@ -14,14 +39,16 @@ function main() {
     const type = asset.type;
 
     if (type === "anim") {
-      return processSpriteAtlas(`./assets/${asset.src}`);
+      return processSpriteAtlas(asset);
+    } else if (type === "static") {
+      return processStaticSprite(asset);
     } else {
       throw new Error(`Unrecognized asset type "${type}"`);
     }
   });
 
   const fileText = `// \x40generated from makeAssets.js
-import {defineAnimatedSprite, SpriteBuilder} from './Sprite.js';
+import {defineSprite, SpriteBuilder} from './Sprite.js';
 
 ${lines.join("\n\n")}
 `;
@@ -29,7 +56,10 @@ ${lines.join("\n\n")}
   writeFileSync("src/assets.js", fileText);
 }
 
-function processSpriteAtlas(folder) {
+function processSpriteAtlas(info) {
+  const { src, originX = 0, originY = 0 } = info;
+  const folder = `./assets/${src}`;
+
   const rawAnim = JSON.parse(
     readFileSync(`${folder}/Animation.json`, "utf8").trim()
   );
@@ -87,12 +117,12 @@ function processSpriteAtlas(folder) {
       const m = readOrThrow(element, "Matrix3D");
 
       // prettier-ignore
-      let matrix = [
+      const matrix = [
         m.m00, m.m01, m.m02, m.m03,
         m.m10, m.m11, m.m12, m.m13,
         m.m20, m.m21, m.m22, m.m23,
         m.m30, m.m31, m.m32, m.m33,
-      ].map((scalar, index) => index % 4 !== 3 ? RESCALE * scalar : scalar);
+      ];
 
       return {
         i: 4 * getOrThrow(nameToIndices, element.name),
@@ -123,6 +153,17 @@ function processSpriteAtlas(folder) {
     bufferData.push(w, h, 0, x2 / size.w, y2 / size.h);
   });
 
+  let transform = BASE_TRANSFORM;
+
+  // shift by origin
+  // prettier-ignore
+  transform = mult(transform, [
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    -originX, -originY, 0, 1,
+  ]);
+
   const result = {
     name,
     src: `${folder}/spritemap1.png`,
@@ -133,10 +174,53 @@ function processSpriteAtlas(folder) {
       : frames.map((f) => f.holdFor / fps),
     perFrameData: null,
     frameElements: frames.map((f) => f.elements),
+    transform,
   };
 
   return `/** @type {SpriteBuilder} */
-export const make${name} = defineAnimatedSprite(${printSimple(result)})`;
+export const make${name} = defineSprite(${printSimple(result)});`;
+}
+
+function processStaticSprite(info) {
+  const src = `./assets/${readOrThrow(info, "src")}`;
+  const name = readOrThrow(info, "name");
+
+  const { width: w, height: h } = sizeOf(src);
+
+  const { originX = w / 2, originY = h } = info;
+
+  // prettier-ignore
+  const bufferData = [
+    0, 0, 0, 0, 0,
+    0, h, 0, 0, 1,
+    w, 0, 0, 1, 0,
+    w, h, 0, 1, 1,
+  ];
+
+  let transform = BASE_TRANSFORM;
+
+  // shift by origin
+  // prettier-ignore
+  transform = mult(transform, [
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    -originX, -originY, 0, 1,
+  ]);
+
+  const result = {
+    name,
+    src,
+    bufferData: () => `new Float32Array([${bufferData.join(",")}])`,
+    loops: false,
+    frameTime: 1,
+    perFrameData: null,
+    frameElements: [[{ i: 0, m: null }]],
+    transform,
+  };
+
+  return `/** @type {SpriteBuilder} */
+export const make${name} = defineSprite(${printSimple(result)});`;
 }
 
 function assert(condition, error) {
@@ -204,6 +288,28 @@ function printSimple(val) {
   } else {
     throw new Error(`Bad val: ${JSON.stringify(val)}`);
   }
+}
+
+function mult(B, A) {
+  // Multiply A and B... beautiful...
+  return [
+    A[0] * B[0] + A[1] * B[4] + A[2] * B[8] + A[3] * B[12],
+    A[0] * B[1] + A[1] * B[5] + A[2] * B[9] + A[3] * B[13],
+    A[0] * B[2] + A[1] * B[6] + A[2] * B[10] + A[3] * B[14],
+    A[0] * B[3] + A[1] * B[7] + A[2] * B[11] + A[3] * B[15],
+    A[4] * B[0] + A[5] * B[4] + A[6] * B[8] + A[7] * B[12],
+    A[4] * B[1] + A[5] * B[5] + A[6] * B[9] + A[7] * B[13],
+    A[4] * B[2] + A[5] * B[6] + A[6] * B[10] + A[7] * B[14],
+    A[4] * B[3] + A[5] * B[7] + A[6] * B[11] + A[7] * B[15],
+    A[8] * B[0] + A[9] * B[4] + A[10] * B[8] + A[11] * B[12],
+    A[8] * B[1] + A[9] * B[5] + A[10] * B[9] + A[11] * B[13],
+    A[8] * B[2] + A[9] * B[6] + A[10] * B[10] + A[11] * B[14],
+    A[8] * B[3] + A[9] * B[7] + A[10] * B[11] + A[11] * B[15],
+    A[12] * B[0] + A[13] * B[4] + A[14] * B[8] + A[15] * B[12],
+    A[12] * B[1] + A[13] * B[5] + A[14] * B[9] + A[15] * B[13],
+    A[12] * B[2] + A[13] * B[6] + A[14] * B[10] + A[15] * B[14],
+    A[12] * B[3] + A[13] * B[7] + A[14] * B[11] + A[15] * B[15],
+  ];
 }
 
 main();
