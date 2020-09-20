@@ -204,7 +204,7 @@ void main() {
   };
 
   let percentage = 0;
-  let zoom = 5.9;
+  let zoom = 6;
   const hero = {
     x: 0,
     y: 0,
@@ -321,7 +321,7 @@ void main() {
 
       scaleAxes(zoom, zoom, 0);
 
-      shiftContent(-0.35, -0.85, 0);
+      shiftContent(-0.35, -0.65, 0);
 
       shiftContent(-1, 1, 0);
       scaleAxes(2 / 960, -2 / 640, 1);
