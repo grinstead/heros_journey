@@ -1,5 +1,5 @@
-import { readFileSync, writeFileSync } from "fs";
-import { bufferToHex, hexToBuffer } from "../src/hex.js";
+import { readFileSync } from "fs";
+import { bufferToHex } from "../src/hex.js";
 import parseSvgPath from "parse-svg-path";
 import svgPathContours from "svg-path-contours";
 import simplifyPath from "simplify-path";
