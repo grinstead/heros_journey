@@ -1,18 +1,12 @@
 import { makeGame, Game } from "./Game.js";
 import { InputManager } from "../wattle/engine/src/InputManager.js";
 import { cleanUpObject } from "../wattle/engine/src/utils/raii.js";
+import { updateSceneTime } from "./World.js";
 
 /** @type {?Game} */
 let game = null;
 
 async function onLoad() {
-  const input = new InputManager(document.body);
-  input.setKeysForAction("up", ["w", "ArrowUp"]);
-  input.setKeysForAction("down", ["s", "ArrowDown"]);
-  input.setKeysForAction("left", ["a", "ArrowLeft"]);
-  input.setKeysForAction("right", ["d", "ArrowRight"]);
-  input.setKeysForAction("shoot", ["h", " "]);
-
   const maybeCanvas = document.getElementById("canvas");
   /** @type {HTMLCanvasElement} */
   const canvas = maybeCanvas instanceof HTMLCanvasElement ? maybeCanvas : null;
@@ -26,14 +20,24 @@ async function onLoad() {
 
   await game.loadAssets();
 
-  requestAnimationFrame(() => {
-    game.performStep();
-  });
+  game.startRunning();
+
+  const fpsNode = document.getElementById("fps");
+  if (fpsNode) {
+    const updateFps = () => {
+      fpsNode.innerText = `${Math.round(game.fps)} fps`;
+      if (game.isRunning) {
+        requestAnimationFrame(updateFps);
+      }
+    };
+    requestAnimationFrame(updateFps);
+  }
 }
 
 window["onload"] = onLoad;
 window["onbeforeunload"] = () => {
   if (game) {
+    game.stopRunning();
     cleanUpObject(game);
   }
 };

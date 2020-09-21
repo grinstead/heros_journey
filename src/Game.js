@@ -24,6 +24,8 @@ import { AudioManager } from "./AudioManager.js";
 import { hexToBuffer } from "./hex.js";
 import { makeHeroHead } from "./assets.js";
 
+const FPS_SMOOTHING = 0.9;
+
 /**
  * @typedef {Object} WhiteboardObject
  * @property {WebGLBuffer} vertexBuffer
@@ -55,6 +57,10 @@ export class Game {
     this.backgroundColor = args.backgroundColor;
     /** @type {!Array<!WhiteboardObject>} */
     this.whiteboardObjects = args.whiteboardObjects;
+    /** @private {number} 0 if not running */
+    this.runningTimerId = 0;
+    /** @type {number} the average fps */
+    this.fps = 0;
   }
 
   loadAssets() {
@@ -67,6 +73,43 @@ export class Game {
     updateSceneTime(scene, realTime);
 
     renderGame(this, scene);
+  }
+
+  startRunning() {
+    if (this.runningTimerId !== 0) return;
+
+    let timerId = 0;
+    let lastTimeMs = null;
+
+    const onFrame = () => {
+      if (this.runningTimerId !== timerId) return;
+
+      const now = Date.now();
+      if (lastTimeMs == null) {
+        this.fps = 60;
+      } else {
+        const diff = now - lastTimeMs;
+        this.fps =
+          FPS_SMOOTHING * this.fps + (1 - FPS_SMOOTHING) * (1000 / diff);
+      }
+      lastTimeMs = now;
+
+      // run code (this could technically stop the game)
+      this.performStep();
+
+      if (this.runningTimerId !== timerId) return;
+      this.runningTimerId = timerId = requestAnimationFrame(onFrame);
+    };
+
+    this.runningTimerId = timerId = requestAnimationFrame(onFrame);
+  }
+
+  stopRunning() {
+    this.runningTimerId = 0;
+  }
+
+  isRunning() {
+    return this.runningTimerId !== 0;
   }
 }
 
