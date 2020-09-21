@@ -38,12 +38,10 @@ export function parseRawObject(json, code) {
 }
 
 /**
- * @template T
  * @param {string} key
- * @param {function(?):T} code
- * @returns {T}
+ * @returns {boolean}
  */
-export function processKey(key, code) {
+export function hasKey(key) {
   assertIsParsing();
 
   if (
@@ -54,7 +52,17 @@ export function processKey(key, code) {
     throw `is supposed to be an object`;
   }
 
-  if (!activeValue.hasOwnProperty(key)) {
+  return activeValue.hasOwnProperty(key);
+}
+
+/**
+ * @template T
+ * @param {string} key
+ * @param {function(?):T} code
+ * @returns {T}
+ */
+export function processKey(key, code) {
+  if (!hasKey(key)) {
     throw `is missing "${key}"`;
   }
 
@@ -80,6 +88,24 @@ export function readString(key) {
     if (typeof val !== "string") {
       throw "is supposed to be text";
     }
+
+    return val;
+  });
+}
+
+/**
+ * Validator returns falsy on success, or an error string
+ * @param {string} key
+ * @param {function(string):?string} validator
+ */
+export function validateString(key, validator) {
+  return processKey(key, (val) => {
+    if (typeof val !== "string") {
+      throw "is supposed to be text";
+    }
+
+    const error = validator(val);
+    if (error) throw error;
 
     return val;
   });

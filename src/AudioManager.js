@@ -1,9 +1,30 @@
+/** @type {!Map<string, string>} */
+const soundUrls = new Map();
+
+/** @type {!Map<string, AudioBuffer>} */
+const namedAudioBuffers = new Map();
+
 export class AudioManager {
   constructor() {
     /** @private {AudioContext} */
     this.audioContext = new AudioContext();
     /** @private {WeakMap<?, AudioBufferSourceNode>} All the sounds, mapped to who is originating them. No source can have two sounds running at once */
     this.activeSounds = new WeakMap();
+  }
+
+  loadAllSounds() {
+    const promises = [];
+    soundUrls.forEach((src, name) => {
+      if (namedAudioBuffers.has(name)) return;
+
+      promises.push(
+        this.loadSound(src).then((audio) => {
+          namedAudioBuffers.set(name, audio);
+        })
+      );
+    });
+
+    return Promise.all(promises).then(() => {});
   }
 
   /**
@@ -18,6 +39,23 @@ export class AudioManager {
         return response.arrayBuffer();
       })
       .then((buffer) => this.audioContext.decodeAudioData(buffer));
+  }
+
+  /**
+   * @param {?} source
+   * @param {string} name
+   */
+  playNamedSound(source, name) {
+    const sound = namedAudioBuffers.get(name);
+    if (!sound) {
+      if (!soundUrls.has(name)) {
+        throw new Error(`Unrecognized sound "${name}"`);
+      } else {
+        throw new Error("Unloaded sound");
+      }
+    }
+
+    this.playSound(source, sound);
   }
 
   /**
@@ -41,4 +79,14 @@ export class AudioManager {
     audioSource.start();
     activeSounds.set(source, audioSource);
   }
+}
+
+/**
+ *
+ * @param {Object} args
+ * @param {string} args.name
+ * @param {string} args.src
+ */
+export function registerSound(args) {
+  soundUrls.set(args.name, args.src);
 }

@@ -49,7 +49,16 @@ export async function loadUpGameScript(circleRadius) {
  * @returns {GameScript}
  */
 function parseGameScript(circleRadius) {
-  const spriteNames = processObjectArray("assets", () => readString("name"));
+  const spriteNames = [];
+  const soundNames = [];
+  processObjectArray("assets", () => {
+    const type = readOneOf("type", ["animated", "static", "audio"]);
+    if (type === "audio") {
+      soundNames.push(readString("name"));
+    } else {
+      spriteNames.push(readString("name"));
+    }
+  });
 
   const scenes = processMap("scenes", (scene, name) => {
     const sceneBox = processKey("location", (pos) => {
@@ -71,7 +80,7 @@ function parseGameScript(circleRadius) {
     });
 
     const actions = processObjectArray("actions", (action) => {
-      const type = readOneOf("type", ["add"]);
+      const type = readOneOf("type", ["add", "play sound"]);
 
       switch (type) {
         case "add":
@@ -81,6 +90,11 @@ function parseGameScript(circleRadius) {
             sprite: readOneOf("sprite", spriteNames),
             x: readNum("x"),
             y: readNum("y"),
+          };
+        case "play sound":
+          return {
+            type,
+            sound: readOneOf("sound", soundNames),
           };
       }
     });

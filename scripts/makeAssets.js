@@ -1,6 +1,17 @@
 import { readFileSync, writeFileSync } from "fs";
 import sizeOf from "image-size";
-import { parseRawObject, processArray } from "../src/PettyParser.js";
+import {
+  parseRawObject,
+  processArray,
+  processObjectArray,
+  readOneOf,
+  readString,
+  hasKey,
+  readNum,
+  validateString,
+} from "../src/PettyParser.js";
+
+const capCamel = /^[A-Z][a-zA-Z]+$/;
 
 // flip y
 // prettier-ignore
@@ -11,28 +22,53 @@ const BASE_TRANSFORM = [
   0, 0, 0, 1,
 ];
 
+function readName() {
+  return validateString("name", (name) =>
+    capCamel.test(name) ? null : "must be ThisSortOfForm"
+  );
+}
+
 function main() {
   const rawScript = readFileSync("./assets/GameScript.json", "utf8");
 
-  const assets = parseRawObject(rawScript, () => {
-    // todo: validations
-    return processArray("assets", (val) => val);
+  let hasSounds = false;
+  let hasSprites = false;
+
+  const lines = parseRawObject(rawScript, () => {
+    return processObjectArray("assets", () => {
+      const type = readOneOf("type", ["animated", "static", "audio"]);
+      switch (type) {
+        case "audio":
+          hasSounds = true;
+          return processSound({
+            name: readString("name"),
+            src: readString("src"),
+          });
+        case "animated":
+          hasSprites = true;
+          return processSpriteAtlas({
+            name: readName(),
+            src: readString("src"),
+          });
+        case "static":
+          hasSprites = true;
+          return processStaticSprite({
+            name: readName(),
+            src: readString("src"),
+            originX: hasKey("originX") ? readNum("originX") : undefined,
+            originY: hasKey("originY") ? readNum("originY") : undefined,
+          });
+      }
+    });
   });
 
-  const lines = assets.map((asset) => {
-    const type = asset.type;
-
-    if (type === "animated") {
-      return processSpriteAtlas(asset);
-    } else if (type === "static") {
-      return processStaticSprite(asset);
-    } else {
-      throw new Error(`Unrecognized asset type "${type}"`);
-    }
-  });
+  const imports = [
+    hasSounds && 'import {registerSound} from "./AudioManager.js";',
+    hasSprites && 'import {defineSprite, SpriteBuilder} from "./Sprite.js";',
+  ];
 
   const fileText = `// \x40generated from makeAssets.js
-import {defineSprite, SpriteBuilder} from './Sprite.js';
+${imports.filter(Boolean).join("\n")}
 
 ${lines.join("\n\n")}
 `;
@@ -207,6 +243,19 @@ function processStaticSprite(info) {
 export const make${name} = defineSprite(${printSimple(result)});`;
 }
 
+/**
+ *
+ * @param {Object} info
+ * @param {string} info.name
+ * @param {string} info.src
+ */
+function processSound(info) {
+  return `registerSound(${printSimple({
+    name: info.name,
+    src: `./assets/${info.src}`,
+  })})`;
+}
+
 function assert(condition, error) {
   if (!condition) {
     throw new Error(error);
@@ -296,4 +345,8 @@ function mult(B, A) {
   ];
 }
 
-main();
+try {
+  main();
+} catch (error) {
+  console.error(error);
+}

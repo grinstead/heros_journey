@@ -210,9 +210,12 @@ export async function makeGame({ canvas, input }) {
   canvas.width = ratio * widthPx;
   canvas.height = ratio * heightPx;
 
+  const audio = new AudioManager();
+
   const [finishLoadingSprites, gameScript] = await Promise.all([
     loadAllSpriteTextures(),
     loadUpGameScript(Math.min(widthPx, heightPx) / FULL_SPACE_ZOOM),
+    audio.loadAllSounds(),
   ]);
 
   return buildCleanable(() => {
@@ -342,7 +345,7 @@ output_color = color;
     input.setKeysForAction("right", ["d", "ArrowRight"]);
     input.setKeysForAction("shoot", ["h", " "]);
 
-    const world = initWorld({ input, audio: new AudioManager(), gameScript });
+    const world = initWorld({ input, audio, gameScript });
 
     return new Game({
       world,

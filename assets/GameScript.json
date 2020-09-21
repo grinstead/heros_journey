@@ -14,6 +14,10 @@
           "sprite": "MonsterTruck",
           "x": 0,
           "y": 0
+        },
+        {
+          "type": "play sound",
+          "sound": "GunShot"
         }
       ]
     }
@@ -61,6 +65,11 @@
       "src": "Bullet.png",
       "originX": 32,
       "originY": 11.5
+    },
+    {
+      "type": "audio",
+      "name": "GunShot",
+      "src": "Gun Shot.mp3"
     }
   ]
 }

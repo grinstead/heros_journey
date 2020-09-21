@@ -127,6 +127,10 @@ function runAction(scene, action) {
 
       return null;
     }
+    case "play sound": {
+      scene.audio.playNamedSound({}, action.sound);
+      return null;
+    }
     default:
       throw new Error(`Unrecognized action type ${action.type}`);
   }
