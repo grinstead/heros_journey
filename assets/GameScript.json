@@ -7,7 +7,15 @@
         "width": 960,
         "height": 640
       },
-      "actions": []
+      "actions": [
+        {
+          "type": "add",
+          "name": "villain",
+          "sprite": "MonsterTruck",
+          "x": 0,
+          "y": 0
+        }
+      ]
     }
   },
   "assets": [

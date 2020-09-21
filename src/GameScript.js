@@ -4,12 +4,21 @@ import {
   processMap,
   processKey,
   readNum,
+  processArray,
+  readOneOf,
+  processObjectArray,
   readString,
 } from "./PettyParser.js";
 
 /**
+ * @typedef {Object} ScriptAction;
+ */
+export let ScriptAction;
+
+/**
  * @typedef {Object} SceneScript
  * @property {Box} sceneBox
+ * @property {!Array<ScriptAction>} actions
  */
 export let SceneScript;
 
@@ -40,6 +49,8 @@ export async function loadUpGameScript(circleRadius) {
  * @returns {GameScript}
  */
 function parseGameScript(circleRadius) {
+  const spriteNames = processObjectArray("assets", () => readString("name"));
+
   const scenes = processMap("scenes", (scene, name) => {
     const sceneBox = processKey("location", (pos) => {
       const clock = readNum("clock position", 0, 12, true);
@@ -59,7 +70,22 @@ function parseGameScript(circleRadius) {
       };
     });
 
-    return { sceneBox };
+    const actions = processObjectArray("actions", (action) => {
+      const type = readOneOf("type", ["add"]);
+
+      switch (type) {
+        case "add":
+          return {
+            type,
+            name: readString("name"),
+            sprite: readOneOf("sprite", spriteNames),
+            x: readNum("x"),
+            y: readNum("y"),
+          };
+      }
+    });
+
+    return { sceneBox, actions };
   });
 
   const openingScene = processKey("opening scene", (val) => {

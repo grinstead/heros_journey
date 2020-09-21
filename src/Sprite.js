@@ -1,12 +1,11 @@
 import {
   Texture,
-  loadTextureFromImgUrl,
+  loadTextureFromImgUrlTwoStages,
 } from "../wattle/engine/src/swagl/Texture.js";
 import { WebGL } from "../wattle/engine/src/swagl/types.js";
 import {
   subrenderEach,
   applyMatrixOperation,
-  scaleAxes,
   subrenderWithArg,
 } from "../wattle/engine/src/swagl/MatrixStack.js";
 
@@ -181,6 +180,9 @@ export let SpriteBuilder;
 /** @type {!Map<number, string|Texture>} */
 const spriteIdToTexture = new Map();
 
+/** @type {!Map<string, SpriteBuilder>} */
+const spriteBuilders = new Map();
+
 let nextSpriteId = 1;
 
 /**
@@ -224,31 +226,48 @@ export function defineSprite(def) {
     return new Sprite(def, frameTimes, sceneTime, tex, buffer);
   }
 
+  spriteBuilders.set(def.name, makeSprite);
+
   return makeSprite;
 }
 
 /**
- * Loads all the declared sprite's textures
- * @param {!WebGL} gl
+ *
+ * @param {string} name
+ * @param {number} sceneTime
  */
-export function loadAllSpriteTextures(gl) {
+export function makeSpriteFromName(name, sceneTime) {
+  const builder = spriteBuilders.get(name);
+  if (!builder) {
+    throw new Error(`Unrecognized sprite ${name}`);
+  }
+
+  return builder(sceneTime);
+}
+
+/**
+ * Loads all the declared sprite's textures in two steps
+ * @returns {!Promise<function(WebGL)>}
+ */
+export function loadAllSpriteTextures() {
   const promises = [];
 
   spriteIdToTexture.forEach((texture, spriteId) => {
     if (typeof texture !== "string") return;
 
     promises.push(
-      loadTextureFromImgUrl({
+      loadTextureFromImgUrlTwoStages({
         src: texture,
         name: texture,
-        gl,
-      }).then((actualTexture) => {
-        spriteIdToTexture.set(spriteId, actualTexture);
+      }).then((stage2) => (gl) => {
+        spriteIdToTexture.set(spriteId, stage2(gl));
       })
     );
   });
 
-  return Promise.all(promises);
+  return Promise.all(promises).then((results) => (gl) => {
+    results.forEach((stage2) => stage2(gl));
+  });
 }
 
 export function subrenderSprite(sprite) {

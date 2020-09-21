@@ -7,13 +7,13 @@ let activePath = null;
  * @param {string} json
  * @param {function():T} code
  */
-export function parseRawObject(value, code) {
+export function parseRawObject(json, code) {
   const prevValue = activeValue;
   const prevPath = activePath;
 
   try {
     try {
-      activeValue = JSON.parse(value);
+      activeValue = JSON.parse(json);
     } catch (error) {
       throw "content is not valid json";
     }
@@ -40,8 +40,8 @@ export function parseRawObject(value, code) {
 /**
  * @template T
  * @param {string} key
- * @param {function(?):T}
- * @returns T
+ * @param {function(?):T} code
+ * @returns {T}
  */
 export function processKey(key, code) {
   assertIsParsing();
@@ -65,6 +65,7 @@ export function processKey(key, code) {
 
   const result = code(activeValue);
 
+  activePath.pop();
   activeValue = prev;
 
   return result;
@@ -85,13 +86,44 @@ export function readString(key) {
 }
 
 /**
+ * @template T
+ * @param {string} key
+ * @param {!Array<T>} values - the possible values
+ * @returns {T}
+ */
+export function readOneOf(key, values) {
+  return processKey(key, (val) => {
+    if (!values.includes(val)) {
+      const serial = values.map((v) => JSON.stringify(v));
+
+      if (values.length === 1) {
+        throw `must be ${serial[0]}`;
+      } else if (values.length === 2) {
+        throw `must be either ${serial[0]} or ${serial[1]}`;
+      } else {
+        throw `must be one of ${serial.slice(-1).join(", ")}, or ${
+          serial[serial.length - 1]
+        }`;
+      }
+    }
+
+    return val;
+  });
+}
+
+/**
  * @param {string} key
  * @param {number} min
  * @param {number} max
  * @param {boolean} maxIsInclusive
  * @returns {number}
  */
-export function readNum(key, min, max, maxIsInclusive) {
+export function readNum(
+  key,
+  min = Number.NEGATIVE_INFINITY,
+  max = Number.POSITIVE_INFINITY,
+  maxIsInclusive = false
+) {
   return processKey(key, (val) => {
     if (typeof val !== "number") {
       throw "is supposed to be a number";
@@ -110,22 +142,24 @@ export function readNum(key, min, max, maxIsInclusive) {
 /**
  * @template T
  * @param {string} key
- * @param {function(?,string):T}
+ * @param {function(?,string):T} code
  * @returns {!Map<string, T>}
  */
 export function processMap(key, code) {
   return processKey(key, (raw) => {
-    if (!raw || typeof raw !== "object") {
+    if (raw == null || typeof raw !== "object") {
       throw `is supposed to be a mapping`;
     }
 
     const map = new Map();
-    Object.keys(raw).forEach((key) => {
-      map.set(
-        key,
-        processKey(key, (val) => code(val, name))
-      );
-    });
+    // this raw check is for closure, but its checked above as well
+    raw &&
+      Object.keys(raw).forEach((innerKey) => {
+        map.set(
+          innerKey,
+          processKey(innerKey, (val) => code(val, innerKey))
+        );
+      });
 
     return map;
   });
@@ -134,7 +168,7 @@ export function processMap(key, code) {
 /**
  * @template T
  * @param {string} key
- * @param {function(?,number):T}
+ * @param {function(?,number):T} code
  * @returns {!Array<T>}
  */
 export function processArray(key, code) {
@@ -143,12 +177,33 @@ export function processArray(key, code) {
       throw `is supposed to be a list`;
     }
 
-    return raw.map((val, index) => {
+    return raw.map((val, index) => code(val, index));
+  });
+}
+
+/**
+ * @template T
+ * @param {string} key
+ * @param {function(number):T} code
+ * @returns {!Array<T>}
+ */
+export function processObjectArray(key, code) {
+  return processKey(key, (raw) => {
+    if (!raw || typeof raw !== "object" || !Array.isArray(raw)) {
+      throw `is supposed to be a list`;
+    }
+
+    const prev = activeValue;
+    const results = raw.map((val, index) => {
+      activeValue = val;
       activePath.push(index);
       const result = code(val, index);
       activePath.pop();
       return result;
     });
+    activeValue = prev;
+
+    return results;
   });
 }
 

@@ -1,4 +1,6 @@
-import { SceneKernel, Scene, makeScene } from "./Scene.js";
+import { SceneKernel, Scene, makeScene, SceneStep } from "./Scene.js";
+import { SceneScript, ScriptAction } from "./GameScript.js";
+import { makeSpriteFromName } from "./Sprite.js";
 
 export class World {
   constructor(kernel, startScene) {
@@ -39,7 +41,7 @@ export class World {
  * @param {SceneKernel} kernel
  */
 export function initWorld(kernel) {
-  return new World(kernel, initScene(kernel, "start"));
+  return new World(kernel, initScene(kernel, kernel.gameScript.openingScene));
 }
 
 /**
@@ -49,7 +51,7 @@ export function initWorld(kernel) {
  */
 function initScene(kernel, sceneName) {
   switch (sceneName) {
-    case "start": {
+    default: {
       const scene = makeScene({
         kernel,
         sceneName,
@@ -58,8 +60,6 @@ function initScene(kernel, sceneName) {
 
       return scene;
     }
-    default:
-      throw new Error(`Unrecognized scene name "${sceneName}"`);
   }
 }
 
@@ -67,9 +67,67 @@ function initScene(kernel, sceneName) {
  * Updates the room's time and step size
  * @param {Scene} scene
  * @param {number} time
+ * @returns {number}
  */
 export function updateSceneTime(scene, time) {
   const newTime = time - scene.sceneTimeOffset;
   scene.stepSize = newTime - scene.sceneTime;
   scene.sceneTime = newTime;
+  return newTime;
+}
+
+/**
+ * @param {Scene} scene
+ */
+export function runSceneScript(scene) {
+  let { scriptPosition } = scene;
+  if (!scriptPosition) return;
+
+  let nextStep = scriptPosition.run(scene);
+  if (nextStep) {
+    scriptPosition.run = nextStep;
+  } else {
+    let ranStep = false;
+    let index = scriptPosition.index;
+    while (!ranStep) {
+      index++;
+      const actions = scene.sceneScript.actions;
+      if (index < actions.length) {
+        nextStep = runAction(scene, actions[index]);
+        if (nextStep) {
+          ranStep = true;
+          scene.scriptPosition = { index, run: nextStep };
+        }
+      } else {
+        ranStep = true;
+        scene.scriptPosition = null;
+      }
+    }
+  }
+}
+
+/**
+ * Runs the action and returns the step
+ * @param {Scene} scene
+ * @param {ScriptAction} action
+ * @returns {?SceneStep}
+ */
+function runAction(scene, action) {
+  switch (action.type) {
+    case "add": {
+      const { objects } = scene;
+      objects.push({
+        name: action.name,
+        x: action.x,
+        y: action.y,
+        direction: 0,
+        speed: 0,
+        sprite: makeSpriteFromName(action.sprite, scene.sceneTime),
+      });
+
+      return null;
+    }
+    default:
+      throw new Error(`Unrecognized action type ${action.type}`);
+  }
 }

@@ -13,12 +13,10 @@ async function onLoad() {
 
   if (!canvas) throw new Error("Bad Canvas");
 
-  game = makeGame({
+  game = await makeGame({
     canvas,
     input: new InputManager(document.body),
   });
-
-  await game.loadAssets();
 
   game.startRunning();
 

@@ -68,7 +68,7 @@ function processSpriteAtlas(info) {
 
   const size = readOrThrow(rawSpriteMap, "meta", "size");
 
-  const name = rawAnim.ANIMATION.name.replace(/\s/g, "");
+  const name = info.name;
 
   // build up the symbols dictionary
   const symbols = new Map();

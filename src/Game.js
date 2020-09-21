@@ -8,7 +8,7 @@ import { TEST_DATA } from "./data.js";
 import { WebGL } from "../wattle/engine/src/swagl/types.js";
 import { loadAllSpriteTextures, subrenderSprite } from "./Sprite.js";
 import { InputManager } from "../wattle/engine/src/InputManager.js";
-import { World, initWorld, updateSceneTime } from "./World.js";
+import { World, initWorld, updateSceneTime, runSceneScript } from "./World.js";
 import {
   Program,
   renderInProgram,
@@ -65,30 +65,16 @@ export class Game {
     this.fps = 0;
   }
 
-  async loadAssets() {
-    const [gameScript] = await Promise.all([
-      loadUpGameScript(this.display.h / FULL_SPACE_ZOOM),
-      loadAllSpriteTextures(this.svgProgram.gl),
-    ]);
-
-    console.log(gameScript);
-
-    const scene = gameScript.scenes.get(gameScript.openingScene);
-    const box = scene.sceneBox;
-
-    this.camera = {
-      focus: {
-        x: (box.right - box.left) / 2,
-        y: (box.top - box.bottom) / 2,
-      },
-      zoom: 1,
-    };
-  }
-
   performStep() {
     const realTime = Date.now() / 1000;
     const scene = this.world.activeScene;
-    updateSceneTime(scene, realTime);
+    const sceneTime = updateSceneTime(scene, realTime);
+
+    scene.objects.forEach((object) => {
+      object.sprite.updateTime(sceneTime);
+    });
+
+    runSceneScript(scene);
 
     renderGame(this, scene);
   }
@@ -140,7 +126,7 @@ function renderGame(game, scene) {
   const camera = game.camera;
   const scaleAxesToDisplay = () => {
     const dims = game.display;
-    scaleAxes(2 / dims.w, 2 / dims.h, 1);
+    scaleAxes(1 / dims.w, 1 / dims.h, 1);
   };
 
   const svgProgram = game.svgProgram;
@@ -158,7 +144,7 @@ function renderGame(game, scene) {
     shiftContent(-camera.focus.x, -camera.focus.y, 0);
 
     // switch image to the world space
-    scaleAxes(1 / FULL_SPACE_ZOOM, -1 / FULL_SPACE_ZOOM, 1);
+    scaleAxes(2 / FULL_SPACE_ZOOM, -2 / FULL_SPACE_ZOOM, 1);
 
     // shift the image to the center (in its native resolution)
     // note that the image is upside-down at this point
@@ -190,9 +176,12 @@ function renderGame(game, scene) {
 
     scaleAxesToDisplay();
 
-    const head = makeHeroHead(0);
-    head.bindSpriteType(position, texturePosition);
-    subrenderSprite(head);
+    scene.objects.forEach((object) => {
+      shiftContent(object.x, object.y, 0);
+      const sprite = object.sprite;
+      sprite.bindSpriteType(position, texturePosition);
+      subrenderSprite(sprite);
+    });
   });
 }
 
@@ -202,32 +191,36 @@ function renderGame(game, scene) {
  * @param {!InputManager} args.input
  * @returns {!Game}
  */
-export function makeGame({ canvas, input }) {
+export async function makeGame({ canvas, input }) {
+  const computedStyle = getComputedStyle(canvas);
+  const widthPx = parseInt(computedStyle.getPropertyValue("width"), 10);
+  const heightPx = parseInt(computedStyle.getPropertyValue("height"), 10);
+
+  const baseBackgroundColor = /rgb\((\d+), (\d+), (\d+)\)/.exec(
+    computedStyle.getPropertyValue("background-color")
+  );
+
+  const backgroundColor = [
+    baseBackgroundColor[1] / 255, // implicit conversion
+    baseBackgroundColor[2] / 255, // implicit conversion
+    baseBackgroundColor[3] / 255, // implicit conversion
+  ];
+
+  const ratio = window.devicePixelRatio || 1;
+  canvas.width = ratio * widthPx;
+  canvas.height = ratio * heightPx;
+
+  const [finishLoadingSprites, gameScript] = await Promise.all([
+    loadAllSpriteTextures(),
+    loadUpGameScript(Math.min(widthPx, heightPx) / FULL_SPACE_ZOOM),
+  ]);
+
   return buildCleanable(() => {
     /**
      * Not sure why, but closure is crapping up here
      * @suppress {checkTypes}
      * @type {!WebGL}
      */
-    const computedStyle = getComputedStyle(canvas);
-
-    const baseBackgroundColor = /rgb\((\d+), (\d+), (\d+)\)/.exec(
-      computedStyle.getPropertyValue("background-color")
-    );
-
-    const backgroundColor = [
-      baseBackgroundColor[1] / 255, // implicit conversion
-      baseBackgroundColor[2] / 255, // implicit conversion
-      baseBackgroundColor[3] / 255, // implicit conversion
-    ];
-
-    const widthPx = parseInt(computedStyle.getPropertyValue("width"), 10);
-    const heightPx = parseInt(computedStyle.getPropertyValue("height"), 10);
-
-    const ratio = window.devicePixelRatio || 1;
-    canvas.width = ratio * widthPx;
-    canvas.height = ratio * heightPx;
-
     const gl = canvas.getContext("webgl2", {
       antialias: false,
       alpha: false,
@@ -236,6 +229,8 @@ export function makeGame({ canvas, input }) {
     gl.enable(gl.BLEND);
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
+
+    finishLoadingSprites(gl);
 
     /** @type {!Program<{projection:!Mat4fv}>} */
     const svgProgram = makeAndLinkProgram({
@@ -347,7 +342,7 @@ output_color = color;
     input.setKeysForAction("right", ["d", "ArrowRight"]);
     input.setKeysForAction("shoot", ["h", " "]);
 
-    const world = initWorld({ input, audio: new AudioManager() });
+    const world = initWorld({ input, audio: new AudioManager(), gameScript });
 
     return new Game({
       world,
