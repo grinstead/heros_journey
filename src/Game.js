@@ -23,8 +23,10 @@ import { Mat4fv, SingleInt } from "../wattle/engine/src/swagl/ProgramInput.js";
 import { AudioManager } from "./AudioManager.js";
 import { hexToBuffer } from "./hex.js";
 import { makeHeroHead } from "./assets.js";
+import { loadUpGameScript } from "./GameScript.js";
 
 const FPS_SMOOTHING = 0.9;
+const FULL_SPACE_ZOOM = 1 / 6;
 
 /**
  * @typedef {Object} WhiteboardObject
@@ -63,8 +65,24 @@ export class Game {
     this.fps = 0;
   }
 
-  loadAssets() {
-    return loadAllSpriteTextures(this.svgProgram.gl);
+  async loadAssets() {
+    const [gameScript] = await Promise.all([
+      loadUpGameScript(this.display.h / FULL_SPACE_ZOOM),
+      loadAllSpriteTextures(this.svgProgram.gl),
+    ]);
+
+    console.log(gameScript);
+
+    const scene = gameScript.scenes.get(gameScript.openingScene);
+    const box = scene.sceneBox;
+
+    this.camera = {
+      focus: {
+        x: (box.right - box.left) / 2,
+        y: (box.top - box.bottom) / 2,
+      },
+      zoom: 1,
+    };
   }
 
   performStep() {
@@ -133,16 +151,22 @@ function renderGame(game, scene) {
     gl.clearColor(bg[0], bg[1], bg[2], 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
-    scaleAxes(camera.zoom, camera.zoom, 0);
-    shiftContent(-1, 1, 0);
+    // const zoom = camera.zoom / FULL_SPACE_ZOOM;
+    // scaleAxes(zoom, zoom, 0);
     scaleAxesToDisplay();
 
     shiftContent(-camera.focus.x, -camera.focus.y, 0);
 
+    // switch image to the world space
+    scaleAxes(1 / FULL_SPACE_ZOOM, -1 / FULL_SPACE_ZOOM, 1);
+
+    // shift the image to the center (in its native resolution)
+    // note that the image is upside-down at this point
+    shiftContent(-(960 / 2), -640 / 2, 0);
+
     const position = svgProgram.attr("a_position");
     gl.enableVertexAttribArray(position);
 
-    scaleAxes(1, -1, 1);
     game.whiteboardObjects.forEach((obj) => {
       gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexBuffer);
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj.indexBuffer);

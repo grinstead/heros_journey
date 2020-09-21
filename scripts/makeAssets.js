@@ -1,29 +1,6 @@
 import { readFileSync, writeFileSync } from "fs";
 import sizeOf from "image-size";
-
-const ASSETS = [
-  { type: "anim", src: "Monster Truck Bad Guy" },
-  { type: "anim", src: "Hero Running Backwards" },
-  { type: "anim", src: "Bullet Dodge", originX: 100, originY: 200 },
-  { type: "anim", src: "Big Bad Guy Landing" },
-  { type: "anim", src: "Big Bad Guy Marching" },
-  {
-    type: "static",
-    src: "Pistol Arm.png",
-    name: "PistolArm",
-    originX: 60,
-    originY: 112,
-  },
-  { type: "static", src: "Hero-Head.png", name: "HeroHead" },
-  { type: "static", src: "Hero-Body-Static.png", name: "HeroBodyStatic" },
-  {
-    type: "static",
-    src: "Bullet.png",
-    name: "Bullet",
-    originX: 32,
-    originY: 23 / 2,
-  },
-];
+import { parseRawObject, processArray } from "../src/PettyParser.js";
 
 // flip y
 // prettier-ignore
@@ -35,10 +12,17 @@ const BASE_TRANSFORM = [
 ];
 
 function main() {
-  const lines = ASSETS.map((asset) => {
+  const rawScript = readFileSync("./assets/GameScript.json", "utf8");
+
+  const assets = parseRawObject(rawScript, () => {
+    // todo: validations
+    return processArray("assets", (val) => val);
+  });
+
+  const lines = assets.map((asset) => {
     const type = asset.type;
 
-    if (type === "anim") {
+    if (type === "animated") {
       return processSpriteAtlas(asset);
     } else if (type === "static") {
       return processStaticSprite(asset);

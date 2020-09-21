@@ -1,0 +1,58 @@
+{
+  "opening scene": "test",
+  "scenes": {
+    "test": {
+      "location": {
+        "clock position": 1,
+        "width": 960,
+        "height": 640
+      },
+      "actions": []
+    }
+  },
+  "assets": [
+    {
+      "type": "animated",
+      "name": "MonsterTruck",
+      "src": "Monster Truck Bad Guy"
+    },
+    {
+      "type": "animated",
+      "name": "HeroRunningBackwards",
+      "src": "Hero Running Backwards"
+    },
+    {
+      "type": "animated",
+      "name": "HeroJump",
+      "src": "Bullet Dodge",
+      "originX": 100,
+      "originY": 200
+    },
+    {
+      "type": "animated",
+      "name": "BigBadGuyLanding",
+      "src": "Big Bad Guy Landing"
+    },
+    { "type": "animated", "name": "BigBadGuy", "src": "Big Bad Guy Marching" },
+    {
+      "type": "static",
+      "name": "PistolArm",
+      "src": "Pistol Arm.png",
+      "originX": 60,
+      "originY": 112
+    },
+    { "type": "static", "name": "HeroHead", "src": "Hero-Head.png" },
+    {
+      "type": "static",
+      "name": "HeroBodyStatic",
+      "src": "Hero-Body-Static.png"
+    },
+    {
+      "type": "static",
+      "name": "Bullet",
+      "src": "Bullet.png",
+      "originX": 32,
+      "originY": 11.5
+    }
+  ]
+}
