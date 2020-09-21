@@ -80,7 +80,7 @@ function parseGameScript(circleRadius) {
     });
 
     const actions = processObjectArray("actions", (action) => {
-      const type = readOneOf("type", ["add", "play sound"]);
+      const type = readOneOf("type", ["add", "play sound", "wait"]);
 
       switch (type) {
         case "add":
@@ -95,6 +95,11 @@ function parseGameScript(circleRadius) {
           return {
             type,
             sound: readOneOf("sound", soundNames),
+          };
+        case "wait":
+          return {
+            type,
+            seconds: readNum("seconds", 0),
           };
       }
     });

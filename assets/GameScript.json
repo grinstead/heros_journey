@@ -1,7 +1,7 @@
 {
-  "opening scene": "test",
+  "opening scene": "example",
   "scenes": {
-    "test": {
+    "example": {
       "location": {
         "clock position": 1,
         "width": 960,
@@ -14,6 +14,10 @@
           "sprite": "MonsterTruck",
           "x": 0,
           "y": 0
+        },
+        {
+          "type": "wait",
+          "seconds": 2
         },
         {
           "type": "play sound",

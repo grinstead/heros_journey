@@ -131,6 +131,14 @@ function runAction(scene, action) {
       scene.audio.playNamedSound({}, action.sound);
       return null;
     }
+    case "wait": {
+      const endTime = scene.sceneTime + action.seconds;
+
+      const waitForIt = (scene) =>
+        scene.sceneTime < endTime ? waitForIt : null;
+
+      return waitForIt;
+    }
     default:
       throw new Error(`Unrecognized action type ${action.type}`);
   }
