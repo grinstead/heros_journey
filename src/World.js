@@ -139,6 +139,15 @@ function runAction(scene, action) {
 
       return waitForIt;
     }
+    case "change sprite": {
+      const name = action.name;
+      const obj = scene.objects.find((obj) => obj.name === name);
+      if (!obj) {
+        throw new Error(`No object with name ${name}`);
+      }
+      obj.sprite = makeSpriteFromName(action.sprite, scene.sceneTime);
+      return null;
+    }
     default:
       throw new Error(`Unrecognized action type ${action.type}`);
   }

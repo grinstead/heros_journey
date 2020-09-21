@@ -20,6 +20,11 @@
           "seconds": 2
         },
         {
+          "type": "change sprite",
+          "name": "villain",
+          "sprite": "BigBadGuyLanding"
+        },
+        {
           "type": "play sound",
           "sound": "GunShot"
         }

@@ -8,6 +8,7 @@ import {
   readOneOf,
   processObjectArray,
   readString,
+  validateString,
 } from "./PettyParser.js";
 
 /**
@@ -79,18 +80,24 @@ function parseGameScript(circleRadius) {
       };
     });
 
+    const actionTypes = ["add", "play sound", "wait", "change sprite"];
+    const knownNames = new Set();
+
     const actions = processObjectArray("actions", (action) => {
-      const type = readOneOf("type", ["add", "play sound", "wait"]);
+      const type = readOneOf("type", actionTypes);
 
       switch (type) {
-        case "add":
+        case "add": {
+          const name = readString("name");
+          knownNames.add(name);
           return {
             type,
-            name: readString("name"),
+            name,
             sprite: readOneOf("sprite", spriteNames),
             x: readNum("x"),
             y: readNum("y"),
           };
+        }
         case "play sound":
           return {
             type,
@@ -100,6 +107,16 @@ function parseGameScript(circleRadius) {
           return {
             type,
             seconds: readNum("seconds", 0),
+          };
+        case "change sprite":
+          return {
+            type,
+            name: validateString("name", (name) =>
+              knownNames.has(name)
+                ? null
+                : "is trying to change an unrecognized name"
+            ),
+            sprite: readOneOf("sprite", spriteNames),
           };
       }
     });
