@@ -79,6 +79,16 @@ export function processKey(key, code) {
   return result;
 }
 
+export function readBoolean(key) {
+  return processKey(key, (val) => {
+    if (typeof val !== "boolean") {
+      throw "is supposed to be true or false";
+    }
+
+    return val;
+  });
+}
+
 /**
  * @param {string} key
  * @returns {string}

@@ -52,7 +52,8 @@
     {
       "type": "animated",
       "name": "BigBadGuyLanding",
-      "src": "Big Bad Guy Landing"
+      "src": "Big Bad Guy Landing",
+      "loops": false
     },
     { "type": "animated", "name": "BigBadGuy", "src": "Big Bad Guy Marching" },
     {

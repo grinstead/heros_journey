@@ -9,6 +9,7 @@ import {
   hasKey,
   readNum,
   validateString,
+  readBoolean,
 } from "../src/PettyParser.js";
 
 const capCamel = /^[A-Z][a-zA-Z]+$/;
@@ -49,6 +50,7 @@ function main() {
           return processSpriteAtlas({
             name: readName(),
             src: readString("src"),
+            loops: hasKey("loops") ? readBoolean("loops") : true,
           });
         case "static":
           hasSprites = true;
@@ -188,7 +190,7 @@ function processSpriteAtlas(info) {
     name,
     src: `${folder}/spritemap1.png`,
     bufferData,
-    loops: true,
+    loops: info.loops,
     frameTime: allSameFrameTime
       ? firstFrame.holdFor / fps
       : frames.map((f) => f.holdFor / fps),
