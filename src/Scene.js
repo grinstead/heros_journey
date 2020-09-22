@@ -13,6 +13,7 @@ import { SceneScript, GameScript } from "./GameScript.js";
  * @property {number} speed
  * @property {number} zSpeed
  * @property {Sprite} sprite
+ * @property {{x: number, y: number}} shadowRadius
  */
 export let GameObject;
 

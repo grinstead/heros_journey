@@ -158,6 +158,7 @@ function runAction(scene, action) {
         direction: 0,
         speed: 0,
         sprite: makeSpriteFromName(action.sprite, scene.sceneTime),
+        shadowRadius: action.shadowRadius,
       });
 
       return CONTINUE;

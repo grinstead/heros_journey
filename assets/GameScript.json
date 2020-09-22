@@ -14,7 +14,8 @@
           "sprite": "BigBadGuyLanding",
           "x": 0,
           "y": 0,
-          "z": 1000
+          "z": 1200,
+          "shadow radius": { "x": 40, "y": 20 }
         },
         {
           "type": "play sound",
@@ -37,7 +38,7 @@
           "type": "move",
           "name": "villain",
           "seconds": 0.325,
-          "z": -1000,
+          "z": -1200,
           "ease in": true
         }
       ]
@@ -54,8 +55,9 @@
           "name": "villain",
           "sprite": "MonsterTruck",
           "x": 0,
-          "y": 0,
-          "z": 1000
+          "y": -300,
+          "z": 1000,
+          "shadow radius": { "x": 40, "y": 20 }
         },
         {
           "type": "move",
@@ -109,9 +111,17 @@
       "type": "animated",
       "name": "BigBadGuyLanding",
       "src": "Big Bad Guy Landing",
+      "originX": 92,
+      "originY": 254,
       "loops": false
     },
-    { "type": "animated", "name": "BigBadGuy", "src": "Big Bad Guy Marching" },
+    {
+      "type": "animated",
+      "name": "BigBadGuy",
+      "src": "Big Bad Guy Marching",
+      "originX": 92,
+      "originY": 254
+    },
     {
       "type": "static",
       "name": "PistolArm",

@@ -19,8 +19,14 @@ import {
   shiftContent,
   scaleAxes,
   applyMatrixOperation,
+  subrenderEach,
+  subrender,
 } from "../wattle/engine/src/swagl/MatrixStack.js";
-import { Mat4fv, SingleInt } from "../wattle/engine/src/swagl/ProgramInput.js";
+import {
+  Mat4fv,
+  SingleInt,
+  Vec4Float,
+} from "../wattle/engine/src/swagl/ProgramInput.js";
 import { AudioManager } from "./AudioManager.js";
 import { hexToBuffer } from "./hex.js";
 import { makeHeroHead } from "./assets.js";
@@ -39,6 +45,13 @@ const MAP_Z_ONTO_Y = new Float32Array([
 ]);
 
 /**
+ * @typedef {Object} CircleBuffer
+ * @property {WebGLBuffer} buffer
+ * @property {number} numPoints
+ */
+let CircleBuffer;
+
+/**
  * @typedef {Object} WhiteboardObject
  * @property {WebGLBuffer} vertexBuffer
  * @property {WebGLBuffer} indexBuffer
@@ -50,7 +63,7 @@ export class Game {
   constructor(args) {
     /** @type {!World} */
     this.world = args.world;
-    /** @type {!Program<{projection:!Mat4fv}>} */
+    /** @type {!Program<{projection:!Mat4fv,color:!Vec4Float}>} */
     this.svgProgram = args.svgProgram;
     /** @type {!Program<{projection:!Mat4fv,texture:!SingleInt}>} */
     this.rasterProgram = args.rasterProgram;
@@ -64,6 +77,8 @@ export class Game {
     this.runningTimerId = 0;
     /** @type {number} the average fps */
     this.fps = 0;
+    /** @type {CircleBuffer} */
+    this.circleShadow = args.circleShadow;
   }
 
   performStep() {
@@ -148,6 +163,9 @@ function renderGame(game) {
 
   const svgProgram = game.svgProgram;
   renderInProgram(svgProgram, (gl) => {
+    const position = svgProgram.attr("a_position");
+    gl.enableVertexAttribArray(position);
+
     useMatrixStack(svgProgram.inputs.projection);
 
     const bg = game.backgroundColor;
@@ -160,22 +178,40 @@ function renderGame(game) {
 
     shiftContent(-camera.x, -camera.y, 0);
 
-    // switch image to the world space
-    scaleAxes(2 / FULL_SPACE_ZOOM, -2 / FULL_SPACE_ZOOM, 1);
+    subrender(() => {
+      svgProgram.inputs.color.set(0.7, 0.7, 0.9, 1);
 
-    // shift the image to the center (in its native resolution)
-    // note that the image is upside-down at this point
-    shiftContent(-(960 / 2), -640 / 2, 0);
+      // switch image to the world space
+      scaleAxes(2 / FULL_SPACE_ZOOM, -2 / FULL_SPACE_ZOOM, 1);
 
-    const position = svgProgram.attr("a_position");
-    gl.enableVertexAttribArray(position);
+      // shift the image to the center (in its native resolution)
+      // note that the image is upside-down at this point
+      shiftContent(-(960 / 2), -640 / 2, 0);
 
-    game.whiteboardObjects.forEach((obj) => {
-      gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexBuffer);
-      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj.indexBuffer);
+      game.whiteboardObjects.forEach((obj) => {
+        gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexBuffer);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj.indexBuffer);
+        gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 0, 0);
+
+        gl.drawElements(gl.TRIANGLES, obj.numPoints, gl.UNSIGNED_SHORT, 0);
+      });
+    });
+
+    // render all the shadows
+    subrender(() => {
+      svgProgram.inputs.color.set(0, 0, 0, 0.1);
+
+      const circleShadow = game.circleShadow;
+      gl.bindBuffer(gl.ARRAY_BUFFER, circleShadow.buffer);
       gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 0, 0);
+      subrenderEach(scene.objects, (object) => {
+        const shadowRadius = object.shadowRadius;
 
-      gl.drawElements(gl.TRIANGLES, obj.numPoints, gl.UNSIGNED_SHORT, 0);
+        shiftContent(object.x, object.y - object.z, 0);
+        scaleAxes(shadowRadius.x, shadowRadius.y, 1);
+
+        gl.drawArrays(gl.TRIANGLE_FAN, 0, circleShadow.numPoints);
+      });
     });
   });
 
@@ -194,7 +230,7 @@ function renderGame(game) {
     scaleAxesToDisplay();
     applyMatrixOperation(MAP_Z_ONTO_Y);
 
-    scene.objects.forEach((object) => {
+    subrenderEach(scene.objects, (object) => {
       shiftContent(object.x, object.y, object.z);
       const sprite = object.sprite;
       sprite.bindSpriteType(position, texturePosition);
@@ -248,17 +284,19 @@ export async function makeGame({ canvas, input }) {
     });
 
     gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
 
     finishLoadingSprites(gl);
 
-    /** @type {!Program<{projection:!Mat4fv}>} */
+    /** @type {!Program<{projection:!Mat4fv,color:!Vec4Float}>} */
     const svgProgram = makeAndLinkProgram({
       name: "svg",
       gl,
       inputs: {
         projection: new Mat4fv("u_projection"),
+        color: new Vec4Float("u_color"),
       },
       shaders: {
         vertex: {
@@ -276,10 +314,12 @@ void main() {
           code: `#version 300 es
 precision highp float;
 
+uniform vec4 u_color;
+
 out vec4 output_color;
 
 void main() {
-  output_color = vec4(0.9f, 0.9f, 0.9f, 1.0f);
+  output_color = u_color;
 }`,
         },
       },
@@ -365,6 +405,9 @@ output_color = color;
 
     const world = initWorld({ input, audio, gameScript });
 
+    const circleShadow = makeCircle(gl);
+    onCleanUp(() => void gl.deleteBuffer(circleShadow.buffer));
+
     return new Game({
       world,
       widthPx,
@@ -373,6 +416,33 @@ output_color = color;
       rasterProgram,
       backgroundColor,
       whiteboardObjects,
+      circleShadow,
     });
   });
+}
+
+/**
+ * Creates a circle in the x-y plain centered on the origin with radius 1
+ * @param {WebGL} gl
+ * @returns {WebGLBuffer}
+ */
+function makeCircle(gl) {
+  const numEdges = 20;
+
+  const wedgeAngle = (2 * Math.PI) / numEdges;
+
+  const points = [0, 0, 0];
+  for (let i = 0; i <= numEdges; i++) {
+    const angle = i * wedgeAngle;
+    points.push(Math.cos(angle), Math.sin(angle), 0);
+  }
+
+  const buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(points), gl.STATIC_DRAW);
+
+  return {
+    buffer,
+    numPoints: points.length / 3,
+  };
 }

@@ -50,6 +50,8 @@ function main() {
           return processSpriteAtlas({
             name: readName(),
             src: readString("src"),
+            originX: hasKey("originX") ? readNum("originX") : undefined,
+            originY: hasKey("originY") ? readNum("originY") : undefined,
             loops: hasKey("loops") ? readBoolean("loops") : true,
           });
         case "static":
