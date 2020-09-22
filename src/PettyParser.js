@@ -233,7 +233,7 @@ export function processObjectArray(key, code) {
     const results = raw.map((val, index) => {
       activeValue = val;
       activePath.push(index);
-      const result = code(val, index);
+      const result = code(index);
       activePath.pop();
       return result;
     });

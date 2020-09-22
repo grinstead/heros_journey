@@ -37,13 +37,6 @@ const MAX_FRAME_TIME = 1 / 10;
  */
 export let WhiteboardObject;
 
-/**
- * @typedef {Object} Camera
- * @property {{x: number, y: number}} focus
- * @property {number} zoom
- */
-export let Camera;
-
 export class Game {
   constructor(args) {
     /** @type {!World} */
@@ -52,8 +45,6 @@ export class Game {
     this.svgProgram = args.svgProgram;
     /** @type {!Program<{projection:!Mat4fv,texture:!SingleInt}>} */
     this.rasterProgram = args.rasterProgram;
-    /** @type {!Camera} */
-    this.camera = { focus: { x: 0, y: 0 }, zoom: 1 };
     /** @type {{w: number, h: number}} */
     this.display = { w: args.widthPx, h: args.heightPx };
     /** @type {!Array<number>} [r, g, b] */
@@ -86,7 +77,7 @@ export class Game {
 
     runSceneScript(scene);
 
-    renderGame(this, scene);
+    renderGame(this);
   }
 
   startRunning() {
@@ -130,10 +121,12 @@ export class Game {
 /**
  *
  * @param {Game} game
- * @param {Scene} scene
  */
-function renderGame(game, scene) {
-  const camera = game.camera;
+function renderGame(game) {
+  const world = game.world;
+  const scene = world.activeScene;
+
+  const camera = world.camera;
   const scaleAxesToDisplay = () => {
     const dims = game.display;
     scaleAxes(1 / dims.w, 1 / dims.h, 1);
@@ -151,7 +144,7 @@ function renderGame(game, scene) {
     // scaleAxes(zoom, zoom, 0);
     scaleAxesToDisplay();
 
-    shiftContent(-camera.focus.x, -camera.focus.y, 0);
+    shiftContent(-camera.x, -camera.y, 0);
 
     // switch image to the world space
     scaleAxes(2 / FULL_SPACE_ZOOM, -2 / FULL_SPACE_ZOOM, 1);
@@ -199,7 +192,7 @@ function renderGame(game, scene) {
  * @param {Object} args
  * @param {!HTMLCanvasElement} args.canvas - The canvas to draw on
  * @param {!InputManager} args.input
- * @returns {!Game}
+ * @returns {!Promise<!Game>}
  */
 export async function makeGame({ canvas, input }) {
   const computedStyle = getComputedStyle(canvas);

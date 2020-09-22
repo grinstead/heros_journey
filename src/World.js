@@ -3,6 +3,14 @@ import { SceneScript, ScriptAction } from "./GameScript.js";
 import { makeSpriteFromName } from "./Sprite.js";
 import { arctan, magnitudeOf } from "./utils.js";
 
+/**
+ * @typedef {Object} Camera
+ * @property {number} x
+ * @property {number} y
+ * @property {number} zoom
+ */
+export let Camera;
+
 export class World {
   constructor(kernel, startScene) {
     /** @private {SceneKernel} */
@@ -11,6 +19,8 @@ export class World {
     this.scenes = new Map([[startScene.sceneName, startScene]]);
     /** @type {Scene} The active scene */
     this.activeScene = startScene;
+    /** @type {Camera} */
+    this.camera = { x: 0, y: 0, zoom: 1 };
   }
 
   /**
