@@ -1,5 +1,6 @@
 const INVALID_CALL = {};
 
+/** @type {!Object} */
 let activeValue = INVALID_CALL;
 let activePath = null;
 
@@ -15,7 +16,11 @@ export function parseRawObject(json, code) {
 
   try {
     try {
-      activeValue = JSON.parse(json);
+      const obj = JSON.parse(json);
+      if (!obj || typeof obj !== "object" || Array.isArray(obj)) {
+        throw "content is not a plain object";
+      }
+      activeValue = obj;
     } catch (error) {
       throw "content is not valid json";
     }
@@ -76,8 +81,8 @@ export function processKey(key, code) {
 /**
  * @template T
  * @param {string} key
+ * @param {function(?):(boolean|string)} validator
  * @param {function():T} code
- * @param {function(?):?string} validator
  * @returns {T}
  */
 function processKeyWithValidator(key, validator, code) {
@@ -105,7 +110,7 @@ function processKeyWithValidator(key, validator, code) {
 /**
  * Validator returns falsy on success, or an error string
  * @param {string} key
- * @param {function(?):?string} validator
+ * @param {function(?):(boolean|string)} validator
  * @returns {?}
  */
 export function validateKey(key, validator) {
@@ -133,11 +138,10 @@ export function validateKey(key, validator) {
  * @returns {boolean}
  */
 export function readBoolean(key) {
-  return validateKey(key, (val) => {
-    if (typeof val !== "boolean") {
-      return "is supposed to be true or false";
-    }
-  });
+  return validateKey(
+    key,
+    (val) => typeof val !== "boolean" && "is supposed to be true or false"
+  );
 }
 
 /**
@@ -145,17 +149,16 @@ export function readBoolean(key) {
  * @returns {string}
  */
 export function readString(key) {
-  return validateKey(key, (val) => {
-    if (typeof val !== "string") {
-      return "is supposed to be text";
-    }
-  });
+  return validateKey(
+    key,
+    (val) => typeof val !== "string" && "is supposed to be text"
+  );
 }
 
 /**
  * Validator returns falsy on success, or an error string
  * @param {string} key
- * @param {function(string):?string} validator
+ * @param {function(string):(boolean|string)} validator
  * @returns {string}
  */
 export function validateString(key, validator) {
@@ -188,6 +191,8 @@ export function readOneOf(key, values) {
         }`;
       }
     }
+
+    return false;
   });
 }
 
@@ -214,16 +219,18 @@ export function readNum(
     } else if (!maxIsInclusive && max === val) {
       return `must be below ${max}`;
     }
+
+    return false;
   });
 }
 
 /**
  * @template T
  * @param {string} key
- * @param {function(?,string):T} code
+ * @param {function(string):T} code
  * @returns {!Map<string, T>}
  */
-export function processMap(key, code) {
+export function processObjectMap(key, code) {
   return processKeyWithValidator(
     key,
     (val) =>
@@ -235,7 +242,7 @@ export function processMap(key, code) {
       Object.keys(activeValue).forEach((innerKey) => {
         map.set(
           innerKey,
-          processKey(innerKey, (val) => code(val, innerKey))
+          processKey(innerKey, () => code(innerKey))
         );
       });
 

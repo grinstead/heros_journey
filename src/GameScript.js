@@ -1,7 +1,7 @@
 import { Box } from "./Scene.js";
 import {
   parseRawObject,
-  processMap,
+  processObjectMap,
   processKey,
   readNum,
   processArray,
@@ -9,7 +9,6 @@ import {
   processObjectArray,
   readString,
   validateString,
-  validateKey,
   hasKey,
   readBoolean,
 } from "./PettyParser.js";
@@ -64,8 +63,8 @@ function parseGameScript(circleRadius) {
     }
   });
 
-  const scenes = processMap("scenes", (scene, name) => {
-    const sceneBox = processKey("location", (pos) => {
+  const scenes = processObjectMap("scenes", (name) => {
+    const sceneBox = processKey("location", () => {
       const clock = readNum("clock position", 0, 12, true);
       const width = readNum("width", 0, Number.POSITIVE_INFINITY, false);
       const height = readNum("height", 0, Number.POSITIVE_INFINITY, false);
@@ -87,8 +86,10 @@ function parseGameScript(circleRadius) {
 
     const knownNames = new Set();
     const readKnownName = () =>
-      validateString("name", (name) =>
-        knownNames.has(name) ? null : "is trying to change an unrecognized name"
+      validateString(
+        "name",
+        (name) =>
+          !knownNames.has(name) && "is trying to modify an unrecognized name"
       );
 
     const actions = processObjectArray("actions", (action) => {
@@ -140,11 +141,10 @@ function parseGameScript(circleRadius) {
     return { sceneBox, actions };
   });
 
-  const openingScene = validateString("opening scene", (val) => {
-    if (!scenes.has(val)) {
-      return "is not one of the given scenes";
-    }
-  });
+  const openingScene = validateString(
+    "opening scene",
+    (val) => !scenes.has(val) && "is not one of the given scenes"
+  );
 
   return { openingScene, scenes };
 }
