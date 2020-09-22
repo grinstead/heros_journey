@@ -1,0 +1,100 @@
+{
+  "opening scene": "example",
+  "scenes": {
+    "example": {
+      "location": {
+        "clock position": 1,
+        "width": 960,
+        "height": 640
+      },
+      "actions": [
+        {
+          "type": "add",
+          "name": "villain",
+          "sprite": "MonsterTruck",
+          "x": 0,
+          "y": 0,
+          "z": 1000
+        },
+        {
+          "type": "move",
+          "name": "villain",
+          "seconds": 0.5,
+          "z": -1000,
+          "ease in": true
+        },
+        { "type": "wait", "seconds": 0.5 },
+        {
+          "type": "move",
+          "name": "villain",
+          "seconds": 1,
+          "x": 200
+        },
+        {
+          "type": "wait",
+          "seconds": 3
+        },
+        {
+          "type": "change sprite",
+          "name": "villain",
+          "sprite": "BigBadGuyLanding"
+        },
+        {
+          "type": "play sound",
+          "sound": "GunShot"
+        }
+      ]
+    }
+  },
+  "assets": [
+    {
+      "type": "animated",
+      "name": "MonsterTruck",
+      "src": "Monster Truck Bad Guy"
+    },
+    {
+      "type": "animated",
+      "name": "HeroRunningBackwards",
+      "src": "Hero Running Backwards"
+    },
+    {
+      "type": "animated",
+      "name": "HeroJump",
+      "src": "Bullet Dodge",
+      "originX": 100,
+      "originY": 200
+    },
+    {
+      "type": "animated",
+      "name": "BigBadGuyLanding",
+      "src": "Big Bad Guy Landing",
+      "loops": false
+    },
+    { "type": "animated", "name": "BigBadGuy", "src": "Big Bad Guy Marching" },
+    {
+      "type": "static",
+      "name": "PistolArm",
+      "src": "Pistol Arm.png",
+      "originX": 60,
+      "originY": 112
+    },
+    { "type": "static", "name": "HeroHead", "src": "Hero-Head.png" },
+    {
+      "type": "static",
+      "name": "HeroBodyStatic",
+      "src": "Hero-Body-Static.png"
+    },
+    {
+      "type": "static",
+      "name": "Bullet",
+      "src": "Bullet.png",
+      "originX": 32,
+      "originY": 11.5
+    },
+    {
+      "type": "audio",
+      "name": "GunShot",
+      "src": "Gun Shot.mp3"
+    }
+  ]
+}
