@@ -24,7 +24,7 @@
         },
         {
           "type": "wait",
-          "seconds": 2
+          "seconds": 3
         },
         {
           "type": "change sprite",

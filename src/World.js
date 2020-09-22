@@ -3,6 +3,10 @@ import { SceneScript, ScriptAction } from "./GameScript.js";
 import { makeSpriteFromName } from "./Sprite.js";
 import { arctan, magnitudeOf } from "./utils.js";
 
+function CONTINUE() {
+  return true;
+}
+
 /**
  * @typedef {Object} Camera
  * @property {number} x
@@ -102,39 +106,45 @@ export function updateSceneTime(scene, time, maxStepSize) {
  * @param {Scene} scene
  */
 export function runSceneScript(scene) {
-  let { scriptPosition } = scene;
-  if (!scriptPosition) return;
+  // run all the active actions
+  const activeActions = scene.activeActions;
+  if (activeActions) {
+    const length = activeActions.length;
+    let removedSome = false;
+    for (let i = 0; i < length; ++i) {
+      const update = activeActions[i]();
+      activeActions[i] = update;
+      if (update == null) removedSome = true;
+    }
 
-  let nextStep = scriptPosition.run(scene);
-  if (nextStep) {
-    scriptPosition.run = nextStep;
-  } else {
-    let ranStep = false;
-    let index = scriptPosition.index;
-    while (!ranStep) {
-      index++;
-      const actions = scene.sceneScript.actions;
-      if (index < actions.length) {
-        nextStep = runAction(scene, actions[index]);
-        if (nextStep) {
-          ranStep = true;
-          scene.scriptPosition = { index, run: nextStep };
-        }
-      } else {
-        ranStep = true;
-        scene.scriptPosition = null;
-      }
+    if (removedSome) {
+      const remaining = activeActions.filter(Boolean);
+      scene.activeActions = remaining.length ? remaining : null;
     }
   }
+
+  let { scriptPosition } = scene;
+  if (!scriptPosition || !scriptPosition.waitUntil()) return;
+
+  const actions = scene.sceneScript.actions;
+  let index = scriptPosition.index;
+  let waitUntil = null;
+
+  while (!(waitUntil && !waitUntil()) && ++index < actions.length) {
+    waitUntil = runAction(scene, actions[index]);
+  }
+  scene.scriptPosition = index < actions.length ? { index, waitUntil } : null;
 }
 
 /**
  * Runs the action and returns the step
  * @param {Scene} scene
  * @param {ScriptAction} action
- * @returns {?SceneStep}
+ * @returns {function():boolean}
  */
 function runAction(scene, action) {
+  console.log(`running ${action.type} action`);
+
   switch (action.type) {
     case "add": {
       const { objects } = scene;
@@ -147,19 +157,15 @@ function runAction(scene, action) {
         sprite: makeSpriteFromName(action.sprite, scene.sceneTime),
       });
 
-      return null;
+      return CONTINUE;
     }
     case "play sound": {
       scene.audio.playNamedSound({}, action.sound);
-      return null;
+      return CONTINUE;
     }
     case "wait": {
       const endTime = scene.sceneTime + action.seconds;
-
-      const waitForIt = (scene) =>
-        scene.sceneTime < endTime ? waitForIt : null;
-
-      return waitForIt;
+      return () => scene.sceneTime >= endTime;
     }
     case "change sprite": {
       const name = action.name;
@@ -168,7 +174,7 @@ function runAction(scene, action) {
         throw new Error(`No object with name ${name}`);
       }
       obj.sprite = makeSpriteFromName(action.sprite, scene.sceneTime);
-      return null;
+      return CONTINUE;
     }
     case "move": {
       const name = action.name;
@@ -177,28 +183,42 @@ function runAction(scene, action) {
         throw new Error(`No object with name ${name}`);
       }
 
+      const seconds = action.seconds;
       const dx = action.x - obj.x;
       const dy = action.y - obj.y;
-      if (dx === 0 && dy === 0) return null;
-
-      const seconds = action.seconds;
-      obj.direction = arctan(dy, dx);
+      if (dx !== 0 || dy !== 0) obj.direction = arctan(dy, dx);
       obj.speed = magnitudeOf(dx, dy, 0) / seconds;
 
       const endTime = scene.sceneTime + seconds;
 
-      const waitForIt = (scene) => {
-        if (scene.sceneTime < endTime) return waitForIt;
+      addBasicPendingAction(scene, () => {
+        if (scene.sceneTime < endTime) return false;
 
         obj.x = action.x;
         obj.y = action.y;
         obj.speed = 0;
-        return null;
-      };
+        return true;
+      });
 
-      return waitForIt;
+      return CONTINUE;
     }
     default:
       throw new Error(`Unrecognized action type ${action.type}`);
+  }
+}
+
+/**
+ * Keeps calling code until it returns true
+ * @param {Scene} scene
+ * @param {function():boolean} code
+ */
+function addBasicPendingAction(scene, code) {
+  const wrapper = () => (code() ? null : wrapper);
+
+  const activeActions = scene.activeActions;
+  if (activeActions) {
+    activeActions.push(wrapper);
+  } else {
+    scene.activeActions = [wrapper];
   }
 }

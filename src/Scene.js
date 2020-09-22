@@ -33,7 +33,7 @@ export let Transition;
 export let Box;
 
 /**
- * @typedef {function(Scene):?SceneStep} SceneStep
+ * @typedef {function():?SceneStep} SceneStep
  */
 export let SceneStep;
 
@@ -49,7 +49,8 @@ export let SceneStep;
  * @property {number} stepSize - The time (in seconds, accurate to ms) since the last render
  * @property {Box} sceneBox
  * @property {!Array<GameObject>} objects
- * @property {?{index: number, run: SceneStep}} scriptPosition
+ * @property {?{index: number, waitUntil: function():boolean}} scriptPosition
+ * @property {?Array<SceneStep>} activeActions
  * @property {?Transition} entering - The transition that brought us here
  * @property {?Transition} exiting - The transition that is taking us away from here
  */
@@ -90,7 +91,8 @@ export function makeScene(options) {
     stepSize: 0,
     sceneBox: options.sceneBox,
     objects: [],
-    scriptPosition: { index: -1, run: () => null },
+    scriptPosition: { index: -1, waitUntil: () => true },
+    activeActions: null,
     entering: null,
     exiting: null,
   };
