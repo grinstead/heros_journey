@@ -1,4 +1,4 @@
-import { SceneKernel, Scene } from "./Scene.js";
+import { SceneKernel, Scene, ShadowRadius } from "./Scene.js";
 import {
   buildCleanable,
   onCleanUp,
@@ -38,11 +38,13 @@ import { hexToBuffer } from "./hex.js";
 import { loadUpGameScript } from "./GameScript.js";
 import { renderHero, processHero } from "./Hero.js";
 import { makeBulletBall } from "./assets.js";
+import { magnitudeOf } from "./utils.js";
 
 const FPS_SMOOTHING = 0.9;
 const FULL_SPACE_ZOOM = 1 / 6;
 const MAX_FRAME_TIME = 1 / 10;
 const PIXELS_PER_UNIT = 0.5;
+const BULLET_R = 10;
 
 /** @typedef {{x:number, y:number}} MousePosition */
 export let MousePosition;
@@ -110,8 +112,9 @@ export class Game {
     };
 
     let numDeadBullets = 0;
-    scene.bullets.forEach((bullet) => {
-      if (bullet.dead) {
+    let bullets = scene.bullets;
+    bullets.forEach((bullet) => {
+      if (bullet.isDead) {
         numDeadBullets++;
         return;
       }
@@ -121,6 +124,14 @@ export class Game {
 
       // TODO: kill off bullets
     });
+
+    if (numDeadBullets > 100) {
+      bullets = bullets.filter((b) => !b.isDead);
+      scene.bullets = bullets;
+    }
+
+    // sort so that they can be used for collisions
+    bullets.sort(compareBulletsByX);
 
     processHero(scene, mousePosition);
 
@@ -137,6 +148,27 @@ export class Game {
       const zSpeed = object.zSpeed;
       if (zSpeed) {
         object.z += zSpeed * stepSize;
+      }
+
+      const { x, y, shadowRadius } = object;
+      const minTestX = x - shadowRadius.x - BULLET_R;
+      const maxTestX = x + shadowRadius.x + BULLET_R;
+
+      let i = 0;
+      const numBullets = bullets.length;
+      while (i < numBullets && bullets[i].x < minTestX) {
+        i++;
+      }
+
+      while (i < numBullets && bullets[i].x < maxTestX) {
+        const bullet = bullets[i++];
+        if (
+          !bullet.isDead &&
+          distanceFromEllipseSortOf(x, y, shadowRadius, bullet) < BULLET_R
+        ) {
+          bullet.isDead = true;
+          // TODO: register hit
+        }
       }
     });
 
@@ -257,7 +289,9 @@ function renderGame(game) {
       subrenderWithArg(renderShadow, world.hero);
       subrenderEach(scene.objects, renderShadow);
 
-      subrenderEach(scene.bullets, ({ x, y, shadowRadius }) => {
+      subrenderEach(scene.bullets, ({ x, y, shadowRadius, isDead }) => {
+        if (isDead) return;
+
         shiftContent(x, y, 0);
         scaleAxes(shadowRadius.x, shadowRadius.y, 1);
         gl.drawArrays(gl.TRIANGLE_FAN, 0, circleShadow.numPoints);
@@ -291,6 +325,7 @@ function renderGame(game) {
     const bulletSprite = game.bulletSprite;
     bulletSprite.prepareSpriteType();
     subrenderEach(scene.bullets, (bullet) => {
+      if (bullet.isDead) return;
       shiftContent(bullet.x, bullet.y, bullet.z);
       subrenderSprite(bulletSprite);
     });
@@ -507,4 +542,40 @@ function makeCircle(gl) {
     buffer,
     numPoints: points.length / 3,
   };
+}
+
+/**
+ * Comparator
+ * @param {Bullet} a
+ * @param {Bullet} b
+ */
+function compareBulletsByX(a, b) {
+  return a.x - b.x;
+}
+
+/**
+ * @param {number} x
+ * @param {number} y
+ * @param {ShadowRadius} shadowRadius
+ * @param {Bullet} bullet
+ */
+function distanceFromEllipseSortOf(x, y, shadowRadius, bullet) {
+  const { x: rx, y: ry } = shadowRadius;
+
+  // the distance of the foci from the center
+  const f = Math.sqrt(Math.abs(rx * rx - ry * ry));
+
+  if (rx >= ry) {
+    return (
+      magnitudeOf(bullet.x - (x - f), bullet.y - y, 0) +
+      magnitudeOf(bullet.x - (x + f), bullet.y - y, 0) -
+      2 * rx
+    );
+  } else {
+    return (
+      magnitudeOf(bullet.x - x, bullet.y - (y - f), 0) +
+      magnitudeOf(bullet.x - x, bullet.y - (y + f), 0) -
+      2 * ry
+    );
+  }
 }
