@@ -3,6 +3,8 @@ import { SceneScript, ScriptAction } from "./GameScript.js";
 import { makeSpriteFromName } from "./Sprite.js";
 import { arctan, magnitudeOf } from "./utils.js";
 
+const HALF_PI = Math.PI / 2;
+
 function CONTINUE() {
   return true;
 }
@@ -178,37 +180,45 @@ function runAction(scene, action) {
       return CONTINUE;
     }
     case "move": {
-      const name = action.name;
+      const { name, seconds, easeIn, easeOut } = action;
       const obj = scene.objects.find((obj) => obj.name === name);
       if (!obj) {
         throw new Error(`No object with name ${name}`);
       }
 
-      const seconds = action.seconds;
       const dx = action.x;
       const dy = action.y;
       const dz = action.z;
-      const targetX = obj.x + dx;
-      const targetY = obj.y + dy;
-      const targetZ = obj.z + dz;
+      const startX = obj.x;
+      const startY = obj.y;
+      const startZ = obj.z;
+      const targetX = startX + dx;
+      const targetY = startY + dy;
+      const targetZ = startZ + dz;
 
       if (dx !== 0 || dy !== 0) {
         obj.direction = arctan(dy, dx);
       }
-      obj.speed = magnitudeOf(dx, dy, 0) / seconds;
-      obj.zSpeed = dz / seconds;
 
-      const endTime = scene.sceneTime + seconds;
+      const targetSpeed = magnitudeOf(dx, dy, 0) / seconds;
+      const targetZSpeed = dz / seconds;
 
-      addBasicPendingAction(scene, () => {
-        if (scene.sceneTime < endTime) return false;
+      const startTime = scene.sceneTime;
 
-        obj.x = targetX;
-        obj.y = targetY;
-        obj.z = targetZ;
-        obj.speed = 0;
-        obj.zSpeed = 0;
-        return true;
+      addBasicPendingAction(scene, true, () => {
+        const p = (scene.sceneTime - startTime) / seconds;
+        if (p < 1) {
+          obj.speed = calcSpeedEasing(targetSpeed, p, easeIn, easeOut);
+          obj.zSpeed = calcSpeedEasing(targetZSpeed, p, easeIn, easeOut);
+          return false;
+        } else {
+          obj.x = targetX;
+          obj.y = targetY;
+          obj.z = targetZ;
+          obj.speed = 0;
+          obj.zSpeed = 0;
+          return true;
+        }
       });
 
       return CONTINUE;
@@ -221,9 +231,12 @@ function runAction(scene, action) {
 /**
  * Keeps calling code until it returns true
  * @param {Scene} scene
+ * @param {boolean} runImmediately
  * @param {function():boolean} code
  */
-function addBasicPendingAction(scene, code) {
+function addBasicPendingAction(scene, runImmediately, code) {
+  if (runImmediately && code()) return;
+
   const wrapper = () => (code() ? null : wrapper);
 
   const activeActions = scene.activeActions;
@@ -231,5 +244,19 @@ function addBasicPendingAction(scene, code) {
     activeActions.push(wrapper);
   } else {
     scene.activeActions = [wrapper];
+  }
+}
+
+function calcSpeedEasing(speed, percentage, easeIn, easeOut) {
+  const p = Math.min(percentage, 1);
+
+  if (easeIn && easeOut) {
+    return speed * Math.sin(p * Math.PI) * HALF_PI;
+  } else if (easeIn) {
+    return speed * Math.sin(p * HALF_PI) * HALF_PI;
+  } else if (easeOut) {
+    return speed * Math.cos(p * HALF_PI) * HALF_PI;
+  } else {
+    return speed;
   }
 }

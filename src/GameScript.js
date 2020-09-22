@@ -11,6 +11,7 @@ import {
   validateString,
   validateKey,
   hasKey,
+  readBoolean,
 } from "./PettyParser.js";
 
 /**
@@ -130,6 +131,8 @@ function parseGameScript(circleRadius) {
             x: hasKey("x") ? readNum("x") : 0,
             y: hasKey("y") ? readNum("y") : 0,
             z: hasKey("z") ? readNum("z") : 0,
+            easeIn: hasKey("ease in") && readBoolean("ease in"),
+            easeOut: hasKey("ease out") && readBoolean("ease out"),
           };
       }
     });

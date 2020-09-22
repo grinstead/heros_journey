@@ -14,10 +14,16 @@
           "sprite": "MonsterTruck",
           "x": 0,
           "y": 0,
-          "z": 400
+          "z": 1000
         },
-        { "type": "move", "name": "villain", "seconds": 1.5, "z": -400 },
-        { "type": "wait", "seconds": 1.5 },
+        {
+          "type": "move",
+          "name": "villain",
+          "seconds": 0.5,
+          "z": -1000,
+          "ease in": true
+        },
+        { "type": "wait", "seconds": 0.5 },
         {
           "type": "move",
           "name": "villain",
