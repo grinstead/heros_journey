@@ -34,13 +34,16 @@ import {
 } from "../wattle/engine/src/swagl/ProgramInput.js";
 import { AudioManager } from "./AudioManager.js";
 import { hexToBuffer } from "./hex.js";
-import { makeHeroHead } from "./assets.js";
 import { loadUpGameScript } from "./GameScript.js";
 import { renderHero, processHero } from "./Hero.js";
 
 const FPS_SMOOTHING = 0.9;
 const FULL_SPACE_ZOOM = 1 / 6;
 const MAX_FRAME_TIME = 1 / 10;
+const PIXELS_PER_UNIT = 0.5;
+
+/** @typedef {{x:number, y:number}} MousePosition */
+export let MousePosition;
 
 // prettier-ignore
 const MAP_Z_ONTO_Y = new Float32Array([
@@ -85,6 +88,8 @@ export class Game {
     this.fps = 0;
     /** @type {CircleBuffer} */
     this.circleShadow = args.circleShadow;
+    /** @type {MousePosition} */
+    this.onScreenMousePosition = args.mousePosition;
   }
 
   performStep() {
@@ -94,7 +99,13 @@ export class Game {
     let sceneTime = updateSceneTime(scene, realTime, MAX_FRAME_TIME);
     let stepSize = scene.stepSize;
 
-    processHero(scene);
+    const { onScreenMousePosition, display } = this;
+    const mousePosition = {
+      x: (onScreenMousePosition.x - display.w / 2) / PIXELS_PER_UNIT,
+      y: -(onScreenMousePosition.y - display.h / 2) / PIXELS_PER_UNIT,
+    };
+
+    processHero(scene, mousePosition);
 
     scene.objects.forEach((object) => {
       object.sprite.updateTime(sceneTime);
@@ -262,9 +273,10 @@ function renderGame(game) {
  * @param {Object} args
  * @param {!HTMLCanvasElement} args.canvas - The canvas to draw on
  * @param {!InputManager} args.input
+ * @param {MousePosition} args.mousePosition
  * @returns {!Promise<!Game>}
  */
-export async function makeGame({ canvas, input }) {
+export async function makeGame({ canvas, input, mousePosition }) {
   const computedStyle = getComputedStyle(canvas);
   const widthPx = parseInt(computedStyle.getPropertyValue("width"), 10);
   const heightPx = parseInt(computedStyle.getPropertyValue("height"), 10);
@@ -436,6 +448,7 @@ output_color = color;
       backgroundColor,
       whiteboardObjects,
       circleShadow,
+      mousePosition,
     });
   });
 }

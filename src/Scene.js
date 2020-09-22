@@ -5,6 +5,11 @@ import { SceneScript, GameScript } from "./GameScript.js";
 import { Hero } from "./Hero.js";
 
 /**
+ * @typedef {{x: number, y: number}} ShadowRadius
+ */
+export let ShadowRadius;
+
+/**
  * @typedef {Object} GameObject
  * @property {string} name
  * @property {number} x
@@ -14,7 +19,7 @@ import { Hero } from "./Hero.js";
  * @property {number} speed
  * @property {number} zSpeed
  * @property {Sprite} sprite
- * @property {{x: number, y: number}} shadowRadius
+ * @property {ShadowRadius} shadowRadius
  */
 export let GameObject;
 

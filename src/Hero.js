@@ -4,10 +4,11 @@ import {
   scaleAxes,
   shiftContent,
   subrender,
-  rotateAboutZ,
   rotateAboutY,
 } from "../wattle/engine/src/swagl/MatrixStack.js";
-import { Scene } from "./Scene.js";
+import { Scene, ShadowRadius } from "./Scene.js";
+import { MousePosition } from "./Game.js";
+import { arctan } from "./utils.js";
 
 const SQRT2_INV = 0.7071;
 const HERO_SPEED = 640;
@@ -39,7 +40,7 @@ export class Hero {
     this.body = makeHeroBodyStatic(time);
     /** @type {boolean} */
     this.mirrorX = false;
-    /** @type {{x:number,y:number}} */
+    /** @type {ShadowRadius} */
     this.shadowRadius = { x: 30, y: 15 };
   }
 }
@@ -47,8 +48,9 @@ export class Hero {
 /**
  *
  * @param {Scene} scene
+ * @param {MousePosition} mousePosition
  */
-export function processHero(scene) {
+export function processHero(scene, mousePosition) {
   const { input, hero, stepSize } = scene;
 
   let dx = HERO_SPEED * input.getSignOfAction("left", "right");
@@ -62,6 +64,11 @@ export function processHero(scene) {
   hero.dy = dy;
   hero.x += dx * stepSize;
   hero.y += dy * stepSize;
+
+  const xAimDiff = mousePosition.x - (hero.x + ARM_POS.x);
+  hero.armDirection = arctan(mousePosition.y - (hero.y + ARM_POS.y), xAimDiff);
+
+  if (xAimDiff !== 0) hero.mirrorX = xAimDiff < 0;
 }
 
 /**
@@ -71,13 +78,19 @@ export function processHero(scene) {
 export function renderHero(hero) {
   shiftContent(hero.x, hero.y, 0);
 
-  if (hero.mirrorX) scaleAxes(-1, 1, 1);
+  const mirrorX = hero.mirrorX;
+  if (mirrorX) scaleAxes(-1, 1, 1);
 
   const { head, arm, body } = hero;
 
   subrender(() => {
     shiftContent(ARM_POS.x, 0, ARM_POS.y);
-    rotateAboutY(hero.armDirection - 0.3);
+
+    let angle = hero.armDirection;
+    if (mirrorX) angle = Math.PI - angle;
+
+    rotateAboutY(angle - 0.3);
+
     arm.prepareSpriteType();
     subrenderSprite(arm);
   });

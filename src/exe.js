@@ -13,9 +13,16 @@ async function onLoad() {
 
   if (!canvas) throw new Error("Bad Canvas");
 
+  const mousePosition = { x: 0, y: 0 };
+  canvas.onmousemove = (event) => {
+    mousePosition.x = event.offsetX;
+    mousePosition.y = event.offsetY;
+  };
+
   game = await makeGame({
     canvas,
     input: new InputManager(document.body),
+    mousePosition,
   });
 
   game.startRunning();
