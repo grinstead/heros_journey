@@ -6,7 +6,11 @@ import {
 } from "../wattle/engine/src/utils/raii.js";
 import { TEST_DATA } from "./data.js";
 import { WebGL } from "../wattle/engine/src/swagl/types.js";
-import { loadAllSpriteTextures, subrenderSprite } from "./Sprite.js";
+import {
+  loadAllSpriteTextures,
+  subrenderSprite,
+  setSpriteProgramAttrs,
+} from "./Sprite.js";
 import { InputManager } from "../wattle/engine/src/InputManager.js";
 import { World, initWorld, updateSceneTime, runSceneScript } from "./World.js";
 import {
@@ -21,6 +25,7 @@ import {
   applyMatrixOperation,
   subrenderEach,
   subrender,
+  subrenderWithArg,
 } from "../wattle/engine/src/swagl/MatrixStack.js";
 import {
   Mat4fv,
@@ -31,6 +36,7 @@ import { AudioManager } from "./AudioManager.js";
 import { hexToBuffer } from "./hex.js";
 import { makeHeroHead } from "./assets.js";
 import { loadUpGameScript } from "./GameScript.js";
+import { renderHero, processHero } from "./Hero.js";
 
 const FPS_SMOOTHING = 0.9;
 const FULL_SPACE_ZOOM = 1 / 6;
@@ -87,6 +93,8 @@ export class Game {
 
     let sceneTime = updateSceneTime(scene, realTime, MAX_FRAME_TIME);
     let stepSize = scene.stepSize;
+
+    processHero(scene);
 
     scene.objects.forEach((object) => {
       object.sprite.updateTime(sceneTime);
@@ -173,7 +181,7 @@ function renderGame(game) {
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     // const zoom = camera.zoom / FULL_SPACE_ZOOM;
-    // scaleAxes(zoom, zoom, 0);
+    shiftContent(0, 0, 1);
     scaleAxesToDisplay();
 
     shiftContent(-camera.x, -camera.y, 0);
@@ -204,14 +212,22 @@ function renderGame(game) {
       const circleShadow = game.circleShadow;
       gl.bindBuffer(gl.ARRAY_BUFFER, circleShadow.buffer);
       gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 0, 0);
-      subrenderEach(scene.objects, (object) => {
-        const shadowRadius = object.shadowRadius;
 
-        shiftContent(object.x, object.y - object.z, 0);
+      /**
+       * @param {Object} data
+       * @param {number} data.x
+       * @param {number} data.y
+       * @param {number} data.z
+       * @param {{x:number,y:number}} data.shadowRadius
+       */
+      const renderShadow = ({ x, y, z, shadowRadius }) => {
+        shiftContent(x, y - z, 0);
         scaleAxes(shadowRadius.x, shadowRadius.y, 1);
-
         gl.drawArrays(gl.TRIANGLE_FAN, 0, circleShadow.numPoints);
-      });
+      };
+
+      subrenderWithArg(renderShadow, world.hero);
+      subrenderEach(scene.objects, renderShadow);
     });
   });
 
@@ -224,6 +240,7 @@ function renderGame(game) {
     gl.enableVertexAttribArray(position);
     const texturePosition = rasterProgram.attr("a_texturePosition");
     gl.enableVertexAttribArray(texturePosition);
+    setSpriteProgramAttrs(position, texturePosition);
 
     useMatrixStack(rasterProgram.inputs.projection);
 
@@ -233,9 +250,11 @@ function renderGame(game) {
     subrenderEach(scene.objects, (object) => {
       shiftContent(object.x, object.y, object.z);
       const sprite = object.sprite;
-      sprite.bindSpriteType(position, texturePosition);
+      sprite.prepareSpriteType();
       subrenderSprite(sprite);
     });
+
+    subrenderWithArg(renderHero, world.hero);
   });
 }
 
@@ -424,7 +443,7 @@ output_color = color;
 /**
  * Creates a circle in the x-y plain centered on the origin with radius 1
  * @param {WebGL} gl
- * @returns {WebGLBuffer}
+ * @returns {CircleBuffer}
  */
 function makeCircle(gl) {
   const numEdges = 20;

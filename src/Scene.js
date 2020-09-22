@@ -2,6 +2,7 @@ import { InputManager } from "../wattle/engine/src/InputManager.js";
 import { AudioManager } from "./AudioManager.js";
 import { Sprite } from "./Sprite.js";
 import { SceneScript, GameScript } from "./GameScript.js";
+import { Hero } from "./Hero.js";
 
 /**
  * @typedef {Object} GameObject
@@ -51,6 +52,7 @@ export let SceneStep;
  * @property {number} sceneTimeOffset - The time to subtract from Date.now() to get sceneTime
  * @property {number} stepSize - The time (in seconds, accurate to ms) since the last render
  * @property {Box} sceneBox
+ * @property {!Hero} hero
  * @property {!Array<GameObject>} objects
  * @property {?{index: number, waitUntil: function():boolean}} scriptPosition
  * @property {?Array<SceneStep>} activeActions
@@ -74,6 +76,7 @@ export let SceneKernel;
  * @param {SceneKernel} options.kernel
  * @param {string} options.sceneName - The name of the scene
  * @param {Box} options.sceneBox - The bounding box of the scene
+ * @param {!Hero} options.hero
  * @returns {Scene}
  */
 export function makeScene(options) {
@@ -93,6 +96,7 @@ export function makeScene(options) {
     sceneTimeOffset: offsetAFrameFrom(0),
     stepSize: 0,
     sceneBox: options.sceneBox,
+    hero: options.hero,
     objects: [],
     scriptPosition: { index: -1, waitUntil: () => true },
     activeActions: null,

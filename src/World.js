@@ -2,6 +2,7 @@ import { SceneKernel, Scene, makeScene, SceneStep } from "./Scene.js";
 import { SceneScript, ScriptAction } from "./GameScript.js";
 import { makeSpriteFromName } from "./Sprite.js";
 import { arctan, magnitudeOf } from "./utils.js";
+import { Hero } from "./Hero.js";
 
 const HALF_PI = Math.PI / 2;
 
@@ -18,7 +19,7 @@ function CONTINUE() {
 export let Camera;
 
 export class World {
-  constructor(kernel, startScene) {
+  constructor(kernel, hero, startScene) {
     /** @private {SceneKernel} */
     this.kernel = kernel;
     /** @private {Map<string, Scene>} Maps the initialized scenes' names to their data */
@@ -27,6 +28,8 @@ export class World {
     this.activeScene = startScene;
     /** @type {Camera} */
     this.camera = { x: 0, y: 0, zoom: 1 };
+    /** @type {!Hero} */
+    this.hero = hero;
   }
 
   /**
@@ -46,7 +49,7 @@ export class World {
     const scenes = this.scenes;
     let scene = scenes.get(sceneName);
     if (!scene) {
-      scene = initScene(this.kernel, sceneName);
+      scene = initScene(this.kernel, this.hero, sceneName);
       scenes.set(sceneName, scene);
     }
     return scene;
@@ -58,21 +61,28 @@ export class World {
  * @param {SceneKernel} kernel
  */
 export function initWorld(kernel) {
-  return new World(kernel, initScene(kernel, kernel.gameScript.openingScene));
+  const hero = new Hero(0);
+  return new World(
+    kernel,
+    hero,
+    initScene(kernel, hero, kernel.gameScript.openingScene)
+  );
 }
 
 /**
  * @param {SceneKernel} kernel
+ * @param {Hero} hero
  * @param {string} sceneName
  * @returns {Scene}
  */
-function initScene(kernel, sceneName) {
+function initScene(kernel, hero, sceneName) {
   switch (sceneName) {
     default: {
       const scene = makeScene({
         kernel,
         sceneName,
         sceneBox: { left: 0, right: 960, top: 0, bottom: 640 },
+        hero,
       });
 
       return scene;

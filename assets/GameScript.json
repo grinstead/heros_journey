@@ -98,14 +98,16 @@
     {
       "type": "animated",
       "name": "HeroRunningBackwards",
-      "src": "Hero Running Backwards"
+      "src": "Hero Running Backwards",
+      "originX": 101,
+      "originY": 187
     },
     {
       "type": "animated",
       "name": "HeroJump",
       "src": "Bullet Dodge",
-      "originX": 100,
-      "originY": 200
+      "originX": 101,
+      "originY": 187
     },
     {
       "type": "animated",
@@ -129,11 +131,19 @@
       "originX": 60,
       "originY": 112
     },
-    { "type": "static", "name": "HeroHead", "src": "Hero-Head.png" },
+    {
+      "type": "static",
+      "name": "HeroHead",
+      "src": "Hero-Head.png",
+      "originX": 101,
+      "originY": 187
+    },
     {
       "type": "static",
       "name": "HeroBodyStatic",
-      "src": "Hero-Body-Static.png"
+      "src": "Hero-Body-Static.png",
+      "originX": 101,
+      "originY": 187
     },
     {
       "type": "static",

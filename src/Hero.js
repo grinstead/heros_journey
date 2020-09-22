@@ -1,23 +1,90 @@
-import { makeHeroHead, makePistolArm, makeHeroBodyStatic } from "./assets";
-import { Sprite } from "./Sprite";
+import { makeHeroHead, makePistolArm, makeHeroBodyStatic } from "./assets.js";
+import { Sprite, subrenderSprite } from "./Sprite.js";
+import {
+  scaleAxes,
+  shiftContent,
+  subrender,
+  rotateAboutZ,
+  rotateAboutY,
+} from "../wattle/engine/src/swagl/MatrixStack.js";
+import { Scene } from "./Scene.js";
+
+const SQRT2_INV = 0.7071;
+const HERO_SPEED = 640;
+
+const ARM_POS = {
+  x: 0,
+  y: 70,
+};
 
 export class Hero {
-  constructor(x, y, dx, dy, time) {
+  constructor(time) {
     /** @type {number} */
-    this.x = x;
+    this.x = 0;
     /** @type {number} */
-    this.y = y;
+    this.y = 0;
     /** @type {number} */
-    this.dx = dx;
+    this.z = 0;
     /** @type {number} */
-    this.dy = dy;
+    this.dx = 0;
+    /** @type {number} */
+    this.dy = 0;
     /** @type {number} */
     this.armDirection = 0;
-    /** @private {Sprite} */
-    this._head = makeHeroHead(time);
-    /** @private {Sprite} */
-    this._arm = makePistolArm(time);
-    /** @private {Sprite} */
-    this._body = makeHeroBodyStatic(time);
+    /** @type {Sprite} */
+    this.head = makeHeroHead(time);
+    /** @type {Sprite} */
+    this.arm = makePistolArm(time);
+    /** @type {Sprite} */
+    this.body = makeHeroBodyStatic(time);
+    /** @type {boolean} */
+    this.mirrorX = false;
+    /** @type {{x:number,y:number}} */
+    this.shadowRadius = { x: 30, y: 15 };
   }
+}
+
+/**
+ *
+ * @param {Scene} scene
+ */
+export function processHero(scene) {
+  const { input, hero, stepSize } = scene;
+
+  let dx = HERO_SPEED * input.getSignOfAction("left", "right");
+  let dy = HERO_SPEED * input.getSignOfAction("down", "up");
+  if (dy && dx) {
+    dx *= SQRT2_INV;
+    dy *= SQRT2_INV;
+  }
+
+  hero.dx = dx;
+  hero.dy = dy;
+  hero.x += dx * stepSize;
+  hero.y += dy * stepSize;
+}
+
+/**
+ *
+ * @param {Hero} hero
+ */
+export function renderHero(hero) {
+  shiftContent(hero.x, hero.y, 0);
+
+  if (hero.mirrorX) scaleAxes(-1, 1, 1);
+
+  const { head, arm, body } = hero;
+
+  subrender(() => {
+    shiftContent(ARM_POS.x, 0, ARM_POS.y);
+    rotateAboutY(hero.armDirection - 0.3);
+    arm.prepareSpriteType();
+    subrenderSprite(arm);
+  });
+
+  head.prepareSpriteType();
+  subrenderSprite(head);
+
+  body.prepareSpriteType();
+  subrenderSprite(body);
 }

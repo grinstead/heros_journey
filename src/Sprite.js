@@ -8,6 +8,12 @@ import {
   applyMatrixOperation,
   subrenderWithArg,
 } from "../wattle/engine/src/swagl/MatrixStack.js";
+import { onRenderComplete } from "../wattle/engine/src/swagl/Program.js";
+
+/**
+ * @type {?{vertexBufferPos:number,textureBufferPos:number}}
+ */
+let commonProgramAttrs = null;
 
 /**
  * The options you can pass to a Sprite object on creation
@@ -156,6 +162,17 @@ export class Sprite {
     gl.vertexAttribPointer(textureBufferPos, 2, gl.FLOAT, false, 20, 12);
   }
 
+  prepareSpriteType() {
+    if (commonProgramAttrs == null) {
+      throw new Error("prepareSpriteType called without setSpriteProgramAttrs");
+    }
+
+    this.bindSpriteType(
+      commonProgramAttrs.vertexBufferPos,
+      commonProgramAttrs.textureBufferPos
+    );
+  }
+
   /**
    * Returns the name, primarily for debugging
    * @returns {string} The name (given in the options earlier)
@@ -283,4 +300,16 @@ function renderSprite(sprite) {
     if (m) applyMatrixOperation(m);
     gl.drawArrays(gl.TRIANGLE_STRIP, i, 4);
   });
+}
+
+/**
+ *
+ * @param {number} vertexBufferPos
+ * @param {number} textureBufferPos
+ */
+export function setSpriteProgramAttrs(vertexBufferPos, textureBufferPos) {
+  onRenderComplete(() => {
+    commonProgramAttrs = null;
+  });
+  commonProgramAttrs = { vertexBufferPos, textureBufferPos };
 }

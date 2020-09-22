@@ -14,7 +14,7 @@ import {
 
 const capCamel = /^[A-Z][a-zA-Z]+$/;
 
-// flip y
+// flip y, turn it into the z coordinate
 // prettier-ignore
 const BASE_TRANSFORM = [
   1, 0, 0, 0,
