@@ -9,6 +9,7 @@ import {
   processObjectArray,
   readString,
   validateString,
+  validateKey,
 } from "./PettyParser.js";
 
 /**
@@ -133,16 +134,10 @@ function parseGameScript(circleRadius) {
     return { sceneBox, actions };
   });
 
-  const openingScene = processKey("opening scene", (val) => {
-    if (typeof val !== "string") {
-      throw "is supposed to be text";
-    }
-
+  const openingScene = validateString("opening scene", (val) => {
     if (!scenes.has(val)) {
-      throw "is not one of the given scenes";
+      return "is not one of the given scenes";
     }
-
-    return val;
   });
 
   return { openingScene, scenes };

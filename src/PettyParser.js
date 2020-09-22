@@ -1,4 +1,6 @@
-let activeValue = undefined;
+const INVALID_CALL = {};
+
+let activeValue = INVALID_CALL;
 let activePath = null;
 
 /**
@@ -58,10 +60,27 @@ export function hasKey(key) {
 /**
  * @template T
  * @param {string} key
- * @param {function(?):T} code
+ * @param {function():T} code
  * @returns {T}
  */
 export function processKey(key, code) {
+  return processKeyWithValidator(
+    key,
+    (val) =>
+      (!val || typeof val !== "object" || Array.isArray(val)) &&
+      "is supposed to be an object",
+    code
+  );
+}
+
+/**
+ * @template T
+ * @param {string} key
+ * @param {function():T} code
+ * @param {function(?):?string} validator
+ * @returns {T}
+ */
+function processKeyWithValidator(key, validator, code) {
   if (!hasKey(key)) {
     throw `is missing "${key}"`;
   }
@@ -69,9 +88,13 @@ export function processKey(key, code) {
   const prev = activeValue;
 
   activePath.push(key);
-  activeValue = activeValue[key];
+  const next = activeValue[key];
+  const error = validator(next);
+  if (error) throw error;
 
-  const result = code(activeValue);
+  activeValue = next;
+
+  const result = code();
 
   activePath.pop();
   activeValue = prev;
@@ -79,13 +102,41 @@ export function processKey(key, code) {
   return result;
 }
 
-export function readBoolean(key) {
-  return processKey(key, (val) => {
-    if (typeof val !== "boolean") {
-      throw "is supposed to be true or false";
-    }
+/**
+ * Validator returns falsy on success, or an error string
+ * @param {string} key
+ * @param {function(?):?string} validator
+ * @returns {?}
+ */
+export function validateKey(key, validator) {
+  if (!hasKey(key)) {
+    throw `is missing "${key}"`;
+  }
 
-    return val;
+  const prev = activeValue;
+  const value = prev[key];
+
+  activePath.push(key);
+  activeValue = INVALID_CALL;
+
+  const error = validator(value);
+  if (error) throw error;
+
+  activePath.pop();
+  activeValue = prev;
+
+  return value;
+}
+
+/**
+ * @param {string} key
+ * @returns {boolean}
+ */
+export function readBoolean(key) {
+  return validateKey(key, (val) => {
+    if (typeof val !== "boolean") {
+      return "is supposed to be true or false";
+    }
   });
 }
 
@@ -94,12 +145,10 @@ export function readBoolean(key) {
  * @returns {string}
  */
 export function readString(key) {
-  return processKey(key, (val) => {
+  return validateKey(key, (val) => {
     if (typeof val !== "string") {
-      throw "is supposed to be text";
+      return "is supposed to be text";
     }
-
-    return val;
   });
 }
 
@@ -107,17 +156,14 @@ export function readString(key) {
  * Validator returns falsy on success, or an error string
  * @param {string} key
  * @param {function(string):?string} validator
+ * @returns {string}
  */
 export function validateString(key, validator) {
-  return processKey(key, (val) => {
+  return validateKey(key, (val) => {
     if (typeof val !== "string") {
-      throw "is supposed to be text";
+      return "is supposed to be text";
     }
-
-    const error = validator(val);
-    if (error) throw error;
-
-    return val;
+    return validator(val);
   });
 }
 
@@ -128,22 +174,20 @@ export function validateString(key, validator) {
  * @returns {T}
  */
 export function readOneOf(key, values) {
-  return processKey(key, (val) => {
+  return validateKey(key, (val) => {
     if (!values.includes(val)) {
       const serial = values.map((v) => JSON.stringify(v));
 
       if (serial.length === 1) {
-        throw `must be ${serial[0]}`;
+        return `must be ${serial[0]}`;
       } else if (serial.length === 2) {
-        throw `must be either ${serial[0]} or ${serial[1]}`;
+        return `must be either ${serial[0]} or ${serial[1]}`;
       } else {
-        throw `must be one of ${serial.slice(0, -1).join(", ")}, or ${
+        return `must be one of ${serial.slice(0, -1).join(", ")}, or ${
           serial[serial.length - 1]
         }`;
       }
     }
-
-    return val;
   });
 }
 
@@ -160,18 +204,16 @@ export function readNum(
   max = Number.POSITIVE_INFINITY,
   maxIsInclusive = false
 ) {
-  return processKey(key, (val) => {
+  return validateKey(key, (val) => {
     if (typeof val !== "number") {
-      throw "is supposed to be a number";
+      return "is supposed to be a number";
     }
 
     if (val < min || max < val) {
-      throw `must be between ${min} and ${max}`;
+      return `must be between ${min} and ${max}`;
     } else if (!maxIsInclusive && max === val) {
-      throw `must be below ${max}`;
+      return `must be below ${max}`;
     }
-
-    return val;
   });
 }
 
@@ -182,23 +224,24 @@ export function readNum(
  * @returns {!Map<string, T>}
  */
 export function processMap(key, code) {
-  return processKey(key, (raw) => {
-    if (raw == null || typeof raw !== "object") {
-      throw `is supposed to be a mapping`;
-    }
+  return processKeyWithValidator(
+    key,
+    (val) =>
+      (!val || typeof val !== "object" || Array.isArray(val)) &&
+      "is supposed to be a mapping",
+    () => {
+      const map = new Map();
 
-    const map = new Map();
-    // this raw check is for closure, but its checked above as well
-    raw &&
-      Object.keys(raw).forEach((innerKey) => {
+      Object.keys(activeValue).forEach((innerKey) => {
         map.set(
           innerKey,
           processKey(innerKey, (val) => code(val, innerKey))
         );
       });
 
-    return map;
-  });
+      return map;
+    }
+  );
 }
 
 /**
@@ -208,13 +251,22 @@ export function processMap(key, code) {
  * @returns {!Array<T>}
  */
 export function processArray(key, code) {
-  return processKey(key, (raw) => {
-    if (!raw || typeof raw !== "object" || !Array.isArray(raw)) {
-      throw `is supposed to be a list`;
-    }
+  return processKeyWithValidator(
+    key,
+    (val) => !Array.isArray(val) && "is supposed to be a list",
+    () => {
+      const pathIndex = activePath.length;
+      activePath.push(0);
 
-    return raw.map((val, index) => code(val, index));
-  });
+      const results = activeValue.map((val, index) => {
+        activePath[pathIndex] = index;
+        return code(val, index);
+      });
+
+      activePath.pop();
+      return results;
+    }
+  );
 }
 
 /**
@@ -224,27 +276,25 @@ export function processArray(key, code) {
  * @returns {!Array<T>}
  */
 export function processObjectArray(key, code) {
-  return processKey(key, (raw) => {
-    if (!raw || typeof raw !== "object" || !Array.isArray(raw)) {
-      throw `is supposed to be a list`;
+  return processArray(key, (val, index) => {
+    if (!val || typeof val !== "object" || Array.isArray(val)) {
+      throw "is supposed to be an object";
     }
 
     const prev = activeValue;
-    const results = raw.map((val, index) => {
-      activeValue = val;
-      activePath.push(index);
-      const result = code(index);
-      activePath.pop();
-      return result;
-    });
+    activeValue = val;
+    const result = code(index);
     activeValue = prev;
-
-    return results;
+    return result;
   });
 }
 
 function assertIsParsing() {
   if (activePath == null) {
     throw new Error("PettyParser code called outside of parseRawObject");
+  }
+
+  if (activeValue === INVALID_CALL) {
+    throw new Error("PettyParser code called inside a validator");
   }
 }
