@@ -18,8 +18,8 @@ const capCamel = /^[A-Z][a-zA-Z]+$/;
 // prettier-ignore
 const BASE_TRANSFORM = [
   1, 0, 0, 0,
-  0, -1, 0, 0,
-  0, 0, 1, 0,
+  0, 0, -1, 0,
+  0, 1, 0, 0,
   0, 0, 0, 1,
 ];
 
