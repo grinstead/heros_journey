@@ -18,6 +18,7 @@ import {
   useMatrixStack,
   shiftContent,
   scaleAxes,
+  applyMatrixOperation,
 } from "../wattle/engine/src/swagl/MatrixStack.js";
 import { Mat4fv, SingleInt } from "../wattle/engine/src/swagl/ProgramInput.js";
 import { AudioManager } from "./AudioManager.js";
@@ -28,6 +29,14 @@ import { loadUpGameScript } from "./GameScript.js";
 const FPS_SMOOTHING = 0.9;
 const FULL_SPACE_ZOOM = 1 / 6;
 const MAX_FRAME_TIME = 1 / 10;
+
+// prettier-ignore
+const MAP_Z_ONTO_Y = new Float32Array([
+  1, 0, 0, 0,
+  0, 1, 1, 0,
+  0, 1, 0, 0,
+  0, 0, 0, 1,
+]);
 
 /**
  * @typedef {Object} WhiteboardObject
@@ -129,7 +138,7 @@ function renderGame(game) {
   const camera = world.camera;
   const scaleAxesToDisplay = () => {
     const dims = game.display;
-    scaleAxes(1 / dims.w, 1 / dims.h, 1);
+    scaleAxes(1 / dims.w, 1 / dims.h, FULL_SPACE_ZOOM / dims.h);
   };
 
   const svgProgram = game.svgProgram;
@@ -178,6 +187,7 @@ function renderGame(game) {
     useMatrixStack(rasterProgram.inputs.projection);
 
     scaleAxesToDisplay();
+    applyMatrixOperation(MAP_Z_ONTO_Y);
 
     scene.objects.forEach((object) => {
       shiftContent(object.x, object.y, 0);
