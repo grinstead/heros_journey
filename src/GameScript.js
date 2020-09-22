@@ -10,6 +10,7 @@ import {
   readString,
   validateString,
   validateKey,
+  hasKey,
 } from "./PettyParser.js";
 
 /**
@@ -102,6 +103,7 @@ function parseGameScript(circleRadius) {
             sprite: readOneOf("sprite", spriteNames),
             x: readNum("x"),
             y: readNum("y"),
+            z: hasKey("z") ? readNum("z") : 0,
           };
         }
         case "play sound":
@@ -125,8 +127,9 @@ function parseGameScript(circleRadius) {
             type,
             name: readKnownName(),
             seconds: readNum("seconds", 0),
-            x: readNum("x"),
-            y: readNum("y"),
+            x: hasKey("x") ? readNum("x") : 0,
+            y: hasKey("y") ? readNum("y") : 0,
+            z: hasKey("z") ? readNum("z") : 0,
           };
       }
     });

@@ -152,6 +152,7 @@ function runAction(scene, action) {
         name: action.name,
         x: action.x,
         y: action.y,
+        z: action.z,
         direction: 0,
         speed: 0,
         sprite: makeSpriteFromName(action.sprite, scene.sceneTime),
@@ -184,19 +185,29 @@ function runAction(scene, action) {
       }
 
       const seconds = action.seconds;
-      const dx = action.x - obj.x;
-      const dy = action.y - obj.y;
-      if (dx !== 0 || dy !== 0) obj.direction = arctan(dy, dx);
+      const dx = action.x;
+      const dy = action.y;
+      const dz = action.z;
+      const targetX = obj.x + dx;
+      const targetY = obj.y + dy;
+      const targetZ = obj.z + dz;
+
+      if (dx !== 0 || dy !== 0) {
+        obj.direction = arctan(dy, dx);
+      }
       obj.speed = magnitudeOf(dx, dy, 0) / seconds;
+      obj.zSpeed = dz / seconds;
 
       const endTime = scene.sceneTime + seconds;
 
       addBasicPendingAction(scene, () => {
         if (scene.sceneTime < endTime) return false;
 
-        obj.x = action.x;
-        obj.y = action.y;
+        obj.x = targetX;
+        obj.y = targetY;
+        obj.z = targetZ;
         obj.speed = 0;
+        obj.zSpeed = 0;
         return true;
       });
 

@@ -8,8 +8,10 @@ import { SceneScript, GameScript } from "./GameScript.js";
  * @property {string} name
  * @property {number} x
  * @property {number} y
+ * @property {number} z
  * @property {number} direction
  * @property {number} speed
+ * @property {number} zSpeed
  * @property {Sprite} sprite
  */
 export let GameObject;

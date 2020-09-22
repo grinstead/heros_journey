@@ -82,6 +82,11 @@ export class Game {
         object.x += speed * Math.cos(direction) * stepSize;
         object.y += speed * Math.sin(direction) * stepSize;
       }
+
+      const zSpeed = object.zSpeed;
+      if (zSpeed) {
+        object.z += zSpeed * stepSize;
+      }
     });
 
     runSceneScript(scene);
@@ -190,7 +195,7 @@ function renderGame(game) {
     applyMatrixOperation(MAP_Z_ONTO_Y);
 
     scene.objects.forEach((object) => {
-      shiftContent(object.x, object.y, 0);
+      shiftContent(object.x, object.y, object.z);
       const sprite = object.sprite;
       sprite.bindSpriteType(position, texturePosition);
       subrenderSprite(sprite);
