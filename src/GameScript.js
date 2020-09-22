@@ -80,8 +80,13 @@ function parseGameScript(circleRadius) {
       };
     });
 
-    const actionTypes = ["add", "play sound", "wait", "change sprite"];
+    const actionTypes = ["add", "play sound", "wait", "change sprite", "move"];
+
     const knownNames = new Set();
+    const readKnownName = () =>
+      validateString("name", (name) =>
+        knownNames.has(name) ? null : "is trying to change an unrecognized name"
+      );
 
     const actions = processObjectArray("actions", (action) => {
       const type = readOneOf("type", actionTypes);
@@ -111,12 +116,16 @@ function parseGameScript(circleRadius) {
         case "change sprite":
           return {
             type,
-            name: validateString("name", (name) =>
-              knownNames.has(name)
-                ? null
-                : "is trying to change an unrecognized name"
-            ),
+            name: readKnownName(),
             sprite: readOneOf("sprite", spriteNames),
+          };
+        case "move":
+          return {
+            type,
+            name: readKnownName(),
+            seconds: readNum("seconds", 0),
+            x: readNum("x"),
+            y: readNum("y"),
           };
       }
     });

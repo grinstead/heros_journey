@@ -16,6 +16,13 @@
           "y": 0
         },
         {
+          "type": "move",
+          "name": "villain",
+          "seconds": 1,
+          "x": 200,
+          "y": 0
+        },
+        {
           "type": "wait",
           "seconds": 2
         },

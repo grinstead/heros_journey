@@ -1,6 +1,7 @@
 import { SceneKernel, Scene, makeScene, SceneStep } from "./Scene.js";
 import { SceneScript, ScriptAction } from "./GameScript.js";
 import { makeSpriteFromName } from "./Sprite.js";
+import { arctan, magnitudeOf } from "./utils.js";
 
 export class World {
   constructor(kernel, startScene) {
@@ -67,13 +68,24 @@ function initScene(kernel, sceneName) {
  * Updates the room's time and step size
  * @param {Scene} scene
  * @param {number} time
+ * @param {number} maxStepSize
  * @returns {number}
  */
-export function updateSceneTime(scene, time) {
+export function updateSceneTime(scene, time, maxStepSize) {
   const newTime = time - scene.sceneTimeOffset;
-  scene.stepSize = newTime - scene.sceneTime;
-  scene.sceneTime = newTime;
-  return newTime;
+  const stepSize = newTime - scene.sceneTime;
+
+  if (stepSize <= maxStepSize) {
+    scene.stepSize = newTime - scene.sceneTime;
+    scene.sceneTime = newTime;
+    return newTime;
+  } else {
+    const cappedTime = scene.sceneTime + maxStepSize;
+    scene.stepSize = maxStepSize;
+    scene.sceneTime = cappedTime;
+    scene.sceneTimeOffset = time - cappedTime;
+    return cappedTime;
+  }
 }
 
 /**
@@ -147,6 +159,34 @@ function runAction(scene, action) {
       }
       obj.sprite = makeSpriteFromName(action.sprite, scene.sceneTime);
       return null;
+    }
+    case "move": {
+      const name = action.name;
+      const obj = scene.objects.find((obj) => obj.name === name);
+      if (!obj) {
+        throw new Error(`No object with name ${name}`);
+      }
+
+      const dx = action.x - obj.x;
+      const dy = action.y - obj.y;
+      if (dx === 0 && dy === 0) return null;
+
+      const seconds = action.seconds;
+      obj.direction = arctan(dy, dx);
+      obj.speed = magnitudeOf(dx, dy, 0) / seconds;
+
+      const endTime = scene.sceneTime + seconds;
+
+      const waitForIt = (scene) => {
+        if (scene.sceneTime < endTime) return waitForIt;
+
+        obj.x = action.x;
+        obj.y = action.y;
+        obj.speed = 0;
+        return null;
+      };
+
+      return waitForIt;
     }
     default:
       throw new Error(`Unrecognized action type ${action.type}`);

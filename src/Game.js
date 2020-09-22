@@ -27,6 +27,7 @@ import { loadUpGameScript } from "./GameScript.js";
 
 const FPS_SMOOTHING = 0.9;
 const FULL_SPACE_ZOOM = 1 / 6;
+const MAX_FRAME_TIME = 1 / 10;
 
 /**
  * @typedef {Object} WhiteboardObject
@@ -68,10 +69,19 @@ export class Game {
   performStep() {
     const realTime = Date.now() / 1000;
     const scene = this.world.activeScene;
-    const sceneTime = updateSceneTime(scene, realTime);
+
+    let sceneTime = updateSceneTime(scene, realTime, MAX_FRAME_TIME);
+    let stepSize = scene.stepSize;
 
     scene.objects.forEach((object) => {
       object.sprite.updateTime(sceneTime);
+
+      const speed = object.speed;
+      if (speed) {
+        const direction = object.direction;
+        object.x += speed * Math.cos(direction) * stepSize;
+        object.y += speed * Math.sin(direction) * stepSize;
+      }
     });
 
     runSceneScript(scene);

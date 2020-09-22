@@ -132,12 +132,12 @@ export function readOneOf(key, values) {
     if (!values.includes(val)) {
       const serial = values.map((v) => JSON.stringify(v));
 
-      if (values.length === 1) {
+      if (serial.length === 1) {
         throw `must be ${serial[0]}`;
-      } else if (values.length === 2) {
+      } else if (serial.length === 2) {
         throw `must be either ${serial[0]} or ${serial[1]}`;
       } else {
-        throw `must be one of ${serial.slice(-1).join(", ")}, or ${
+        throw `must be one of ${serial.slice(0, -1).join(", ")}, or ${
           serial[serial.length - 1]
         }`;
       }
