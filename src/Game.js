@@ -10,6 +10,7 @@ import {
   loadAllSpriteTextures,
   subrenderSprite,
   setSpriteProgramAttrs,
+  Sprite,
 } from "./Sprite.js";
 import { InputManager } from "../wattle/engine/src/InputManager.js";
 import { World, initWorld, updateSceneTime, runSceneScript } from "./World.js";
@@ -36,6 +37,7 @@ import { AudioManager } from "./AudioManager.js";
 import { hexToBuffer } from "./hex.js";
 import { loadUpGameScript } from "./GameScript.js";
 import { renderHero, processHero } from "./Hero.js";
+import { makeBulletBall } from "./assets.js";
 
 const FPS_SMOOTHING = 0.9;
 const FULL_SPACE_ZOOM = 1 / 6;
@@ -90,6 +92,8 @@ export class Game {
     this.circleShadow = args.circleShadow;
     /** @type {MousePosition} */
     this.onScreenMousePosition = args.mousePosition;
+    /** @type {Sprite} */
+    this.bulletSprite = makeBulletBall(0);
   }
 
   performStep() {
@@ -104,6 +108,19 @@ export class Game {
       x: (onScreenMousePosition.x - display.w / 2) / PIXELS_PER_UNIT,
       y: -(onScreenMousePosition.y - display.h / 2) / PIXELS_PER_UNIT,
     };
+
+    let numDeadBullets = 0;
+    scene.bullets.forEach((bullet) => {
+      if (bullet.dead) {
+        numDeadBullets++;
+        return;
+      }
+
+      bullet.x += stepSize * bullet.dx;
+      bullet.y += stepSize * bullet.dy;
+
+      // TODO: kill off bullets
+    });
 
     processHero(scene, mousePosition);
 
@@ -239,6 +256,12 @@ function renderGame(game) {
 
       subrenderWithArg(renderShadow, world.hero);
       subrenderEach(scene.objects, renderShadow);
+
+      subrenderEach(scene.bullets, ({ x, y, shadowRadius }) => {
+        shiftContent(x, y, 0);
+        scaleAxes(shadowRadius.x, shadowRadius.y, 1);
+        gl.drawArrays(gl.TRIANGLE_FAN, 0, circleShadow.numPoints);
+      });
     });
   });
 
@@ -263,6 +286,13 @@ function renderGame(game) {
       const sprite = object.sprite;
       sprite.prepareSpriteType();
       subrenderSprite(sprite);
+    });
+
+    const bulletSprite = game.bulletSprite;
+    bulletSprite.prepareSpriteType();
+    subrenderEach(scene.bullets, (bullet) => {
+      shiftContent(bullet.x, bullet.y, bullet.z);
+      subrenderSprite(bulletSprite);
     });
 
     subrenderWithArg(renderHero, world.hero);

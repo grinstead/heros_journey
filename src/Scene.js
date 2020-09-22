@@ -47,6 +47,20 @@ export let Box;
 export let SceneStep;
 
 /**
+ * @typedef {Object}
+ * @property {number} x
+ * @property {number} y
+ * @property {number} z
+ * @property {number} dx
+ * @property {number} dy
+ * @property {boolean} isFriendly
+ * @property {number} startTime
+ * @property {boolean} isDead
+ * @property {ShadowRadius} shadowRadius
+ */
+export let Bullet;
+
+/**
  * A data structure containing almost everything relevant for the game
  * @typedef {Object} Scene
  * @property {string} sceneName - The name of the scene
@@ -59,6 +73,7 @@ export let SceneStep;
  * @property {Box} sceneBox
  * @property {!Hero} hero
  * @property {!Array<GameObject>} objects
+ * @property {!Array<Bullet>} bullets - Sorted by x
  * @property {?{index: number, waitUntil: function():boolean}} scriptPosition
  * @property {?Array<SceneStep>} activeActions
  * @property {?Transition} entering - The transition that brought us here
@@ -103,6 +118,7 @@ export function makeScene(options) {
     sceneBox: options.sceneBox,
     hero: options.hero,
     objects: [],
+    bullets: [],
     scriptPosition: { index: -1, waitUntil: () => true },
     activeActions: null,
     entering: null,

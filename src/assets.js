@@ -27,8 +27,11 @@ export const makeHeroHead = defineSprite({name:"HeroHead",src:"./assets/Hero-Hea
 export const makeHeroBodyStatic = defineSprite({name:"HeroBodyStatic",src:"./assets/Hero-Body-Static.png",bufferData:new Float32Array([0,0,0,0,0,0,200,0,0,1,200,0,0,1,0,200,200,0,1,1]),loops:false,frameTime:1,perFrameData:null,frameElements:[[{i:0,m:null}]],transform:[1,0,0,0,0,0,-1,0,0,1,0,0,-101,0,187,1]});
 
 /** @type {SpriteBuilder} */
-export const makeBullet = defineSprite({name:"Bullet",src:"./assets/Bullet.png",bufferData:new Float32Array([0,0,0,0,0,0,23,0,0,1,32,0,0,1,0,32,23,0,1,1]),loops:false,frameTime:1,perFrameData:null,frameElements:[[{i:0,m:null}]],transform:[1,0,0,0,0,0,-1,0,0,1,0,0,-32,0,11.5,1]});
+export const makeBulletCone = defineSprite({name:"BulletCone",src:"./assets/Bullet.png",bufferData:new Float32Array([0,0,0,0,0,0,23,0,0,1,32,0,0,1,0,32,23,0,1,1]),loops:false,frameTime:1,perFrameData:null,frameElements:[[{i:0,m:null}]],transform:[1,0,0,0,0,0,-1,0,0,1,0,0,-32,0,11.5,1]});
 
 registerSound({name:"GunShot",src:"./assets/Gun Shot.mp3"})
+
+/** @type {SpriteBuilder} */
+export const makeBulletBall = defineSprite({name:"BulletBall",src:"./assets/Shot-Gun-Ball.png",bufferData:new Float32Array([0,0,0,0,0,0,50,0,0,1,50,0,0,1,0,50,50,0,1,1]),loops:false,frameTime:1,perFrameData:null,frameElements:[[{i:0,m:null}]],transform:[1,0,0,0,0,0,-1,0,0,1,0,0,-25,0,25,1]});
 
 registerSound({name:"BigBadGuyLandingSound",src:"./assets/Big Bad Guy Landing.mp3"})

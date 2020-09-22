@@ -12,6 +12,12 @@ import { arctan } from "./utils.js";
 
 const SQRT2_INV = 0.7071;
 const HERO_SPEED = 640;
+const BULLET_SPEED = 400;
+const BULLET_SHADOW = { x: 10, y: 5 };
+
+const NOZZLE_X = 96;
+const NOZZLE_Y = 50;
+const ARM_LENGTH = Math.sqrt(NOZZLE_X * NOZZLE_X + NOZZLE_Y * NOZZLE_Y);
 
 const ARM_POS = {
   x: 0,
@@ -62,13 +68,31 @@ export function processHero(scene, mousePosition) {
 
   hero.dx = dx;
   hero.dy = dy;
-  hero.x += dx * stepSize;
-  hero.y += dy * stepSize;
+  const x = (hero.x += dx * stepSize);
+  const y = (hero.y += dy * stepSize);
 
-  const xAimDiff = mousePosition.x - (hero.x + ARM_POS.x);
-  hero.armDirection = arctan(mousePosition.y - (hero.y + ARM_POS.y), xAimDiff);
+  const xAimDiff = mousePosition.x - (x + ARM_POS.x);
+  const direction = arctan(mousePosition.y - (y + ARM_POS.y), xAimDiff);
+  hero.armDirection = direction;
 
   if (xAimDiff !== 0) hero.mirrorX = xAimDiff < 0;
+
+  if (input.numPresses("shoot")) {
+    const cos = Math.cos(direction);
+    const sin = Math.sin(direction);
+
+    scene.bullets.push({
+      x: x + ARM_LENGTH * cos,
+      y: y + ARM_LENGTH * sin,
+      z: ARM_POS.y,
+      dx: BULLET_SPEED * cos,
+      dy: BULLET_SPEED * sin,
+      shadowRadius: BULLET_SHADOW,
+      isFriendly: true,
+      startTime: 0,
+      isDead: false,
+    });
+  }
 }
 
 /**
