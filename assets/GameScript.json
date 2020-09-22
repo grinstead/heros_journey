@@ -1,6 +1,47 @@
 {
-  "opening scene": "example",
+  "opening scene": "big bad",
   "scenes": {
+    "big bad": {
+      "location": {
+        "clock position": 1,
+        "width": 960,
+        "height": 640
+      },
+      "actions": [
+        {
+          "type": "add",
+          "name": "villain",
+          "sprite": "BigBadGuyLanding",
+          "x": 0,
+          "y": 0,
+          "z": 1000
+        },
+        {
+          "type": "play sound",
+          "sound": "BigBadGuyLandingSound"
+        },
+        {
+          "type": "wait",
+          "seconds": 1.78
+        },
+        {
+          "type": "change sprite",
+          "name": "villain",
+          "sprite": "BigBadGuyLanding"
+        },
+        {
+          "type": "wait",
+          "seconds": 0.8
+        },
+        {
+          "type": "move",
+          "name": "villain",
+          "seconds": 0.325,
+          "z": -1000,
+          "ease in": true
+        }
+      ]
+    },
     "example": {
       "location": {
         "clock position": 1,
@@ -95,6 +136,11 @@
       "type": "audio",
       "name": "GunShot",
       "src": "Gun Shot.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "BigBadGuyLandingSound",
+      "src": "Big Bad Guy Landing.mp3"
     }
   ]
 }

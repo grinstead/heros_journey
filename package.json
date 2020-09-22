@@ -6,7 +6,8 @@
     "build": "mkdir -p bin && yarn copy_other_into bin && yarn build_base --compilation_level=SIMPLE  --js_output_file=bin/full.js",
     "release": "yarn copy_other_into packaged && yarn build_base --compilation_level=ADVANCED --js_output_file=packaged/full.js",
     "assets": "node scripts/makeAssets.js",
-    "copy_other_into": "cp -r index.html styles.css assets"
+    "copy_other_into": "cp -r index.html styles.css assets",
+    "start_scripting": "chokidar index.html styles.css assets/GameScript.json -c \"yarn copy_other_into bin\""
   },
   "devDependencies": {
     "chokidar-cli": "^2.1.0",
