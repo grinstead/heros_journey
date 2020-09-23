@@ -20,6 +20,7 @@ export let ShadowRadius;
  * @property {number} zSpeed
  * @property {Sprite} sprite
  * @property {ShadowRadius} shadowRadius
+ * @property {number} showDamageUntil
  */
 export let GameObject;
 

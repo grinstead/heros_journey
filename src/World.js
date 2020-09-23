@@ -181,6 +181,7 @@ function runAction(scene, action) {
         speed: 0,
         sprite: makeSpriteFromName(action.sprite, scene.sceneTime),
         shadowRadius: action.shadowRadius,
+        showDamageUntil: 0,
       });
 
       return CONTINUE;

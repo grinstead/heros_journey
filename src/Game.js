@@ -27,6 +27,7 @@ import {
   subrenderEach,
   subrender,
   subrenderWithArg,
+  afterSubrender,
 } from "../wattle/engine/src/swagl/MatrixStack.js";
 import {
   Mat4fv,
@@ -45,6 +46,7 @@ const FULL_SPACE_ZOOM = 1 / 6;
 const MAX_FRAME_TIME = 1 / 10;
 const PIXELS_PER_UNIT = 0.5;
 const BULLET_R = 10;
+const DMG_COLOR = 0.4;
 
 /** @typedef {{x:number, y:number}} MousePosition */
 export let MousePosition;
@@ -78,7 +80,7 @@ export class Game {
     this.world = args.world;
     /** @type {!Program<{projection:!Mat4fv,color:!Vec4Float}>} */
     this.svgProgram = args.svgProgram;
-    /** @type {!Program<{projection:!Mat4fv,texture:!SingleInt}>} */
+    /** @type {!Program<{projection:!Mat4fv,texture:!SingleInt,minColor:!Vec4Float}>} */
     this.rasterProgram = args.rasterProgram;
     /** @type {{w: number, h: number}} */
     this.display = { w: args.widthPx, h: args.heightPx };
@@ -201,6 +203,7 @@ export class Game {
           distanceFromEllipseSortOf(x, y, shadowRadius, bullet) < BULLET_R
         ) {
           bullet.isDead = true;
+          object.showDamageUntil = sceneTime + 0.125;
           // TODO: register hit
         }
       }
@@ -354,13 +357,19 @@ function renderGame(game) {
 
     useMatrixStack(rasterProgram.inputs.projection);
 
+    rasterProgram.inputs.minColor.set(0, 0, 0, 0);
+
     scaleAxes(zoom, zoom, 1);
     scaleAxesToDisplay();
     applyMatrixOperation(MAP_Z_ONTO_Y);
 
     shiftContent(-camera.x, -camera.y, 0);
 
+    const sceneTime = scene.sceneTime;
     subrenderEach(scene.objects, (object) => {
+      if (sceneTime < object.showDamageUntil) {
+        showDamage(rasterProgram);
+      }
       shiftContent(object.x, object.y, object.z);
       const sprite = object.sprite;
       sprite.prepareSpriteType();
@@ -431,7 +440,6 @@ export async function makeGame({ canvas, input, mousePosition }) {
 
     finishLoadingSprites(gl);
 
-    /** @type {!Program<{projection:!Mat4fv,color:!Vec4Float}>} */
     const svgProgram = makeAndLinkProgram({
       name: "svg",
       gl,
@@ -467,13 +475,13 @@ void main() {
     });
     onCleanUp(() => void cleanUpObject(svgProgram));
 
-    /** @type {!Program<{projection:!Mat4fv,texture:!SingleInt}>} */
     const rasterProgram = makeAndLinkProgram({
       name: "raster",
       gl,
       inputs: {
         projection: new Mat4fv("u_projection"),
         texture: new SingleInt("u_texture"),
+        minColor: new Vec4Float("u_min_color"),
       },
       shaders: {
         vertex: {
@@ -498,6 +506,7 @@ v_texturePosition = a_texturePosition;
 precision highp float;
 
 uniform sampler2D u_texture;
+uniform vec4 u_min_color;
 
 in vec2 v_texturePosition;
 out vec4 output_color;
@@ -508,7 +517,7 @@ if (color.a == 0.0) {
     discard;
 }
 
-output_color = color;
+output_color = max(color, u_min_color);
 }`,
         },
       },
@@ -628,4 +637,13 @@ function distanceFromEllipseSortOf(x, y, shadowRadius, bullet) {
 
 function cameraZoomToActualZoom(zoom) {
   return FULL_SPACE_ZOOM * (1 - zoom) + zoom;
+}
+
+function showDamage(rasterProgram) {
+  const minColor = rasterProgram.inputs.minColor;
+
+  minColor.set(DMG_COLOR, DMG_COLOR, DMG_COLOR, 0);
+  afterSubrender(() => {
+    minColor.set(0, 0, 0, 0);
+  });
 }
