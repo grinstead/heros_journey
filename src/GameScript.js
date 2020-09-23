@@ -75,10 +75,10 @@ function parseGameScript(circleRadius) {
       const originY = Math.round(circleRadius * Math.sin(angle));
 
       return {
-        left: originX - width / 2,
-        right: originX + width / 2,
-        top: originY + height / 2,
-        bottom: originY - height / 2,
+        left: -width / 2,
+        right: width / 2,
+        top: height / 2,
+        bottom: -height / 2,
         originX,
         originY,
       };

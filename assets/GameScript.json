@@ -4,19 +4,10 @@
     "big bad": {
       "location": {
         "clock position": 1,
-        "width": 960,
-        "height": 640
+        "width": 2000,
+        "height": 2000
       },
       "actions": [
-        {
-          "type": "add",
-          "name": "villain",
-          "sprite": "BigBadGuyLanding",
-          "x": 0,
-          "y": 0,
-          "z": 1200,
-          "shadow radius": { "x": 40, "y": 20 }
-        },
         {
           "type": "play sound",
           "sound": "BigBadGuyLandingSound"
@@ -26,9 +17,13 @@
           "seconds": 1.78
         },
         {
-          "type": "change sprite",
+          "type": "add",
           "name": "villain",
-          "sprite": "BigBadGuyLanding"
+          "sprite": "BigBadGuyLanding",
+          "x": 0,
+          "y": 0,
+          "z": 1200,
+          "shadow radius": { "x": 40, "y": 20 }
         },
         {
           "type": "wait",

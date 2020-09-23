@@ -217,7 +217,7 @@ function heroStateJump(hero, /** @type {Scene} */ scene) {
  * @param {MousePosition} mousePosition
  */
 export function processHero(scene, mousePosition) {
-  const { hero, sceneTime, stepSize } = scene;
+  const { hero, sceneTime, stepSize, sceneBox } = scene;
 
   hero.head.updateTime(sceneTime);
   hero.bodyStatic.updateTime(sceneTime);
@@ -232,8 +232,20 @@ export function processHero(scene, mousePosition) {
   hero.state.processStep(scene);
 
   const { speed, direction } = hero;
-  hero.x += stepSize * speed * Math.cos(direction);
-  hero.y += stepSize * speed * Math.sin(direction);
+  let x = (hero.x += stepSize * speed * Math.cos(direction));
+  let y = (hero.y += stepSize * speed * Math.sin(direction));
+
+  if (x < sceneBox.left) {
+    hero.x = sceneBox.left;
+  } else if (x > sceneBox.right) {
+    hero.x = sceneBox.right;
+  }
+
+  if (y < sceneBox.bottom) {
+    hero.y = sceneBox.bottom;
+  } else if (y > sceneBox.top) {
+    hero.y = sceneBox.top;
+  }
 }
 
 /**
