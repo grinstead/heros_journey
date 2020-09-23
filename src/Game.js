@@ -264,7 +264,7 @@ function renderGame(game) {
 
   const zoom = cameraZoomToActualZoom(camera.zoom);
 
-  const scaleAxesToDisplay = () => {
+  const adjustToDisplayCoordinates = () => {
     const dims = game.display;
     scaleAxes(
       (2 / dims.w) * PIXELS_PER_UNIT,
@@ -287,12 +287,16 @@ function renderGame(game) {
     scaleAxes(zoom, zoom, 1);
 
     shiftContent(0, 0, 1);
-    scaleAxesToDisplay();
+    adjustToDisplayCoordinates();
 
     shiftContent(-camera.x, -camera.y, 0);
 
     subrender(() => {
       svgProgram.inputs.color.set(0.7, 0.7, 0.9, 1);
+
+      // move according to the center of the current screen
+      const sceneBox = scene.sceneBox;
+      shiftContent(-sceneBox.originX, -sceneBox.originY, 0);
 
       // switch image to the world space
       scaleAxes(2 / FULL_SPACE_ZOOM, -2 / FULL_SPACE_ZOOM, 1);
@@ -360,7 +364,7 @@ function renderGame(game) {
     rasterProgram.inputs.minColor.set(0, 0, 0, 0);
 
     scaleAxes(zoom, zoom, 1);
-    scaleAxesToDisplay();
+    adjustToDisplayCoordinates();
     applyMatrixOperation(MAP_Z_ONTO_Y);
 
     shiftContent(-camera.x, -camera.y, 0);
@@ -418,7 +422,7 @@ export async function makeGame({ canvas, input, mousePosition }) {
 
   const [finishLoadingSprites, gameScript] = await Promise.all([
     loadAllSpriteTextures(),
-    loadUpGameScript(Math.min(widthPx, heightPx) / FULL_SPACE_ZOOM),
+    loadUpGameScript(500 / FULL_SPACE_ZOOM),
     audio.loadAllSounds(),
   ]);
 

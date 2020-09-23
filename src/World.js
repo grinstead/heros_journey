@@ -93,7 +93,6 @@ function initScene(kernel, sceneName) {
       const scene = makeScene({
         kernel,
         sceneName,
-        sceneBox: { left: 0, right: 960, top: 0, bottom: 640 },
         hero: new Hero(0),
       });
 

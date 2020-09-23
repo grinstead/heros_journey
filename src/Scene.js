@@ -39,6 +39,8 @@ export let Transition;
  * @property {number} right
  * @property {number} top
  * @property {number} bottom
+ * @property {number} originX
+ * @property {number} originY
  */
 export let Box;
 
@@ -97,7 +99,6 @@ export let SceneKernel;
  * @param {Object} options
  * @param {SceneKernel} options.kernel
  * @param {string} options.sceneName - The name of the scene
- * @param {Box} options.sceneBox - The bounding box of the scene
  * @param {!Hero} options.hero
  * @returns {Scene}
  */
@@ -117,7 +118,7 @@ export function makeScene(options) {
     sceneTime: 0,
     sceneTimeOffset: offsetAFrameFrom(0),
     stepSize: 0,
-    sceneBox: options.sceneBox,
+    sceneBox: sceneScript.sceneBox,
     cameraTarget: null,
     hero: options.hero,
     objects: [],

@@ -27,6 +27,8 @@ async function onLoad() {
 
   game.startRunning();
 
+  window["game"] = game;
+
   const fpsNode = document.getElementById("fps");
   if (fpsNode) {
     const updateFps = () => {

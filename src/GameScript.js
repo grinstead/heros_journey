@@ -71,14 +71,16 @@ function parseGameScript(circleRadius) {
 
       const angle = Math.PI / 2 - 2 * Math.PI * (clock / 12);
 
-      const centerX = circleRadius * Math.cos(angle);
-      const centerY = circleRadius * Math.sin(angle);
+      const originX = Math.round(circleRadius * Math.cos(angle));
+      const originY = Math.round(circleRadius * Math.sin(angle));
 
       return {
-        left: centerX - width / 2,
-        right: centerX + width / 2,
-        top: centerY + height / 2,
-        bottom: centerY - height / 2,
+        left: originX - width / 2,
+        right: originX + width / 2,
+        top: originY + height / 2,
+        bottom: originY - height / 2,
+        originX,
+        originY,
       };
     });
 
