@@ -17,10 +17,11 @@ import { Scene, ShadowRadius } from "./Scene.js";
 import { MousePosition } from "./Game.js";
 import { arctan } from "./utils.js";
 
-const HERO_SPEED = 640;
-const BULLET_SPEED = 400;
+const HERO_SPEED = 600;
+const BULLET_SPEED = 640;
 const BULLET_SHADOW = { x: 10, y: 5 };
 const JUMP_COOLDOWN = 0.25;
+const SHOOT_COOLDOWN = 0.25;
 
 const NOZZLE_X = 96;
 const NOZZLE_Y = 50;
@@ -73,6 +74,8 @@ export class Hero {
     this.shadowRadius = { x: 30, y: 15 };
     /** @type {number} */
     this.jumpCooldown = 0;
+    /** @type {number} */
+    this.shootCooldown = 0;
     /** @type {HeroState} */
     this.state = {
       name: "unstarted",
@@ -116,7 +119,9 @@ function heroStateNormal(hero, scene) {
       const armDirection = hero.armDirection;
       hero.mirrorX = dirIsLeft(armDirection);
 
-      if (input.numPresses("shoot")) {
+      if (sceneTime >= hero.shootCooldown) {
+        hero.shootCooldown = sceneTime + SHOOT_COOLDOWN;
+
         const cos = Math.cos(armDirection);
         const sin = Math.sin(armDirection);
 
