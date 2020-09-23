@@ -1,4 +1,4 @@
-import { SceneKernel, Scene, ShadowRadius } from "./Scene.js";
+import { SceneKernel, Scene, ShadowRadius, Bullet } from "./Scene.js";
 import {
   buildCleanable,
   onCleanUp,
@@ -510,7 +510,8 @@ output_color = color;
     input.setKeysForAction("down", ["s", "ArrowDown"]);
     input.setKeysForAction("left", ["a", "ArrowLeft"]);
     input.setKeysForAction("right", ["d", "ArrowRight"]);
-    input.setKeysForAction("shoot", ["h", " "]);
+    input.setKeysForAction("shoot", ["f", "h"]);
+    input.setKeysForAction("jump", ["z", "x", " "]);
 
     const world = initWorld({ input, audio, gameScript });
 

@@ -59,9 +59,11 @@ export class Hero {
     /** @type {Sprite} */
     this.arm = makePistolArm(time);
     /** @type {Sprite} */
-    this.body = makeHeroBodyStatic(time);
-    /** @type {string} An enum */
-    this.state = "standing";
+    this.bodyStatic = makeHeroBodyStatic(time);
+    /** @type {Sprite} */
+    this.bodyRunning = makeHeroRunning(time);
+    /** @type {Sprite} */
+    this.bodyRunningBackwards = makeHeroRunningBackwards(time);
     /** @type {boolean} */
     this.mirrorX = false;
     /** @type {ShadowRadius} */
@@ -85,9 +87,7 @@ export class Hero {
   }
 }
 
-function heroStateNormal(hero) {
-  let heroGoingBackwards = false;
-
+function heroStateNormal(hero, scene) {
   return {
     name: "normal",
     /** @param {Scene} scene */
@@ -97,36 +97,15 @@ function heroStateNormal(hero) {
       let dx = input.getSignOfAction("left", "right");
       let dy = input.getSignOfAction("down", "up");
 
-      let x = hero.x;
-      let y = hero.y;
-
       if (dx || dy) {
-        const direction = arctan(dy, dx);
-        const speed = HERO_SPEED;
-
-        // test if the hero is running backwards
-        if (dirIsLeft(direction) ^ dirIsLeft(hero.armDirection)) {
-          if (!hero.speed || !heroGoingBackwards) {
-            hero.body = makeHeroRunningBackwards(sceneTime);
-          }
-          heroGoingBackwards = true;
-        } else {
-          if (!hero.speed || heroGoingBackwards) {
-            hero.body = makeHeroRunning(sceneTime);
-          }
-          heroGoingBackwards = false;
-        }
-
-        hero.direction = direction;
+        hero.direction = arctan(dy, dx);
         hero.speed = HERO_SPEED;
-
-        hero.x = x += stepSize * speed * Math.cos(direction);
-        hero.y = y += stepSize * speed * Math.sin(direction);
       } else {
-        if (hero.speed) {
-          hero.body = makeHeroBodyStatic(sceneTime);
-        }
         hero.speed = 0;
+      }
+
+      if (input.isPressed("jump")) {
+        hero.changeState(scene, heroStateJump, null);
       }
 
       const armDirection = hero.armDirection;
@@ -137,8 +116,8 @@ function heroStateNormal(hero) {
         const sin = Math.sin(armDirection);
 
         scene.bullets.push({
-          x: x + ARM_LENGTH * cos,
-          y: y + ARM_LENGTH * sin,
+          x: hero.x + ARM_LENGTH * cos,
+          y: hero.y + ARM_LENGTH * sin,
           z: ARM_POS.y,
           dx: BULLET_SPEED * cos,
           dy: BULLET_SPEED * sin,
@@ -150,13 +129,13 @@ function heroStateNormal(hero) {
       }
     },
     render: () => {
-      const { head, arm, body } = hero;
+      const { head, arm, mirrorX } = hero;
 
       subrender(() => {
         shiftContent(ARM_POS.x, 0, ARM_POS.y);
 
         let angle = hero.armDirection;
-        if (hero.mirrorX) angle = Math.PI - angle;
+        if (mirrorX) angle = Math.PI - angle;
 
         rotateAboutY(angle - 0.3);
 
@@ -167,8 +146,45 @@ function heroStateNormal(hero) {
       head.prepareSpriteType();
       subrenderSprite(head);
 
+      let body;
+      if (hero.speed) {
+        if (
+          hero.direction !== Math.PI / 2 &&
+          mirrorX ^ dirIsLeft(hero.direction)
+        ) {
+          body = hero.bodyRunningBackwards;
+        } else {
+          body = hero.bodyRunning;
+        }
+      } else {
+        body = hero.bodyStatic;
+      }
+
       body.prepareSpriteType();
       subrenderSprite(body);
+    },
+  };
+}
+
+function heroStateJump(hero, scene) {
+  const sprite = makeHeroJump(scene.sceneTime);
+  hero.direction = hero.armDirection;
+  hero.mirrorX = dirIsLeft(hero.direction);
+  hero.speed = HERO_SPEED / 2;
+
+  return {
+    name: "jump",
+    /** @param {Scene} scene */
+    processStep: (scene) => {
+      sprite.updateTime(scene.sceneTime);
+
+      if (sprite.isFinished()) {
+        hero.changeState(scene, heroStateNormal, null);
+      }
+    },
+    render: () => {
+      sprite.prepareSpriteType();
+      subrenderSprite(sprite);
     },
   };
 }
@@ -178,10 +194,12 @@ function heroStateNormal(hero) {
  * @param {MousePosition} mousePosition
  */
 export function processHero(scene, mousePosition) {
-  const { hero, sceneTime } = scene;
+  const { hero, sceneTime, stepSize } = scene;
 
   hero.head.updateTime(sceneTime);
-  hero.body.updateTime(sceneTime);
+  hero.bodyStatic.updateTime(sceneTime);
+  hero.bodyRunning.updateTime(sceneTime);
+  hero.bodyRunningBackwards.updateTime(sceneTime);
 
   hero.armDirection = arctan(
     mousePosition.y - (hero.y + ARM_POS.y),
@@ -189,6 +207,10 @@ export function processHero(scene, mousePosition) {
   );
 
   hero.state.processStep(scene);
+
+  const { speed, direction } = hero;
+  hero.x += stepSize * speed * Math.cos(direction);
+  hero.y += stepSize * speed * Math.sin(direction);
 }
 
 /**
@@ -205,5 +227,5 @@ export function renderHero(hero) {
 }
 
 function dirIsLeft(direction) {
-  return Math.abs(direction - Math.PI) < Math.PI / 2;
+  return 0.5 * Math.PI < direction && direction < 1.5 * Math.PI;
 }

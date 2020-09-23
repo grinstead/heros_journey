@@ -113,16 +113,17 @@
       "type": "animated",
       "name": "HeroJump",
       "src": "Bullet Dodge",
-      "originX": 101,
-      "originY": 187
+      "loops": false,
+      "originX": 125,
+      "originY": 380
     },
     {
       "type": "animated",
       "name": "BigBadGuyLanding",
       "src": "Big Bad Guy Landing",
+      "loops": false,
       "originX": 92,
-      "originY": 254,
-      "loops": false
+      "originY": 254
     },
     {
       "type": "animated",
