@@ -109,11 +109,20 @@ export class Game {
     camera.x = scene.hero.x;
     camera.y = scene.hero.y;
 
+    const actualZoom = cameraZoomToActualZoom(camera.zoom);
+
     const { onScreenMousePosition, display } = this;
     const mousePosition = {
-      x: (onScreenMousePosition.x - display.w / 2) / PIXELS_PER_UNIT + camera.x,
+      x:
+        (onScreenMousePosition.x - display.w / 2) /
+          PIXELS_PER_UNIT /
+          actualZoom +
+        camera.x,
       y:
-        -(onScreenMousePosition.y - display.h / 2) / PIXELS_PER_UNIT + camera.y,
+        -(onScreenMousePosition.y - display.h / 2) /
+          PIXELS_PER_UNIT /
+          actualZoom +
+        camera.y,
     };
 
     let numDeadBullets = 0;
@@ -231,6 +240,9 @@ function renderGame(game) {
   const scene = world.activeScene;
 
   const camera = world.camera;
+
+  const zoom = cameraZoomToActualZoom(camera.zoom);
+
   const scaleAxesToDisplay = () => {
     const dims = game.display;
     scaleAxes(
@@ -251,7 +263,8 @@ function renderGame(game) {
     gl.clearColor(bg[0], bg[1], bg[2], 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
-    // const zoom = camera.zoom / FULL_SPACE_ZOOM;
+    scaleAxes(zoom, zoom, 1);
+
     shiftContent(0, 0, 1);
     scaleAxesToDisplay();
 
@@ -323,6 +336,7 @@ function renderGame(game) {
 
     useMatrixStack(rasterProgram.inputs.projection);
 
+    scaleAxes(zoom, zoom, 1);
     scaleAxesToDisplay();
     applyMatrixOperation(MAP_Z_ONTO_Y);
 
@@ -592,4 +606,8 @@ function distanceFromEllipseSortOf(x, y, shadowRadius, bullet) {
       2 * ry
     );
   }
+}
+
+function cameraZoomToActualZoom(zoom) {
+  return FULL_SPACE_ZOOM * (1 - zoom) + zoom;
 }
