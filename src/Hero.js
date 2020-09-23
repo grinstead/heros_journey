@@ -33,9 +33,9 @@ export class Hero {
     /** @type {number} */
     this.z = 0;
     /** @type {number} */
-    this.dx = 0;
+    this.speed = 0;
     /** @type {number} */
-    this.dy = 0;
+    this.direction = 0;
     /** @type {number} */
     this.armDirection = 0;
     /** @type {Sprite} */
@@ -59,27 +59,34 @@ export class Hero {
 export function processHero(scene, mousePosition) {
   const { input, hero, stepSize } = scene;
 
-  let dx = HERO_SPEED * input.getSignOfAction("left", "right");
-  let dy = HERO_SPEED * input.getSignOfAction("down", "up");
-  if (dy && dx) {
-    dx *= SQRT2_INV;
-    dy *= SQRT2_INV;
+  let dx = input.getSignOfAction("left", "right");
+  let dy = input.getSignOfAction("down", "up");
+
+  let x = hero.x;
+  let y = hero.y;
+
+  if (dx || dy) {
+    const direction = arctan(dy, dx);
+    const speed = HERO_SPEED;
+
+    hero.direction = direction;
+    hero.speed = HERO_SPEED;
+
+    hero.x = x += stepSize * speed * Math.cos(direction);
+    hero.y = y += stepSize * speed * Math.sin(direction);
+  } else {
+    hero.speed = 0;
   }
 
-  hero.dx = dx;
-  hero.dy = dy;
-  const x = (hero.x += dx * stepSize);
-  const y = (hero.y += dy * stepSize);
-
   const xAimDiff = mousePosition.x - (x + ARM_POS.x);
-  const direction = arctan(mousePosition.y - (y + ARM_POS.y), xAimDiff);
-  hero.armDirection = direction;
+  const armDirection = arctan(mousePosition.y - (y + ARM_POS.y), xAimDiff);
+  hero.armDirection = armDirection;
 
   if (xAimDiff !== 0) hero.mirrorX = xAimDiff < 0;
 
   if (input.numPresses("shoot")) {
-    const cos = Math.cos(direction);
-    const sin = Math.sin(direction);
+    const cos = Math.cos(armDirection);
+    const sin = Math.sin(armDirection);
 
     scene.bullets.push({
       x: x + ARM_LENGTH * cos,
