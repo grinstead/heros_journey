@@ -97,6 +97,13 @@
     },
     {
       "type": "animated",
+      "name": "HeroRunning",
+      "src": "Body Running",
+      "originX": 101,
+      "originY": 187
+    },
+    {
+      "type": "animated",
       "name": "HeroRunningBackwards",
       "src": "Hero Running Backwards",
       "originX": 101,

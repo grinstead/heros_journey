@@ -1,4 +1,10 @@
-import { makeHeroHead, makePistolArm, makeHeroBodyStatic } from "./assets.js";
+import {
+  makeHeroHead,
+  makePistolArm,
+  makeHeroRunning,
+  makeHeroBodyStatic,
+  makeHeroRunningBackwards,
+} from "./assets.js";
 import { Sprite, subrenderSprite } from "./Sprite.js";
 import {
   scaleAxes,
@@ -43,7 +49,11 @@ export class Hero {
     /** @type {Sprite} */
     this.arm = makePistolArm(time);
     /** @type {Sprite} */
-    this.body = makeHeroBodyStatic(time);
+    this.bodyStatic = makeHeroBodyStatic(time);
+    /** @type {Sprite} */
+    this.bodyRunning = makeHeroRunning(time);
+    /** @type {Sprite} */
+    this.bodyRunningBack = makeHeroRunningBackwards(time);
     /** @type {boolean} */
     this.mirrorX = false;
     /** @type {ShadowRadius} */
@@ -57,7 +67,12 @@ export class Hero {
  * @param {MousePosition} mousePosition
  */
 export function processHero(scene, mousePosition) {
-  const { input, hero, stepSize } = scene;
+  const { input, hero, stepSize, sceneTime } = scene;
+
+  hero.head.updateTime(sceneTime);
+  hero.bodyStatic.updateTime(sceneTime);
+  hero.bodyRunning.updateTime(sceneTime);
+  hero.bodyRunningBack.updateTime(sceneTime);
 
   let dx = input.getSignOfAction("left", "right");
   let dy = input.getSignOfAction("down", "up");
@@ -112,7 +127,7 @@ export function renderHero(hero) {
   const mirrorX = hero.mirrorX;
   if (mirrorX) scaleAxes(-1, 1, 1);
 
-  const { head, arm, body } = hero;
+  const { head, arm } = hero;
 
   subrender(() => {
     shiftContent(ARM_POS.x, 0, ARM_POS.y);
@@ -128,6 +143,17 @@ export function renderHero(hero) {
 
   head.prepareSpriteType();
   subrenderSprite(head);
+
+  let body;
+  if (hero.speed) {
+    if (mirrorX ^ (Math.abs(hero.direction - Math.PI) < Math.PI / 2)) {
+      body = hero.bodyRunningBack;
+    } else {
+      body = hero.bodyRunning;
+    }
+  } else {
+    body = hero.bodyStatic;
+  }
 
   body.prepareSpriteType();
   subrenderSprite(body);
