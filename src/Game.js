@@ -47,6 +47,10 @@ const MAX_FRAME_TIME = 1 / 10;
 const PIXELS_PER_UNIT = 0.5;
 const BULLET_R = 10;
 const DMG_COLOR = 0.4;
+const MARGIN_X = 60;
+const MARGIN_TOP = 200;
+const MARGIN_BOTTOM = 40;
+const INNER_MARGIN = 100;
 
 /** @typedef {{x:number, y:number}} MousePosition */
 export let MousePosition;
@@ -102,7 +106,8 @@ export class Game {
 
   performStep() {
     const realTime = Date.now() / 1000;
-    const world = this.world;
+
+    const { onScreenMousePosition, display, world } = this;
     const scene = world.activeScene;
 
     let sceneTime = updateSceneTime(scene, realTime, MAX_FRAME_TIME);
@@ -111,18 +116,44 @@ export class Game {
     const hero = scene.hero;
 
     {
+      const sceneBox = scene.sceneBox;
       const targetCamera = world.targetCamera;
       const heroX = hero.x;
       const heroY = hero.y + BULLET_HEIGHT;
       const altTarget = scene.cameraTarget;
 
+      const cameraRx = display.w / PIXELS_PER_UNIT / 2;
+      const cameraRy = display.h / PIXELS_PER_UNIT / 2;
+
       if (altTarget) {
         targetCamera.x = (heroX + altTarget.x) / 2;
         targetCamera.y = (heroY + altTarget.y + BULLET_HEIGHT) / 2;
+
+        // keep the player in frame
+        targetCamera.x = Math.min(
+          Math.max(heroX + INNER_MARGIN + MARGIN_X - cameraRx, targetCamera.x),
+          heroX - INNER_MARGIN - MARGIN_X + cameraRx
+        );
+        targetCamera.y = Math.min(
+          Math.max(
+            heroY + INNER_MARGIN + MARGIN_TOP - cameraRy,
+            targetCamera.x
+          ),
+          heroY - INNER_MARGIN - MARGIN_BOTTOM + cameraRy
+        );
       } else {
         targetCamera.x = heroX;
         targetCamera.y = heroY;
       }
+
+      targetCamera.x = Math.min(
+        Math.max(sceneBox.left + cameraRx - MARGIN_X, targetCamera.x),
+        sceneBox.right - cameraRx + MARGIN_X
+      );
+      targetCamera.y = Math.min(
+        Math.max(sceneBox.bottom + cameraRy - MARGIN_BOTTOM, targetCamera.y),
+        sceneBox.top - cameraRy + MARGIN_TOP
+      );
     }
 
     world.adjustCamera(scene);
@@ -131,7 +162,6 @@ export class Game {
 
     const actualZoom = cameraZoomToActualZoom(camera.zoom);
 
-    const { onScreenMousePosition, display } = this;
     const mousePosition = {
       x:
         (onScreenMousePosition.x - display.w / 2) /
