@@ -105,10 +105,15 @@ export class Game {
     let sceneTime = updateSceneTime(scene, realTime, MAX_FRAME_TIME);
     let stepSize = scene.stepSize;
 
+    const camera = this.world.camera;
+    camera.x = scene.hero.x;
+    camera.y = scene.hero.y;
+
     const { onScreenMousePosition, display } = this;
     const mousePosition = {
-      x: (onScreenMousePosition.x - display.w / 2) / PIXELS_PER_UNIT,
-      y: -(onScreenMousePosition.y - display.h / 2) / PIXELS_PER_UNIT,
+      x: (onScreenMousePosition.x - display.w / 2) / PIXELS_PER_UNIT + camera.x,
+      y:
+        -(onScreenMousePosition.y - display.h / 2) / PIXELS_PER_UNIT + camera.y,
     };
 
     let numDeadBullets = 0;
@@ -150,7 +155,7 @@ export class Game {
         object.z += zSpeed * stepSize;
       }
 
-      const { x, y, shadowRadius } = object;
+      const { x, y, z, shadowRadius } = object;
       const minTestX = x - shadowRadius.x - BULLET_R;
       const maxTestX = x + shadowRadius.x + BULLET_R;
 
@@ -164,6 +169,8 @@ export class Game {
         const bullet = bullets[i++];
         if (
           !bullet.isDead &&
+          bullet.isFriendly &&
+          bullet.z >= z && // checking the enemy is not off the ground
           distanceFromEllipseSortOf(x, y, shadowRadius, bullet) < BULLET_R
         ) {
           bullet.isDead = true;
@@ -226,7 +233,11 @@ function renderGame(game) {
   const camera = world.camera;
   const scaleAxesToDisplay = () => {
     const dims = game.display;
-    scaleAxes(1 / dims.w, 1 / dims.h, FULL_SPACE_ZOOM / dims.h);
+    scaleAxes(
+      (2 / dims.w) * PIXELS_PER_UNIT,
+      (2 / dims.h) * PIXELS_PER_UNIT,
+      FULL_SPACE_ZOOM / dims.h
+    );
   };
 
   const svgProgram = game.svgProgram;
@@ -314,6 +325,8 @@ function renderGame(game) {
 
     scaleAxesToDisplay();
     applyMatrixOperation(MAP_Z_ONTO_Y);
+
+    shiftContent(-camera.x, -camera.y, 0);
 
     subrenderEach(scene.objects, (object) => {
       shiftContent(object.x, object.y, object.z);
