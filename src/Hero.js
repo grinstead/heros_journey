@@ -4,6 +4,7 @@ import {
   makeHeroRunning,
   makeHeroBodyStatic,
   makeHeroRunningBackwards,
+  makeHeroJump,
 } from "./assets.js";
 import { Sprite, subrenderSprite } from "./Sprite.js";
 import {
@@ -16,7 +17,6 @@ import { Scene, ShadowRadius } from "./Scene.js";
 import { MousePosition } from "./Game.js";
 import { arctan } from "./utils.js";
 
-const SQRT2_INV = 0.7071;
 const HERO_SPEED = 640;
 const BULLET_SPEED = 400;
 const BULLET_SHADOW = { x: 10, y: 5 };
@@ -29,6 +29,16 @@ const ARM_POS = {
   x: 0,
   y: 70,
 };
+
+/**
+ * All the states that the hero can be in
+ * @typedef {Object} HeroState
+ * @property {string} name - Useful for debugging
+ * @property {function(Scene):void} processStep - Perform the hero's code
+ * @property {function():void} render - Render the hero
+ * @property {?function():void} onExit
+ */
+let HeroState;
 
 export class Hero {
   constructor(time) {
@@ -49,72 +59,136 @@ export class Hero {
     /** @type {Sprite} */
     this.arm = makePistolArm(time);
     /** @type {Sprite} */
-    this.bodyStatic = makeHeroBodyStatic(time);
-    /** @type {Sprite} */
-    this.bodyRunning = makeHeroRunning(time);
-    /** @type {Sprite} */
-    this.bodyRunningBack = makeHeroRunningBackwards(time);
+    this.body = makeHeroBodyStatic(time);
+    /** @type {string} An enum */
+    this.state = "standing";
     /** @type {boolean} */
     this.mirrorX = false;
     /** @type {ShadowRadius} */
     this.shadowRadius = { x: 30, y: 15 };
+    /** @type {HeroState} */
+    this.state = {
+      name: "unstarted",
+      processStep: (scene) => this.changeState(scene, heroStateNormal, null),
+      render: () => {},
+      onExit: null,
+    };
+  }
+
+  changeState(scene, stateBuilder, arg) {
+    const oldStateOnExit = this.state.onExit;
+    if (oldStateOnExit) oldStateOnExit();
+
+    const state = stateBuilder(this, scene, arg);
+    this.state = state;
+    state.processStep(scene);
   }
 }
 
+function heroStateNormal(hero) {
+  let heroGoingBackwards = false;
+
+  return {
+    name: "normal",
+    /** @param {Scene} scene */
+    processStep: (scene) => {
+      const { input, sceneTime, stepSize } = scene;
+
+      let dx = input.getSignOfAction("left", "right");
+      let dy = input.getSignOfAction("down", "up");
+
+      let x = hero.x;
+      let y = hero.y;
+
+      if (dx || dy) {
+        const direction = arctan(dy, dx);
+        const speed = HERO_SPEED;
+
+        // test if the hero is running backwards
+        if (dirIsLeft(direction) ^ dirIsLeft(hero.armDirection)) {
+          if (!hero.speed || !heroGoingBackwards) {
+            hero.body = makeHeroRunningBackwards(sceneTime);
+          }
+          heroGoingBackwards = true;
+        } else {
+          if (!hero.speed || heroGoingBackwards) {
+            hero.body = makeHeroRunning(sceneTime);
+          }
+          heroGoingBackwards = false;
+        }
+
+        hero.direction = direction;
+        hero.speed = HERO_SPEED;
+
+        hero.x = x += stepSize * speed * Math.cos(direction);
+        hero.y = y += stepSize * speed * Math.sin(direction);
+      } else {
+        if (hero.speed) {
+          hero.body = makeHeroBodyStatic(sceneTime);
+        }
+        hero.speed = 0;
+      }
+
+      const armDirection = hero.armDirection;
+      hero.mirrorX = dirIsLeft(armDirection);
+
+      if (input.numPresses("shoot")) {
+        const cos = Math.cos(armDirection);
+        const sin = Math.sin(armDirection);
+
+        scene.bullets.push({
+          x: x + ARM_LENGTH * cos,
+          y: y + ARM_LENGTH * sin,
+          z: ARM_POS.y,
+          dx: BULLET_SPEED * cos,
+          dy: BULLET_SPEED * sin,
+          shadowRadius: BULLET_SHADOW,
+          isFriendly: true,
+          startTime: 0,
+          isDead: false,
+        });
+      }
+    },
+    render: () => {
+      const { head, arm, body } = hero;
+
+      subrender(() => {
+        shiftContent(ARM_POS.x, 0, ARM_POS.y);
+
+        let angle = hero.armDirection;
+        if (hero.mirrorX) angle = Math.PI - angle;
+
+        rotateAboutY(angle - 0.3);
+
+        arm.prepareSpriteType();
+        subrenderSprite(arm);
+      });
+
+      head.prepareSpriteType();
+      subrenderSprite(head);
+
+      body.prepareSpriteType();
+      subrenderSprite(body);
+    },
+  };
+}
+
 /**
- *
  * @param {Scene} scene
  * @param {MousePosition} mousePosition
  */
 export function processHero(scene, mousePosition) {
-  const { input, hero, stepSize, sceneTime } = scene;
+  const { hero, sceneTime } = scene;
 
   hero.head.updateTime(sceneTime);
-  hero.bodyStatic.updateTime(sceneTime);
-  hero.bodyRunning.updateTime(sceneTime);
-  hero.bodyRunningBack.updateTime(sceneTime);
+  hero.body.updateTime(sceneTime);
 
-  let dx = input.getSignOfAction("left", "right");
-  let dy = input.getSignOfAction("down", "up");
+  hero.armDirection = arctan(
+    mousePosition.y - (hero.y + ARM_POS.y),
+    mousePosition.x - (hero.x + ARM_POS.x)
+  );
 
-  let x = hero.x;
-  let y = hero.y;
-
-  if (dx || dy) {
-    const direction = arctan(dy, dx);
-    const speed = HERO_SPEED;
-
-    hero.direction = direction;
-    hero.speed = HERO_SPEED;
-
-    hero.x = x += stepSize * speed * Math.cos(direction);
-    hero.y = y += stepSize * speed * Math.sin(direction);
-  } else {
-    hero.speed = 0;
-  }
-
-  const xAimDiff = mousePosition.x - (x + ARM_POS.x);
-  const armDirection = arctan(mousePosition.y - (y + ARM_POS.y), xAimDiff);
-  hero.armDirection = armDirection;
-
-  if (xAimDiff !== 0) hero.mirrorX = xAimDiff < 0;
-
-  if (input.numPresses("shoot")) {
-    const cos = Math.cos(armDirection);
-    const sin = Math.sin(armDirection);
-
-    scene.bullets.push({
-      x: x + ARM_LENGTH * cos,
-      y: y + ARM_LENGTH * sin,
-      z: ARM_POS.y,
-      dx: BULLET_SPEED * cos,
-      dy: BULLET_SPEED * sin,
-      shadowRadius: BULLET_SHADOW,
-      isFriendly: true,
-      startTime: 0,
-      isDead: false,
-    });
-  }
+  hero.state.processStep(scene);
 }
 
 /**
@@ -127,34 +201,9 @@ export function renderHero(hero) {
   const mirrorX = hero.mirrorX;
   if (mirrorX) scaleAxes(-1, 1, 1);
 
-  const { head, arm } = hero;
+  hero.state.render();
+}
 
-  subrender(() => {
-    shiftContent(ARM_POS.x, 0, ARM_POS.y);
-
-    let angle = hero.armDirection;
-    if (mirrorX) angle = Math.PI - angle;
-
-    rotateAboutY(angle - 0.3);
-
-    arm.prepareSpriteType();
-    subrenderSprite(arm);
-  });
-
-  head.prepareSpriteType();
-  subrenderSprite(head);
-
-  let body;
-  if (hero.speed) {
-    if (mirrorX ^ (Math.abs(hero.direction - Math.PI) < Math.PI / 2)) {
-      body = hero.bodyRunningBack;
-    } else {
-      body = hero.bodyRunning;
-    }
-  } else {
-    body = hero.bodyStatic;
-  }
-
-  body.prepareSpriteType();
-  subrenderSprite(body);
+function dirIsLeft(direction) {
+  return Math.abs(direction - Math.PI) < Math.PI / 2;
 }
