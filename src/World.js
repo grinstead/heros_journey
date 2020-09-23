@@ -28,6 +28,10 @@ export class World {
     this.activeScene = startScene;
     /** @type {Camera} */
     this.camera = { x: 0, y: 0, zoom: 1 };
+    /** @type {Camera} */
+    this.targetCamera = { x: 0, y: 0, zoom: 1 };
+    /** @type {number} This number is a bit confusing */
+    this.cameraSpeed = 8;
   }
 
   /**
@@ -51,6 +55,22 @@ export class World {
       scenes.set(sceneName, scene);
     }
     return scene;
+  }
+
+  /**
+   *
+   * @param {Scene} scene
+   */
+  adjustCamera(scene) {
+    const { stepSize } = scene;
+
+    const speed = this.cameraSpeed;
+    const camera = this.camera;
+    const target = this.targetCamera;
+
+    camera.x = stepTowards(speed, stepSize, camera.x, target.x);
+    camera.y = stepTowards(speed, stepSize, camera.y, target.y);
+    camera.zoom = stepTowards(speed, stepSize, camera.zoom, target.zoom);
   }
 }
 
@@ -262,4 +282,9 @@ function calcSpeedEasing(speed, percentage, easeIn, easeOut) {
   } else {
     return speed;
   }
+}
+
+function stepTowards(speed, stepSize, current, target) {
+  const p = speed * stepSize;
+  return p * target + (1 - p) * current;
 }

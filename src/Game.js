@@ -100,14 +100,19 @@ export class Game {
 
   performStep() {
     const realTime = Date.now() / 1000;
-    const scene = this.world.activeScene;
+    const world = this.world;
+    const scene = world.activeScene;
 
     let sceneTime = updateSceneTime(scene, realTime, MAX_FRAME_TIME);
     let stepSize = scene.stepSize;
 
-    const camera = this.world.camera;
-    camera.x = scene.hero.x;
-    camera.y = scene.hero.y;
+    const targetCamera = world.targetCamera;
+    targetCamera.x = scene.hero.x;
+    targetCamera.y = scene.hero.y;
+
+    world.adjustCamera(scene);
+
+    const camera = world.camera;
 
     const actualZoom = cameraZoomToActualZoom(camera.zoom);
 
