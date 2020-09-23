@@ -1,7 +1,7 @@
 {
     "ANIMATION": {
-        "name": "Bullet Dodge 2",
-        "SYMBOL_name": "Bullet Dodge 2.swf",
+        "name": "Hero Head",
+        "SYMBOL_name": "Hit Hero Head.swf",
         "TIMELINE": {
             "LAYERS": [
                 {
@@ -12,8 +12,12 @@
                             "duration": 1,
                             "elements": [
                                 {
-                                    "ATLAS_SPRITE_instance": {
-                                        "name": "0000",
+                                    "SYMBOL_Instance": {
+                                        "SYMBOL_name": "Symbol 2",
+                                        "Instance_Name": "InstName",
+                                        "symbolType": "graphic",
+                                        "firstFrame": 0,
+                                        "loop": "loop",
                                         "Matrix3D": {
                                             "m00": 1.0,
                                             "m01": 0.0,
@@ -27,15 +31,15 @@
                                             "m21": 0.0,
                                             "m22": 1.0,
                                             "m23": 0.0,
-                                            "m30": 85.0,
-                                            "m31": 207.0,
+                                            "m30": 0.0,
+                                            "m31": 0.0,
                                             "m32": 0.0,
                                             "m33": 1.0
                                         },
                                         "DecomposedMatrix": {
                                             "Position": {
-                                                "x": 85.0,
-                                                "y": 207.0,
+                                                "x": 0.0,
+                                                "y": 0.0,
                                                 "z": 0.0
                                             },
                                             "Rotation": {
@@ -58,8 +62,12 @@
                             "duration": 1,
                             "elements": [
                                 {
-                                    "ATLAS_SPRITE_instance": {
-                                        "name": "0001",
+                                    "SYMBOL_Instance": {
+                                        "SYMBOL_name": "Symbol 2",
+                                        "Instance_Name": "InstName",
+                                        "symbolType": "graphic",
+                                        "firstFrame": 0,
+                                        "loop": "loop",
                                         "Matrix3D": {
                                             "m00": 1.0,
                                             "m01": 0.0,
@@ -73,15 +81,15 @@
                                             "m21": 0.0,
                                             "m22": 1.0,
                                             "m23": 0.0,
-                                            "m30": 90.0,
-                                            "m31": 158.0,
+                                            "m30": 0.0,
+                                            "m31": 0.0,
                                             "m32": 0.0,
                                             "m33": 1.0
                                         },
                                         "DecomposedMatrix": {
                                             "Position": {
-                                                "x": 90.0,
-                                                "y": 158.0,
+                                                "x": 0.0,
+                                                "y": 0.0,
                                                 "z": 0.0
                                             },
                                             "Rotation": {
@@ -104,8 +112,12 @@
                             "duration": 1,
                             "elements": [
                                 {
-                                    "ATLAS_SPRITE_instance": {
-                                        "name": "0002",
+                                    "SYMBOL_Instance": {
+                                        "SYMBOL_name": "Symbol 2",
+                                        "Instance_Name": "InstName",
+                                        "symbolType": "graphic",
+                                        "firstFrame": 0,
+                                        "loop": "loop",
                                         "Matrix3D": {
                                             "m00": 1.0,
                                             "m01": 0.0,
@@ -119,15 +131,15 @@
                                             "m21": 0.0,
                                             "m22": 1.0,
                                             "m23": 0.0,
-                                            "m30": 79.0,
-                                            "m31": 17.0,
+                                            "m30": 0.0,
+                                            "m31": 0.0,
                                             "m32": 0.0,
                                             "m33": 1.0
                                         },
                                         "DecomposedMatrix": {
                                             "Position": {
-                                                "x": 79.0,
-                                                "y": 17.0,
+                                                "x": 0.0,
+                                                "y": 0.0,
                                                 "z": 0.0
                                             },
                                             "Rotation": {
@@ -150,48 +162,8 @@
                             "duration": 1,
                             "elements": [
                                 {
-                                    "ATLAS_SPRITE_instance": {
-                                        "name": "0003",
-                                        "Matrix3D": {
-                                            "m00": 1.0,
-                                            "m01": 0.0,
-                                            "m02": 0.0,
-                                            "m03": 0.0,
-                                            "m10": 0.0,
-                                            "m11": 1.0,
-                                            "m12": 0.0,
-                                            "m13": 0.0,
-                                            "m20": 0.0,
-                                            "m21": 0.0,
-                                            "m22": 1.0,
-                                            "m23": 0.0,
-                                            "m30": 81.0,
-                                            "m31": 200.0,
-                                            "m32": 0.0,
-                                            "m33": 1.0
-                                        },
-                                        "DecomposedMatrix": {
-                                            "Position": {
-                                                "x": 81.0,
-                                                "y": 200.0,
-                                                "z": 0.0
-                                            },
-                                            "Rotation": {
-                                                "x": 0.0,
-                                                "y": -0.0,
-                                                "z": 0.0
-                                            },
-                                            "Scaling": {
-                                                "x": 1.0,
-                                                "y": 1.0,
-                                                "z": 1.0
-                                            }
-                                        }
-                                    }
-                                },
-                                {
                                     "SYMBOL_Instance": {
-                                        "SYMBOL_name": "Symbol 8",
+                                        "SYMBOL_name": "Symbol 2",
                                         "Instance_Name": "InstName",
                                         "symbolType": "graphic",
                                         "firstFrame": 0,
@@ -241,51 +213,7 @@
                             "elements": [
                                 {
                                     "SYMBOL_Instance": {
-                                        "SYMBOL_name": "Symbol 9",
-                                        "Instance_Name": "InstName",
-                                        "symbolType": "graphic",
-                                        "firstFrame": 0,
-                                        "loop": "loop",
-                                        "Matrix3D": {
-                                            "m00": 1.0,
-                                            "m01": 0.0,
-                                            "m02": 0.0,
-                                            "m03": 0.0,
-                                            "m10": 0.0,
-                                            "m11": 1.0,
-                                            "m12": 0.0,
-                                            "m13": 0.0,
-                                            "m20": 0.0,
-                                            "m21": 0.0,
-                                            "m22": 1.0,
-                                            "m23": 0.0,
-                                            "m30": 0.0,
-                                            "m31": 0.0,
-                                            "m32": 0.0,
-                                            "m33": 1.0
-                                        },
-                                        "DecomposedMatrix": {
-                                            "Position": {
-                                                "x": 0.0,
-                                                "y": 0.0,
-                                                "z": 0.0
-                                            },
-                                            "Rotation": {
-                                                "x": 0.0,
-                                                "y": -0.0,
-                                                "z": 0.0
-                                            },
-                                            "Scaling": {
-                                                "x": 1.0,
-                                                "y": 1.0,
-                                                "z": 1.0
-                                            }
-                                        }
-                                    }
-                                },
-                                {
-                                    "SYMBOL_Instance": {
-                                        "SYMBOL_name": "Symbol 8",
+                                        "SYMBOL_name": "Symbol 3",
                                         "Instance_Name": "InstName",
                                         "symbolType": "graphic",
                                         "firstFrame": 0,
@@ -335,51 +263,7 @@
                             "elements": [
                                 {
                                     "SYMBOL_Instance": {
-                                        "SYMBOL_name": "Symbol 9",
-                                        "Instance_Name": "InstName",
-                                        "symbolType": "graphic",
-                                        "firstFrame": 0,
-                                        "loop": "loop",
-                                        "Matrix3D": {
-                                            "m00": 1.0,
-                                            "m01": 0.0,
-                                            "m02": 0.0,
-                                            "m03": 0.0,
-                                            "m10": 0.0,
-                                            "m11": 1.0,
-                                            "m12": 0.0,
-                                            "m13": 0.0,
-                                            "m20": 0.0,
-                                            "m21": 0.0,
-                                            "m22": 1.0,
-                                            "m23": 0.0,
-                                            "m30": 0.0,
-                                            "m31": 0.0,
-                                            "m32": 0.0,
-                                            "m33": 1.0
-                                        },
-                                        "DecomposedMatrix": {
-                                            "Position": {
-                                                "x": 0.0,
-                                                "y": 0.0,
-                                                "z": 0.0
-                                            },
-                                            "Rotation": {
-                                                "x": 0.0,
-                                                "y": -0.0,
-                                                "z": 0.0
-                                            },
-                                            "Scaling": {
-                                                "x": 1.0,
-                                                "y": 1.0,
-                                                "z": 1.0
-                                            }
-                                        }
-                                    }
-                                },
-                                {
-                                    "SYMBOL_Instance": {
-                                        "SYMBOL_name": "Symbol 8",
+                                        "SYMBOL_name": "Symbol 3",
                                         "Instance_Name": "InstName",
                                         "symbolType": "graphic",
                                         "firstFrame": 0,
@@ -428,8 +312,12 @@
                             "duration": 1,
                             "elements": [
                                 {
-                                    "ATLAS_SPRITE_instance": {
-                                        "name": "0006",
+                                    "SYMBOL_Instance": {
+                                        "SYMBOL_name": "Symbol 3",
+                                        "Instance_Name": "InstName",
+                                        "symbolType": "graphic",
+                                        "firstFrame": 0,
+                                        "loop": "loop",
                                         "Matrix3D": {
                                             "m00": 1.0,
                                             "m01": 0.0,
@@ -443,15 +331,15 @@
                                             "m21": 0.0,
                                             "m22": 1.0,
                                             "m23": 0.0,
-                                            "m30": 85.0,
-                                            "m31": 141.0,
+                                            "m30": 0.0,
+                                            "m31": 0.0,
                                             "m32": 0.0,
                                             "m33": 1.0
                                         },
                                         "DecomposedMatrix": {
                                             "Position": {
-                                                "x": 85.0,
-                                                "y": 141.0,
+                                                "x": 0.0,
+                                                "y": 0.0,
                                                 "z": 0.0
                                             },
                                             "Rotation": {
@@ -474,8 +362,12 @@
                             "duration": 1,
                             "elements": [
                                 {
-                                    "ATLAS_SPRITE_instance": {
-                                        "name": "0007",
+                                    "SYMBOL_Instance": {
+                                        "SYMBOL_name": "Symbol 3",
+                                        "Instance_Name": "InstName",
+                                        "symbolType": "graphic",
+                                        "firstFrame": 0,
+                                        "loop": "loop",
                                         "Matrix3D": {
                                             "m00": 1.0,
                                             "m01": 0.0,
@@ -489,15 +381,15 @@
                                             "m21": 0.0,
                                             "m22": 1.0,
                                             "m23": 0.0,
-                                            "m30": 56.0,
-                                            "m31": 100.0,
+                                            "m30": 0.0,
+                                            "m31": 0.0,
                                             "m32": 0.0,
                                             "m33": 1.0
                                         },
                                         "DecomposedMatrix": {
                                             "Position": {
-                                                "x": 56.0,
-                                                "y": 100.0,
+                                                "x": 0.0,
+                                                "y": 0.0,
                                                 "z": 0.0
                                             },
                                             "Rotation": {
@@ -520,8 +412,12 @@
                             "duration": 1,
                             "elements": [
                                 {
-                                    "ATLAS_SPRITE_instance": {
-                                        "name": "0008",
+                                    "SYMBOL_Instance": {
+                                        "SYMBOL_name": "Symbol 4",
+                                        "Instance_Name": "InstName",
+                                        "symbolType": "graphic",
+                                        "firstFrame": 0,
+                                        "loop": "loop",
                                         "Matrix3D": {
                                             "m00": 1.0,
                                             "m01": 0.0,
@@ -535,15 +431,15 @@
                                             "m21": 0.0,
                                             "m22": 1.0,
                                             "m23": 0.0,
-                                            "m30": 67.0,
-                                            "m31": 172.0,
+                                            "m30": 0.0,
+                                            "m31": 0.0,
                                             "m32": 0.0,
                                             "m33": 1.0
                                         },
                                         "DecomposedMatrix": {
                                             "Position": {
-                                                "x": 67.0,
-                                                "y": 172.0,
+                                                "x": 0.0,
+                                                "y": 0.0,
                                                 "z": 0.0
                                             },
                                             "Rotation": {
@@ -566,8 +462,12 @@
                             "duration": 1,
                             "elements": [
                                 {
-                                    "ATLAS_SPRITE_instance": {
-                                        "name": "0009",
+                                    "SYMBOL_Instance": {
+                                        "SYMBOL_name": "Symbol 4",
+                                        "Instance_Name": "InstName",
+                                        "symbolType": "graphic",
+                                        "firstFrame": 0,
+                                        "loop": "loop",
                                         "Matrix3D": {
                                             "m00": 1.0,
                                             "m01": 0.0,
@@ -581,15 +481,15 @@
                                             "m21": 0.0,
                                             "m22": 1.0,
                                             "m23": 0.0,
-                                            "m30": 81.0,
-                                            "m31": 161.0,
+                                            "m30": 0.0,
+                                            "m31": 0.0,
                                             "m32": 0.0,
                                             "m33": 1.0
                                         },
                                         "DecomposedMatrix": {
                                             "Position": {
-                                                "x": 81.0,
-                                                "y": 161.0,
+                                                "x": 0.0,
+                                                "y": 0.0,
                                                 "z": 0.0
                                             },
                                             "Rotation": {
@@ -612,8 +512,12 @@
                             "duration": 1,
                             "elements": [
                                 {
-                                    "ATLAS_SPRITE_instance": {
-                                        "name": "0010",
+                                    "SYMBOL_Instance": {
+                                        "SYMBOL_name": "Symbol 4",
+                                        "Instance_Name": "InstName",
+                                        "symbolType": "graphic",
+                                        "firstFrame": 0,
+                                        "loop": "loop",
                                         "Matrix3D": {
                                             "m00": 1.0,
                                             "m01": 0.0,
@@ -627,15 +531,15 @@
                                             "m21": 0.0,
                                             "m22": 1.0,
                                             "m23": 0.0,
-                                            "m30": 108.0,
-                                            "m31": 190.0,
+                                            "m30": 0.0,
+                                            "m31": 0.0,
                                             "m32": 0.0,
                                             "m33": 1.0
                                         },
                                         "DecomposedMatrix": {
                                             "Position": {
-                                                "x": 108.0,
-                                                "y": 190.0,
+                                                "x": 0.0,
+                                                "y": 0.0,
                                                 "z": 0.0
                                             },
                                             "Rotation": {
@@ -658,8 +562,12 @@
                             "duration": 1,
                             "elements": [
                                 {
-                                    "ATLAS_SPRITE_instance": {
-                                        "name": "0011",
+                                    "SYMBOL_Instance": {
+                                        "SYMBOL_name": "Symbol 5",
+                                        "Instance_Name": "InstName",
+                                        "symbolType": "graphic",
+                                        "firstFrame": 0,
+                                        "loop": "loop",
                                         "Matrix3D": {
                                             "m00": 1.0,
                                             "m01": 0.0,
@@ -673,15 +581,15 @@
                                             "m21": 0.0,
                                             "m22": 1.0,
                                             "m23": 0.0,
-                                            "m30": 103.0,
-                                            "m31": 180.0,
+                                            "m30": 0.0,
+                                            "m31": 0.0,
                                             "m32": 0.0,
                                             "m33": 1.0
                                         },
                                         "DecomposedMatrix": {
                                             "Position": {
-                                                "x": 103.0,
-                                                "y": 180.0,
+                                                "x": 0.0,
+                                                "y": 0.0,
                                                 "z": 0.0
                                             },
                                             "Rotation": {
@@ -704,8 +612,12 @@
                             "duration": 1,
                             "elements": [
                                 {
-                                    "ATLAS_SPRITE_instance": {
-                                        "name": "0012",
+                                    "SYMBOL_Instance": {
+                                        "SYMBOL_name": "Symbol 5",
+                                        "Instance_Name": "InstName",
+                                        "symbolType": "graphic",
+                                        "firstFrame": 0,
+                                        "loop": "loop",
                                         "Matrix3D": {
                                             "m00": 1.0,
                                             "m01": 0.0,
@@ -719,15 +631,365 @@
                                             "m21": 0.0,
                                             "m22": 1.0,
                                             "m23": 0.0,
-                                            "m30": 88.0,
-                                            "m31": 200.0,
+                                            "m30": 0.0,
+                                            "m31": 0.0,
                                             "m32": 0.0,
                                             "m33": 1.0
                                         },
                                         "DecomposedMatrix": {
                                             "Position": {
-                                                "x": 88.0,
-                                                "y": 200.0,
+                                                "x": 0.0,
+                                                "y": 0.0,
+                                                "z": 0.0
+                                            },
+                                            "Rotation": {
+                                                "x": 0.0,
+                                                "y": -0.0,
+                                                "z": 0.0
+                                            },
+                                            "Scaling": {
+                                                "x": 1.0,
+                                                "y": 1.0,
+                                                "z": 1.0
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "index": 13,
+                            "duration": 1,
+                            "elements": [
+                                {
+                                    "SYMBOL_Instance": {
+                                        "SYMBOL_name": "Symbol 5",
+                                        "Instance_Name": "InstName",
+                                        "symbolType": "graphic",
+                                        "firstFrame": 0,
+                                        "loop": "loop",
+                                        "Matrix3D": {
+                                            "m00": 1.0,
+                                            "m01": 0.0,
+                                            "m02": 0.0,
+                                            "m03": 0.0,
+                                            "m10": 0.0,
+                                            "m11": 1.0,
+                                            "m12": 0.0,
+                                            "m13": 0.0,
+                                            "m20": 0.0,
+                                            "m21": 0.0,
+                                            "m22": 1.0,
+                                            "m23": 0.0,
+                                            "m30": 0.0,
+                                            "m31": 0.0,
+                                            "m32": 0.0,
+                                            "m33": 1.0
+                                        },
+                                        "DecomposedMatrix": {
+                                            "Position": {
+                                                "x": 0.0,
+                                                "y": 0.0,
+                                                "z": 0.0
+                                            },
+                                            "Rotation": {
+                                                "x": 0.0,
+                                                "y": -0.0,
+                                                "z": 0.0
+                                            },
+                                            "Scaling": {
+                                                "x": 1.0,
+                                                "y": 1.0,
+                                                "z": 1.0
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "index": 14,
+                            "duration": 1,
+                            "elements": [
+                                {
+                                    "SYMBOL_Instance": {
+                                        "SYMBOL_name": "Symbol 5",
+                                        "Instance_Name": "InstName",
+                                        "symbolType": "graphic",
+                                        "firstFrame": 0,
+                                        "loop": "loop",
+                                        "Matrix3D": {
+                                            "m00": 1.0,
+                                            "m01": 0.0,
+                                            "m02": 0.0,
+                                            "m03": 0.0,
+                                            "m10": 0.0,
+                                            "m11": 1.0,
+                                            "m12": 0.0,
+                                            "m13": 0.0,
+                                            "m20": 0.0,
+                                            "m21": 0.0,
+                                            "m22": 1.0,
+                                            "m23": 0.0,
+                                            "m30": 0.0,
+                                            "m31": 0.0,
+                                            "m32": 0.0,
+                                            "m33": 1.0
+                                        },
+                                        "DecomposedMatrix": {
+                                            "Position": {
+                                                "x": 0.0,
+                                                "y": 0.0,
+                                                "z": 0.0
+                                            },
+                                            "Rotation": {
+                                                "x": 0.0,
+                                                "y": -0.0,
+                                                "z": 0.0
+                                            },
+                                            "Scaling": {
+                                                "x": 1.0,
+                                                "y": 1.0,
+                                                "z": 1.0
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "index": 15,
+                            "duration": 1,
+                            "elements": [
+                                {
+                                    "SYMBOL_Instance": {
+                                        "SYMBOL_name": "Symbol 6",
+                                        "Instance_Name": "InstName",
+                                        "symbolType": "graphic",
+                                        "firstFrame": 0,
+                                        "loop": "loop",
+                                        "Matrix3D": {
+                                            "m00": 1.0,
+                                            "m01": 0.0,
+                                            "m02": 0.0,
+                                            "m03": 0.0,
+                                            "m10": 0.0,
+                                            "m11": 1.0,
+                                            "m12": 0.0,
+                                            "m13": 0.0,
+                                            "m20": 0.0,
+                                            "m21": 0.0,
+                                            "m22": 1.0,
+                                            "m23": 0.0,
+                                            "m30": 0.0,
+                                            "m31": 0.0,
+                                            "m32": 0.0,
+                                            "m33": 1.0
+                                        },
+                                        "DecomposedMatrix": {
+                                            "Position": {
+                                                "x": 0.0,
+                                                "y": 0.0,
+                                                "z": 0.0
+                                            },
+                                            "Rotation": {
+                                                "x": 0.0,
+                                                "y": -0.0,
+                                                "z": 0.0
+                                            },
+                                            "Scaling": {
+                                                "x": 1.0,
+                                                "y": 1.0,
+                                                "z": 1.0
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "index": 16,
+                            "duration": 1,
+                            "elements": [
+                                {
+                                    "SYMBOL_Instance": {
+                                        "SYMBOL_name": "Symbol 6",
+                                        "Instance_Name": "InstName",
+                                        "symbolType": "graphic",
+                                        "firstFrame": 0,
+                                        "loop": "loop",
+                                        "Matrix3D": {
+                                            "m00": 1.0,
+                                            "m01": 0.0,
+                                            "m02": 0.0,
+                                            "m03": 0.0,
+                                            "m10": 0.0,
+                                            "m11": 1.0,
+                                            "m12": 0.0,
+                                            "m13": 0.0,
+                                            "m20": 0.0,
+                                            "m21": 0.0,
+                                            "m22": 1.0,
+                                            "m23": 0.0,
+                                            "m30": 0.0,
+                                            "m31": 0.0,
+                                            "m32": 0.0,
+                                            "m33": 1.0
+                                        },
+                                        "DecomposedMatrix": {
+                                            "Position": {
+                                                "x": 0.0,
+                                                "y": 0.0,
+                                                "z": 0.0
+                                            },
+                                            "Rotation": {
+                                                "x": 0.0,
+                                                "y": -0.0,
+                                                "z": 0.0
+                                            },
+                                            "Scaling": {
+                                                "x": 1.0,
+                                                "y": 1.0,
+                                                "z": 1.0
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "index": 17,
+                            "duration": 1,
+                            "elements": [
+                                {
+                                    "SYMBOL_Instance": {
+                                        "SYMBOL_name": "Symbol 6",
+                                        "Instance_Name": "InstName",
+                                        "symbolType": "graphic",
+                                        "firstFrame": 0,
+                                        "loop": "loop",
+                                        "Matrix3D": {
+                                            "m00": 1.0,
+                                            "m01": 0.0,
+                                            "m02": 0.0,
+                                            "m03": 0.0,
+                                            "m10": 0.0,
+                                            "m11": 1.0,
+                                            "m12": 0.0,
+                                            "m13": 0.0,
+                                            "m20": 0.0,
+                                            "m21": 0.0,
+                                            "m22": 1.0,
+                                            "m23": 0.0,
+                                            "m30": 0.0,
+                                            "m31": 0.0,
+                                            "m32": 0.0,
+                                            "m33": 1.0
+                                        },
+                                        "DecomposedMatrix": {
+                                            "Position": {
+                                                "x": 0.0,
+                                                "y": 0.0,
+                                                "z": 0.0
+                                            },
+                                            "Rotation": {
+                                                "x": 0.0,
+                                                "y": -0.0,
+                                                "z": 0.0
+                                            },
+                                            "Scaling": {
+                                                "x": 1.0,
+                                                "y": 1.0,
+                                                "z": 1.0
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "index": 18,
+                            "duration": 1,
+                            "elements": [
+                                {
+                                    "SYMBOL_Instance": {
+                                        "SYMBOL_name": "Symbol 6",
+                                        "Instance_Name": "InstName",
+                                        "symbolType": "graphic",
+                                        "firstFrame": 0,
+                                        "loop": "loop",
+                                        "Matrix3D": {
+                                            "m00": 1.0,
+                                            "m01": 0.0,
+                                            "m02": 0.0,
+                                            "m03": 0.0,
+                                            "m10": 0.0,
+                                            "m11": 1.0,
+                                            "m12": 0.0,
+                                            "m13": 0.0,
+                                            "m20": 0.0,
+                                            "m21": 0.0,
+                                            "m22": 1.0,
+                                            "m23": 0.0,
+                                            "m30": 0.0,
+                                            "m31": 0.0,
+                                            "m32": 0.0,
+                                            "m33": 1.0
+                                        },
+                                        "DecomposedMatrix": {
+                                            "Position": {
+                                                "x": 0.0,
+                                                "y": 0.0,
+                                                "z": 0.0
+                                            },
+                                            "Rotation": {
+                                                "x": 0.0,
+                                                "y": -0.0,
+                                                "z": 0.0
+                                            },
+                                            "Scaling": {
+                                                "x": 1.0,
+                                                "y": 1.0,
+                                                "z": 1.0
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "index": 19,
+                            "duration": 1,
+                            "elements": [
+                                {
+                                    "SYMBOL_Instance": {
+                                        "SYMBOL_name": "Symbol 5",
+                                        "Instance_Name": "InstName",
+                                        "symbolType": "graphic",
+                                        "firstFrame": 0,
+                                        "loop": "loop",
+                                        "Matrix3D": {
+                                            "m00": 1.0,
+                                            "m01": 0.0,
+                                            "m02": 0.0,
+                                            "m03": 0.0,
+                                            "m10": 0.0,
+                                            "m11": 1.0,
+                                            "m12": 0.0,
+                                            "m13": 0.0,
+                                            "m20": 0.0,
+                                            "m21": 0.0,
+                                            "m22": 1.0,
+                                            "m23": 0.0,
+                                            "m30": 0.0,
+                                            "m31": 0.0,
+                                            "m32": 0.0,
+                                            "m33": 1.0
+                                        },
+                                        "DecomposedMatrix": {
+                                            "Position": {
+                                                "x": 0.0,
+                                                "y": 0.0,
                                                 "z": 0.0
                                             },
                                             "Rotation": {
@@ -753,7 +1015,239 @@
     "SYMBOL_DICTIONARY": {
         "Symbols": [
             {
-                "SYMBOL_name": "Symbol 8",
+                "SYMBOL_name": "Symbol 2",
+                "TIMELINE": {
+                    "LAYERS": [
+                        {
+                            "Layer_name": "Layer_2",
+                            "Frames": [
+                                {
+                                    "index": 0,
+                                    "duration": 1,
+                                    "elements": [
+                                        {
+                                            "ATLAS_SPRITE_instance": {
+                                                "name": "0000",
+                                                "Matrix3D": {
+                                                    "m00": 1.0,
+                                                    "m01": 0.0,
+                                                    "m02": 0.0,
+                                                    "m03": 0.0,
+                                                    "m10": 0.0,
+                                                    "m11": 1.0,
+                                                    "m12": 0.0,
+                                                    "m13": 0.0,
+                                                    "m20": 0.0,
+                                                    "m21": 0.0,
+                                                    "m22": 1.0,
+                                                    "m23": 0.0,
+                                                    "m30": 61.0,
+                                                    "m31": 8.0,
+                                                    "m32": 0.0,
+                                                    "m33": 1.0
+                                                },
+                                                "DecomposedMatrix": {
+                                                    "Position": {
+                                                        "x": 61.0,
+                                                        "y": 8.0,
+                                                        "z": 0.0
+                                                    },
+                                                    "Rotation": {
+                                                        "x": 0.0,
+                                                        "y": -0.0,
+                                                        "z": 0.0
+                                                    },
+                                                    "Scaling": {
+                                                        "x": 1.0,
+                                                        "y": 1.0,
+                                                        "z": 1.0
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "SYMBOL_name": "Symbol 3",
+                "TIMELINE": {
+                    "LAYERS": [
+                        {
+                            "Layer_name": "Layer_2",
+                            "Frames": [
+                                {
+                                    "index": 0,
+                                    "duration": 1,
+                                    "elements": [
+                                        {
+                                            "ATLAS_SPRITE_instance": {
+                                                "name": "0001",
+                                                "Matrix3D": {
+                                                    "m00": 1.0,
+                                                    "m01": 0.0,
+                                                    "m02": 0.0,
+                                                    "m03": 0.0,
+                                                    "m10": 0.0,
+                                                    "m11": 1.0,
+                                                    "m12": 0.0,
+                                                    "m13": 0.0,
+                                                    "m20": 0.0,
+                                                    "m21": 0.0,
+                                                    "m22": 1.0,
+                                                    "m23": 0.0,
+                                                    "m30": 61.0,
+                                                    "m31": 8.0,
+                                                    "m32": 0.0,
+                                                    "m33": 1.0
+                                                },
+                                                "DecomposedMatrix": {
+                                                    "Position": {
+                                                        "x": 61.0,
+                                                        "y": 8.0,
+                                                        "z": 0.0
+                                                    },
+                                                    "Rotation": {
+                                                        "x": 0.0,
+                                                        "y": -0.0,
+                                                        "z": 0.0
+                                                    },
+                                                    "Scaling": {
+                                                        "x": 1.0,
+                                                        "y": 1.0,
+                                                        "z": 1.0
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "SYMBOL_name": "Symbol 4",
+                "TIMELINE": {
+                    "LAYERS": [
+                        {
+                            "Layer_name": "Layer_2",
+                            "Frames": [
+                                {
+                                    "index": 0,
+                                    "duration": 1,
+                                    "elements": [
+                                        {
+                                            "ATLAS_SPRITE_instance": {
+                                                "name": "0002",
+                                                "Matrix3D": {
+                                                    "m00": 1.0,
+                                                    "m01": 0.0,
+                                                    "m02": 0.0,
+                                                    "m03": 0.0,
+                                                    "m10": 0.0,
+                                                    "m11": 1.0,
+                                                    "m12": 0.0,
+                                                    "m13": 0.0,
+                                                    "m20": 0.0,
+                                                    "m21": 0.0,
+                                                    "m22": 1.0,
+                                                    "m23": 0.0,
+                                                    "m30": 61.0,
+                                                    "m31": 8.0,
+                                                    "m32": 0.0,
+                                                    "m33": 1.0
+                                                },
+                                                "DecomposedMatrix": {
+                                                    "Position": {
+                                                        "x": 61.0,
+                                                        "y": 8.0,
+                                                        "z": 0.0
+                                                    },
+                                                    "Rotation": {
+                                                        "x": 0.0,
+                                                        "y": -0.0,
+                                                        "z": 0.0
+                                                    },
+                                                    "Scaling": {
+                                                        "x": 1.0,
+                                                        "y": 1.0,
+                                                        "z": 1.0
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "SYMBOL_name": "Symbol 5",
+                "TIMELINE": {
+                    "LAYERS": [
+                        {
+                            "Layer_name": "Layer_2",
+                            "Frames": [
+                                {
+                                    "index": 0,
+                                    "duration": 1,
+                                    "elements": [
+                                        {
+                                            "ATLAS_SPRITE_instance": {
+                                                "name": "0003",
+                                                "Matrix3D": {
+                                                    "m00": 1.0,
+                                                    "m01": 0.0,
+                                                    "m02": 0.0,
+                                                    "m03": 0.0,
+                                                    "m10": 0.0,
+                                                    "m11": 1.0,
+                                                    "m12": 0.0,
+                                                    "m13": 0.0,
+                                                    "m20": 0.0,
+                                                    "m21": 0.0,
+                                                    "m22": 1.0,
+                                                    "m23": 0.0,
+                                                    "m30": 61.0,
+                                                    "m31": 8.0,
+                                                    "m32": 0.0,
+                                                    "m33": 1.0
+                                                },
+                                                "DecomposedMatrix": {
+                                                    "Position": {
+                                                        "x": 61.0,
+                                                        "y": 8.0,
+                                                        "z": 0.0
+                                                    },
+                                                    "Rotation": {
+                                                        "x": 0.0,
+                                                        "y": -0.0,
+                                                        "z": 0.0
+                                                    },
+                                                    "Scaling": {
+                                                        "x": 1.0,
+                                                        "y": 1.0,
+                                                        "z": 1.0
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "SYMBOL_name": "Symbol 6",
                 "TIMELINE": {
                     "LAYERS": [
                         {
@@ -779,73 +1273,15 @@
                                                     "m21": 0.0,
                                                     "m22": 1.0,
                                                     "m23": 0.0,
-                                                    "m30": 136.0,
-                                                    "m31": 108.0,
+                                                    "m30": 61.0,
+                                                    "m31": 8.0,
                                                     "m32": 0.0,
                                                     "m33": 1.0
                                                 },
                                                 "DecomposedMatrix": {
                                                     "Position": {
-                                                        "x": 136.0,
-                                                        "y": 108.0,
-                                                        "z": 0.0
-                                                    },
-                                                    "Rotation": {
-                                                        "x": 0.0,
-                                                        "y": -0.0,
-                                                        "z": 0.0
-                                                    },
-                                                    "Scaling": {
-                                                        "x": 1.0,
-                                                        "y": 1.0,
-                                                        "z": 1.0
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            },
-            {
-                "SYMBOL_name": "Symbol 9",
-                "TIMELINE": {
-                    "LAYERS": [
-                        {
-                            "Layer_name": "Layer_2",
-                            "Frames": [
-                                {
-                                    "index": 0,
-                                    "duration": 1,
-                                    "elements": [
-                                        {
-                                            "ATLAS_SPRITE_instance": {
-                                                "name": "0005",
-                                                "Matrix3D": {
-                                                    "m00": 1.0,
-                                                    "m01": 0.0,
-                                                    "m02": 0.0,
-                                                    "m03": 0.0,
-                                                    "m10": 0.0,
-                                                    "m11": 1.0,
-                                                    "m12": 0.0,
-                                                    "m13": 0.0,
-                                                    "m20": 0.0,
-                                                    "m21": 0.0,
-                                                    "m22": 1.0,
-                                                    "m23": 0.0,
-                                                    "m30": 76.0,
-                                                    "m31": 194.0,
-                                                    "m32": 0.0,
-                                                    "m33": 1.0
-                                                },
-                                                "DecomposedMatrix": {
-                                                    "Position": {
-                                                        "x": 76.0,
-                                                        "y": 194.0,
+                                                        "x": 61.0,
+                                                        "y": 8.0,
                                                         "z": 0.0
                                                     },
                                                     "Rotation": {
