@@ -71,6 +71,7 @@ export let Bullet;
  * @property {number} sceneTimeOffset - The time to subtract from Date.now() to get sceneTime
  * @property {number} stepSize - The time (in seconds, accurate to ms) since the last render
  * @property {Box} sceneBox
+ * @property {?{x:number,y:number}} cameraTarget
  * @property {!Hero} hero
  * @property {!Array<GameObject>} objects
  * @property {!Array<Bullet>} bullets - Sorted by x
@@ -116,6 +117,7 @@ export function makeScene(options) {
     sceneTimeOffset: offsetAFrameFrom(0),
     stepSize: 0,
     sceneBox: options.sceneBox,
+    cameraTarget: null,
     hero: options.hero,
     objects: [],
     bullets: [],

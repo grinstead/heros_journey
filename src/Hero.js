@@ -25,9 +25,11 @@ const NOZZLE_X = 96;
 const NOZZLE_Y = 50;
 const ARM_LENGTH = Math.sqrt(NOZZLE_X * NOZZLE_X + NOZZLE_Y * NOZZLE_Y);
 
+export const BULLET_HEIGHT = 70;
+
 const ARM_POS = {
   x: 0,
-  y: 70,
+  y: BULLET_HEIGHT,
 };
 
 /**
@@ -183,7 +185,8 @@ function heroStateJump(hero, /** @type {Scene} */ scene) {
       sprite.updateTime(sceneTime);
 
       // moves the shadow
-      hero.z = 40 * Math.sin((Math.PI * (sceneTime - startTime)) / 0.75);
+      hero.z =
+        40 * Math.max(0, Math.sin((Math.PI * (sceneTime - startTime)) / 0.75));
 
       if (sprite.isFinished()) {
         hero.changeState(scene, heroStateNormal, null);

@@ -36,7 +36,7 @@ import {
 import { AudioManager } from "./AudioManager.js";
 import { hexToBuffer } from "./hex.js";
 import { loadUpGameScript } from "./GameScript.js";
-import { renderHero, processHero } from "./Hero.js";
+import { renderHero, processHero, BULLET_HEIGHT } from "./Hero.js";
 import { makeBulletBall } from "./assets.js";
 import { magnitudeOf } from "./utils.js";
 
@@ -106,9 +106,22 @@ export class Game {
     let sceneTime = updateSceneTime(scene, realTime, MAX_FRAME_TIME);
     let stepSize = scene.stepSize;
 
-    const targetCamera = world.targetCamera;
-    targetCamera.x = scene.hero.x;
-    targetCamera.y = scene.hero.y;
+    const hero = scene.hero;
+
+    {
+      const targetCamera = world.targetCamera;
+      const heroX = hero.x;
+      const heroY = hero.y + BULLET_HEIGHT;
+      const altTarget = scene.cameraTarget;
+
+      if (altTarget) {
+        targetCamera.x = (heroX + altTarget.x) / 2;
+        targetCamera.y = (heroY + altTarget.y + BULLET_HEIGHT) / 2;
+      } else {
+        targetCamera.x = heroX;
+        targetCamera.y = heroY;
+      }
+    }
 
     world.adjustCamera(scene);
 

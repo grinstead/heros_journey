@@ -246,6 +246,22 @@ function runAction(scene, action) {
 
       return CONTINUE;
     }
+    case "camera": {
+      const { name } = action;
+      if (name == null) {
+        scene.cameraTarget = null;
+      } else {
+        const obj = scene.objects.find((obj) => obj.name === name);
+        if (!obj) {
+          throw new Error(`No object with name ${name}`);
+        }
+
+        scene.cameraTarget = obj;
+      }
+
+      return CONTINUE;
+    }
+
     default:
       throw new Error(`Unrecognized action type ${action.type}`);
   }

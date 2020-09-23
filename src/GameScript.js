@@ -82,7 +82,14 @@ function parseGameScript(circleRadius) {
       };
     });
 
-    const actionTypes = ["add", "play sound", "wait", "change sprite", "move"];
+    const actionTypes = [
+      "add",
+      "play sound",
+      "wait",
+      "change sprite",
+      "move",
+      "camera",
+    ];
 
     const knownNames = new Set();
     const readKnownName = () =>
@@ -138,6 +145,11 @@ function parseGameScript(circleRadius) {
             z: hasKey("z") ? readNum("z") : 0,
             easeIn: hasKey("ease in") && readBoolean("ease in"),
             easeOut: hasKey("ease out") && readBoolean("ease out"),
+          };
+        case "camera":
+          return {
+            type,
+            name: hasKey("name") ? readKnownName() : null,
           };
       }
     });
