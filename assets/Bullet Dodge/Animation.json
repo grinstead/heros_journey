@@ -1,7 +1,7 @@
 {
     "ANIMATION": {
-        "name": "Untitled-2",
-        "SYMBOL_name": "Bullet Dodge.swf",
+        "name": "Bullet Dodge 2",
+        "SYMBOL_name": "Bullet Dodge 2.swf",
         "TIMELINE": {
             "LAYERS": [
                 {
@@ -27,14 +27,14 @@
                                             "m21": 0.0,
                                             "m22": 1.0,
                                             "m23": 0.0,
-                                            "m30": 11.0,
+                                            "m30": 85.0,
                                             "m31": 207.0,
                                             "m32": 0.0,
                                             "m33": 1.0
                                         },
                                         "DecomposedMatrix": {
                                             "Position": {
-                                                "x": 11.0,
+                                                "x": 85.0,
                                                 "y": 207.0,
                                                 "z": 0.0
                                             },
@@ -73,14 +73,14 @@
                                             "m21": 0.0,
                                             "m22": 1.0,
                                             "m23": 0.0,
-                                            "m30": 28.0,
+                                            "m30": 90.0,
                                             "m31": 158.0,
                                             "m32": 0.0,
                                             "m33": 1.0
                                         },
                                         "DecomposedMatrix": {
                                             "Position": {
-                                                "x": 28.0,
+                                                "x": 90.0,
                                                 "y": 158.0,
                                                 "z": 0.0
                                             },
@@ -119,14 +119,14 @@
                                             "m21": 0.0,
                                             "m22": 1.0,
                                             "m23": 0.0,
-                                            "m30": 53.0,
+                                            "m30": 79.0,
                                             "m31": 17.0,
                                             "m32": 0.0,
                                             "m33": 1.0
                                         },
                                         "DecomposedMatrix": {
                                             "Position": {
-                                                "x": 53.0,
+                                                "x": 79.0,
                                                 "y": 17.0,
                                                 "z": 0.0
                                             },
@@ -165,14 +165,14 @@
                                             "m21": 0.0,
                                             "m22": 1.0,
                                             "m23": 0.0,
-                                            "m30": 66.0,
+                                            "m30": 81.0,
                                             "m31": 200.0,
                                             "m32": 0.0,
                                             "m33": 1.0
                                         },
                                         "DecomposedMatrix": {
                                             "Position": {
-                                                "x": 66.0,
+                                                "x": 81.0,
                                                 "y": 200.0,
                                                 "z": 0.0
                                             },
@@ -191,7 +191,7 @@
                                 },
                                 {
                                     "SYMBOL_Instance": {
-                                        "SYMBOL_name": "Symbol 2",
+                                        "SYMBOL_name": "Symbol 8",
                                         "Instance_Name": "InstName",
                                         "symbolType": "graphic",
                                         "firstFrame": 0,
@@ -241,7 +241,7 @@
                             "elements": [
                                 {
                                     "SYMBOL_Instance": {
-                                        "SYMBOL_name": "Symbol 3",
+                                        "SYMBOL_name": "Symbol 9",
                                         "Instance_Name": "InstName",
                                         "symbolType": "graphic",
                                         "firstFrame": 0,
@@ -285,7 +285,7 @@
                                 },
                                 {
                                     "SYMBOL_Instance": {
-                                        "SYMBOL_name": "Symbol 2",
+                                        "SYMBOL_name": "Symbol 8",
                                         "Instance_Name": "InstName",
                                         "symbolType": "graphic",
                                         "firstFrame": 0,
@@ -335,7 +335,7 @@
                             "elements": [
                                 {
                                     "SYMBOL_Instance": {
-                                        "SYMBOL_name": "Symbol 3",
+                                        "SYMBOL_name": "Symbol 9",
                                         "Instance_Name": "InstName",
                                         "symbolType": "graphic",
                                         "firstFrame": 0,
@@ -379,7 +379,7 @@
                                 },
                                 {
                                     "SYMBOL_Instance": {
-                                        "SYMBOL_name": "Symbol 2",
+                                        "SYMBOL_name": "Symbol 8",
                                         "Instance_Name": "InstName",
                                         "symbolType": "graphic",
                                         "firstFrame": 0,
@@ -443,14 +443,14 @@
                                             "m21": 0.0,
                                             "m22": 1.0,
                                             "m23": 0.0,
-                                            "m30": 76.0,
+                                            "m30": 85.0,
                                             "m31": 141.0,
                                             "m32": 0.0,
                                             "m33": 1.0
                                         },
                                         "DecomposedMatrix": {
                                             "Position": {
-                                                "x": 76.0,
+                                                "x": 85.0,
                                                 "y": 141.0,
                                                 "z": 0.0
                                             },
@@ -581,14 +581,14 @@
                                             "m21": 0.0,
                                             "m22": 1.0,
                                             "m23": 0.0,
-                                            "m30": 96.0,
+                                            "m30": 81.0,
                                             "m31": 161.0,
                                             "m32": 0.0,
                                             "m33": 1.0
                                         },
                                         "DecomposedMatrix": {
                                             "Position": {
-                                                "x": 96.0,
+                                                "x": 81.0,
                                                 "y": 161.0,
                                                 "z": 0.0
                                             },
@@ -627,14 +627,14 @@
                                             "m21": 0.0,
                                             "m22": 1.0,
                                             "m23": 0.0,
-                                            "m30": 141.0,
+                                            "m30": 108.0,
                                             "m31": 190.0,
                                             "m32": 0.0,
                                             "m33": 1.0
                                         },
                                         "DecomposedMatrix": {
                                             "Position": {
-                                                "x": 141.0,
+                                                "x": 108.0,
                                                 "y": 190.0,
                                                 "z": 0.0
                                             },
@@ -673,14 +673,14 @@
                                             "m21": 0.0,
                                             "m22": 1.0,
                                             "m23": 0.0,
-                                            "m30": 146.0,
+                                            "m30": 103.0,
                                             "m31": 180.0,
                                             "m32": 0.0,
                                             "m33": 1.0
                                         },
                                         "DecomposedMatrix": {
                                             "Position": {
-                                                "x": 146.0,
+                                                "x": 103.0,
                                                 "y": 180.0,
                                                 "z": 0.0
                                             },
@@ -719,14 +719,14 @@
                                             "m21": 0.0,
                                             "m22": 1.0,
                                             "m23": 0.0,
-                                            "m30": 146.0,
+                                            "m30": 88.0,
                                             "m31": 200.0,
                                             "m32": 0.0,
                                             "m33": 1.0
                                         },
                                         "DecomposedMatrix": {
                                             "Position": {
-                                                "x": 146.0,
+                                                "x": 88.0,
                                                 "y": 200.0,
                                                 "z": 0.0
                                             },
@@ -753,7 +753,7 @@
     "SYMBOL_DICTIONARY": {
         "Symbols": [
             {
-                "SYMBOL_name": "Symbol 2",
+                "SYMBOL_name": "Symbol 8",
                 "TIMELINE": {
                     "LAYERS": [
                         {
@@ -779,14 +779,14 @@
                                                     "m21": 0.0,
                                                     "m22": 1.0,
                                                     "m23": 0.0,
-                                                    "m30": 121.0,
+                                                    "m30": 136.0,
                                                     "m31": 108.0,
                                                     "m32": 0.0,
                                                     "m33": 1.0
                                                 },
                                                 "DecomposedMatrix": {
                                                     "Position": {
-                                                        "x": 121.0,
+                                                        "x": 136.0,
                                                         "y": 108.0,
                                                         "z": 0.0
                                                     },
@@ -811,7 +811,7 @@
                 }
             },
             {
-                "SYMBOL_name": "Symbol 3",
+                "SYMBOL_name": "Symbol 9",
                 "TIMELINE": {
                     "LAYERS": [
                         {
@@ -837,14 +837,14 @@
                                                     "m21": 0.0,
                                                     "m22": 1.0,
                                                     "m23": 0.0,
-                                                    "m30": 58.0,
+                                                    "m30": 76.0,
                                                     "m31": 194.0,
                                                     "m32": 0.0,
                                                     "m33": 1.0
                                                 },
                                                 "DecomposedMatrix": {
                                                     "Position": {
-                                                        "x": 58.0,
+                                                        "x": 76.0,
                                                         "y": 194.0,
                                                         "z": 0.0
                                                     },
