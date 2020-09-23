@@ -20,6 +20,7 @@ import { arctan } from "./utils.js";
 const HERO_SPEED = 640;
 const BULLET_SPEED = 400;
 const BULLET_SHADOW = { x: 10, y: 5 };
+const JUMP_COOLDOWN = 0.25;
 
 const NOZZLE_X = 96;
 const NOZZLE_Y = 50;
@@ -70,6 +71,8 @@ export class Hero {
     this.mirrorX = false;
     /** @type {ShadowRadius} */
     this.shadowRadius = { x: 30, y: 15 };
+    /** @type {number} */
+    this.jumpCooldown = 0;
     /** @type {HeroState} */
     this.state = {
       name: "unstarted",
@@ -106,7 +109,7 @@ function heroStateNormal(hero, scene) {
         hero.speed = 0;
       }
 
-      if (input.isPressed("jump")) {
+      if (sceneTime >= hero.jumpCooldown && input.isPressed("jump")) {
         hero.changeState(scene, heroStateJump, null);
       }
 
@@ -186,7 +189,8 @@ function heroStateJump(hero, /** @type {Scene} */ scene) {
 
       // moves the shadow
       hero.z =
-        40 * Math.max(0, Math.sin((Math.PI * (sceneTime - startTime)) / 0.75));
+        BULLET_HEIGHT *
+        Math.max(0, Math.sin((Math.PI * (sceneTime - startTime)) / 0.75));
 
       if (sprite.isFinished()) {
         hero.changeState(scene, heroStateNormal, null);
@@ -198,6 +202,7 @@ function heroStateJump(hero, /** @type {Scene} */ scene) {
     },
     onExit: () => {
       hero.z = 0;
+      hero.jumpCooldown = scene.sceneTime + JUMP_COOLDOWN;
     },
   };
 }
