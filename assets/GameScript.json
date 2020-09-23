@@ -176,6 +176,11 @@
       "type": "audio",
       "name": "BigBadGuyLandingSound",
       "src": "Big Bad Guy Landing.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "JumpSound",
+      "src": "Bullet Dodge.mp3"
     }
   ]
 }

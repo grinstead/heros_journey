@@ -166,11 +166,13 @@ function heroStateNormal(hero, scene) {
   };
 }
 
-function heroStateJump(hero, scene) {
+function heroStateJump(hero, /** @type {Scene} */ scene) {
   const sprite = makeHeroJump(scene.sceneTime);
   hero.direction = hero.armDirection;
   hero.mirrorX = dirIsLeft(hero.direction);
   hero.speed = HERO_SPEED / 2;
+
+  scene.audio.playNamedSound(hero, "JumpSound");
 
   return {
     name: "jump",
