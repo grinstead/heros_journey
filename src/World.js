@@ -19,7 +19,7 @@ function CONTINUE() {
 export let Camera;
 
 export class World {
-  constructor(kernel, hero, startScene) {
+  constructor(kernel, startScene) {
     /** @private {SceneKernel} */
     this.kernel = kernel;
     /** @private {Map<string, Scene>} Maps the initialized scenes' names to their data */
@@ -28,8 +28,6 @@ export class World {
     this.activeScene = startScene;
     /** @type {Camera} */
     this.camera = { x: 0, y: 0, zoom: 1 };
-    /** @type {!Hero} */
-    this.hero = hero;
   }
 
   /**
@@ -49,7 +47,7 @@ export class World {
     const scenes = this.scenes;
     let scene = scenes.get(sceneName);
     if (!scene) {
-      scene = initScene(this.kernel, this.hero, sceneName);
+      scene = initScene(this.kernel, sceneName);
       scenes.set(sceneName, scene);
     }
     return scene;
@@ -61,28 +59,22 @@ export class World {
  * @param {SceneKernel} kernel
  */
 export function initWorld(kernel) {
-  const hero = new Hero(0);
-  return new World(
-    kernel,
-    hero,
-    initScene(kernel, hero, kernel.gameScript.openingScene)
-  );
+  return new World(kernel, initScene(kernel, kernel.gameScript.openingScene));
 }
 
 /**
  * @param {SceneKernel} kernel
- * @param {Hero} hero
  * @param {string} sceneName
  * @returns {Scene}
  */
-function initScene(kernel, hero, sceneName) {
+function initScene(kernel, sceneName) {
   switch (sceneName) {
     default: {
       const scene = makeScene({
         kernel,
         sceneName,
         sceneBox: { left: 0, right: 960, top: 0, bottom: 640 },
-        hero,
+        hero: new Hero(0),
       });
 
       return scene;

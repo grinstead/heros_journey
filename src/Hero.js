@@ -167,7 +167,8 @@ function heroStateNormal(hero, scene) {
 }
 
 function heroStateJump(hero, /** @type {Scene} */ scene) {
-  const sprite = makeHeroJump(scene.sceneTime);
+  const startTime = scene.sceneTime;
+  const sprite = makeHeroJump(startTime);
   hero.direction = hero.armDirection;
   hero.mirrorX = dirIsLeft(hero.direction);
   hero.speed = HERO_SPEED / 2;
@@ -178,7 +179,11 @@ function heroStateJump(hero, /** @type {Scene} */ scene) {
     name: "jump",
     /** @param {Scene} scene */
     processStep: (scene) => {
-      sprite.updateTime(scene.sceneTime);
+      const sceneTime = scene.sceneTime;
+      sprite.updateTime(sceneTime);
+
+      // moves the shadow
+      hero.z = 40 * Math.sin((Math.PI * (sceneTime - startTime)) / 0.75);
 
       if (sprite.isFinished()) {
         hero.changeState(scene, heroStateNormal, null);
@@ -187,6 +192,9 @@ function heroStateJump(hero, /** @type {Scene} */ scene) {
     render: () => {
       sprite.prepareSpriteType();
       subrenderSprite(sprite);
+    },
+    onExit: () => {
+      hero.z = 0;
     },
   };
 }

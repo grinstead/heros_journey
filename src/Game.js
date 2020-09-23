@@ -297,7 +297,7 @@ function renderGame(game) {
         gl.drawArrays(gl.TRIANGLE_FAN, 0, circleShadow.numPoints);
       };
 
-      subrenderWithArg(renderShadow, world.hero);
+      subrenderWithArg(renderShadow, scene.hero);
       subrenderEach(scene.objects, renderShadow);
 
       subrenderEach(scene.bullets, ({ x, y, shadowRadius, isDead }) => {
@@ -343,7 +343,7 @@ function renderGame(game) {
       subrenderSprite(bulletSprite);
     });
 
-    subrenderWithArg(renderHero, world.hero);
+    subrenderWithArg(renderHero, scene.hero);
   });
 }
 
