@@ -16,7 +16,7 @@ import { killOffEnemy } from "./utils.js";
 
 const ARM_HEIGHT = 178 - 118;
 const ARM_LENGTH = 95 - 2;
-const HEALTH = 2;
+const HEALTH = 1; // 20;
 const SWEEP_TIME = 0.5;
 
 const VILLAIN_HIT_SOUNDS = [
