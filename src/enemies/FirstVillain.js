@@ -19,6 +19,12 @@ const ARM_LENGTH = 95 - 2;
 const HEALTH = 20;
 const SWEEP_TIME = 0.5;
 
+const VILLAIN_HIT_SOUNDS = [
+  "FirstVillainHit1",
+  "FirstVillainHit2",
+  "FirstVillainHit3",
+];
+
 /**
  * @typedef {Object} VillainState
  * @property {number} heroDirection
@@ -81,7 +87,7 @@ export function firstVillainMain(runner, object) {
       if (sceneTime - startTime > SWEEP_TIME) {
         state.dirOffset = 0;
         bulletCooldown = sceneTime + 0.2;
-        sweepCooldown = startTime + 2;
+        sweepCooldown = startTime + (object.damage > 10 ? 1 : 2);
         return fireSimple;
       }
 
@@ -135,6 +141,8 @@ export function firstVillainMain(runner, object) {
     return fireSimple;
   }
 
+  let prevDamage = object.damage;
+
   let activeAction = fireSimple;
   function Action() {
     if (object.damage >= HEALTH) {
@@ -144,6 +152,11 @@ export function firstVillainMain(runner, object) {
         makeFirstVillainDying,
         "FirstVillainDyingSound"
       );
+    }
+
+    if (object.damage !== prevDamage) {
+      prevDamage = object.damage;
+      scene.audio.playOneOf(object, VILLAIN_HIT_SOUNDS);
     }
 
     // 90 degrees off center, forms a circle

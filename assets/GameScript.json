@@ -1,5 +1,5 @@
 {
-  "opening scene": "call to action",
+  "opening scene": "intro",
   "scenes": {
     "big bad": {
       "location": {
@@ -201,7 +201,7 @@
         { "type": "play sound", "sound": "FirstVillainIntroSound" },
         {
           "type": "wait",
-          "seconds": 2.375
+          "seconds": 2.125
         },
         {
           "type": "move",
@@ -330,6 +330,36 @@
       "originY": 187
     },
     {
+      "type": "audio",
+      "name": "HeroDying1",
+      "src": "Hero Dying.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "HeroDying2",
+      "src": "Hero Dying 2.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "HeroDying3",
+      "src": "Hero Dying 3.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "HeroHit1",
+      "src": "Hero Hit 1.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "HeroHit2",
+      "src": "Hero Hit 2.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "HeroHit3",
+      "src": "Hero Hit 3.mp3"
+    },
+    {
       "type": "static",
       "name": "BulletCone",
       "src": "Bullet.png",
@@ -421,6 +451,21 @@
       "type": "audio",
       "name": "FirstVillainDyingSound",
       "src": "First Villian Dying.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "FirstVillainHit1",
+      "src": "First Villain Hit.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "FirstVillainHit2",
+      "src": "First Villain Hit 2.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "FirstVillainHit3",
+      "src": "First Villain Hit 3.mp3"
     },
     {
       "type": "animated",

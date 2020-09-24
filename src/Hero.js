@@ -27,6 +27,10 @@ const NOZZLE_X = 96;
 const NOZZLE_Y = 50;
 const ARM_LENGTH = Math.sqrt(NOZZLE_X * NOZZLE_X + NOZZLE_Y * NOZZLE_Y);
 
+export const HERO_BULLET_HITS = ["HeroHit1", "HeroHit2", "HeroHit3"];
+
+const HERO_DEATH = ["HeroDying1", "HeroDying2", "HeroDying3"];
+
 export const BULLET_HEIGHT = 70;
 
 const ARM_POS = {
@@ -136,18 +140,16 @@ function heroStateDying(hero, scene) {
   hero.speed = 0;
   hero.zSpeed = 0;
 
-  let timeToReset = null;
+  scene.audio.playOneOf(hero, HERO_DEATH);
+
+  let timeToReset = scene.sceneTime + 11;
 
   return {
     name: "dying",
     /** @param {Scene} scene */
     processStep: (scene) => {
       sprite.updateTime(scene.sceneTime);
-      if (sprite.isFinished() && timeToReset == null) {
-        timeToReset = scene.sceneTime + 1;
-      }
-
-      if (timeToReset != null && scene.sceneTime >= timeToReset) {
+      if (scene.sceneTime >= timeToReset) {
         scene.exiting = scene.sceneName;
       }
     },

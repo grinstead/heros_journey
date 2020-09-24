@@ -46,7 +46,12 @@ import {
   FULL_SPACE_ZOOM,
   PIXELS_PER_UNIT,
 } from "./GameScript.js";
-import { renderHero, processHero, BULLET_HEIGHT } from "./Hero.js";
+import {
+  renderHero,
+  processHero,
+  BULLET_HEIGHT,
+  HERO_BULLET_HITS,
+} from "./Hero.js";
 import { makeBulletBall } from "./assets.js";
 import { magnitudeOf } from "./utils.js";
 import { startSceneScript, runSceneScripts } from "./SceneScriptRunner.js";
@@ -209,6 +214,7 @@ export class Game {
         hero.damage += hits;
         if (hero.showDamageUntil >= 0) {
           hero.showDamageUntil = sceneTime + 0.125;
+          scene.audio.playOneOf(hero, HERO_BULLET_HITS);
         }
       }
     }

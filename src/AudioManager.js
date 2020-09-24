@@ -59,6 +59,16 @@ export class AudioManager {
   }
 
   /**
+   *
+   * @param {?} source
+   * @param {Array<string>} names
+   */
+  playOneOf(source, names) {
+    const length = names.length;
+    this.playNamedSound(source, names[Math.floor(Math.random() * length)]);
+  }
+
+  /**
    * Plays the given sound, attributed to the in-game source. If there is
    * already a sound running from that source, the previous one is stopped
    * @param {?} source - The source of the audio
