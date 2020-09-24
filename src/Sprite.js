@@ -100,11 +100,16 @@ export class Sprite {
         } else {
           this._currentLoop++;
           this._frameIndex = 0;
-          this._nextFrameTime = nextFrameTime = time + frameTimes[0];
+          this._nextFrameTime = nextFrameTime = nextFrameTime + frameTimes[0];
         }
       } else {
         this._frameIndex = nextFrame;
-        this._nextFrameTime = nextFrameTime = time + frameTimes[nextFrame];
+        this._nextFrameTime = nextFrameTime =
+          nextFrameTime + frameTimes[nextFrame];
+      }
+
+      if (this._name === "Narration2Head") {
+        console.log(`${this._name}: frame ${this._frameIndex}`);
       }
     }
 

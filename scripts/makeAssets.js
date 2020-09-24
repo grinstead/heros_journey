@@ -12,7 +12,7 @@ import {
   readBoolean,
 } from "../src/PettyParser.js";
 
-const capCamel = /^[A-Z][a-zA-Z]+$/;
+const capCamel = /^[A-Z][0-9a-zA-Z]+$/;
 
 // flip y, turn it into the z coordinate
 // prettier-ignore

@@ -1,5 +1,5 @@
 {
-  "opening scene": "big bad",
+  "opening scene": "intro",
   "scenes": {
     "big bad": {
       "location": {
@@ -11,17 +11,67 @@
     },
     "intro": {
       "location": {
-        "x": 0,
-        "y": 0,
-        "width": 4000,
-        "height": 4000
+        "x": 515,
+        "y": 78,
+        "width": 2000,
+        "height": 2000
       }
     }
   },
   "scripts": {
     "test": {
       "characters": ["hero"],
-      "actions": []
+      "actions": [
+        { "type": "change hero visibility", "visible": false },
+        {
+          "type": "absolute camera",
+          "x": 480,
+          "y": 320,
+          "zoom": 0
+        },
+        {
+          "type": "play sound",
+          "sound": "Narration1"
+        },
+        { "type": "wait", "seconds": 31 },
+        {
+          "type": "camera"
+        },
+        { "type": "change hero visibility", "visible": true },
+        { "type": "wait", "seconds": 35 },
+        {
+          "type": "change hero head",
+          "sprite": "Narration2Head"
+        },
+        { "type": "play sound", "sound": "Narration2" }
+      ]
+    },
+    "intro": {
+      "characters": ["hero"],
+      "actions": [
+        { "type": "change hero visibility", "visible": false },
+        {
+          "type": "absolute camera",
+          "x": 480,
+          "y": 320,
+          "zoom": 0
+        },
+        {
+          "type": "play sound",
+          "sound": "Narration1"
+        },
+        { "type": "wait", "seconds": 31 },
+        {
+          "type": "camera"
+        },
+        { "type": "change hero visibility", "visible": true },
+        { "type": "wait", "seconds": 35 },
+        {
+          "type": "change hero head",
+          "sprite": "Narration2Head"
+        },
+        { "type": "play sound", "sound": "Narration2" }
+      ]
     },
     "test2": {
       "characters": ["hero", "villain"],
@@ -149,6 +199,23 @@
       "type": "audio",
       "name": "BigBadGuyLandingSound",
       "src": "Big Bad Guy Landing.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "Narration1",
+      "src": "Narration 1.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "Narration2",
+      "src": "Narration 2.mp3"
+    },
+    {
+      "type": "animated",
+      "name": "Narration2Head",
+      "src": "Narration 2",
+      "originX": 101,
+      "originY": 187
     },
     {
       "type": "audio",

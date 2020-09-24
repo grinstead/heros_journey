@@ -104,8 +104,11 @@ function parseGameScript() {
       "play sound",
       "wait",
       "change sprite",
+      "change hero head",
       "move",
       "camera",
+      "absolute camera",
+      "change hero visibility",
       "fight",
     ];
 

@@ -124,7 +124,7 @@ export function processSceneCamera(scene, display) {
   const { sceneBox, sceneCamera, hero } = scene;
 
   // do not adjust
-  if (sceneCamera.absolute) return;
+  if (!sceneCamera.showHero) return;
 
   const targetCamera = sceneCamera.target;
   const heroX = hero.x;

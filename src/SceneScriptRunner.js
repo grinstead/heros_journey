@@ -220,7 +220,7 @@ function runAction(scene, runner, action) {
       const { name, zoom } = action;
       const sceneCamera = scene.sceneCamera;
       sceneCamera.target.zoom = zoom;
-      sceneCamera.absolute = false;
+      sceneCamera.showHero = true;
 
       if (name == null) {
         sceneCamera.subtarget = null;
@@ -239,7 +239,7 @@ function runAction(scene, runner, action) {
       let { x, y, zoom } = action;
       const { sceneCamera } = scene;
 
-      sceneCamera.absolute = true;
+      sceneCamera.showHero = false;
       sceneCamera.target.x = x - scene.sceneBox.originX;
       sceneCamera.target.y = y - scene.sceneBox.originY;
       sceneCamera.target.zoom = zoom;
