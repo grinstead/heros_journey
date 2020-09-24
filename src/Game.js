@@ -590,7 +590,9 @@ output_color = max(color, u_min_color);
       mousePosition,
     });
 
-    startSceneScript(game.world.activeScene, "test");
+    if (game.world.activeScene.scripts.length === 0) {
+      startSceneScript(game.world.activeScene, "test");
+    }
 
     return game;
   });

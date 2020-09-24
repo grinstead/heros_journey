@@ -1,5 +1,5 @@
 {
-  "opening scene": "call to action",
+  "opening scene": "intro",
   "scenes": {
     "big bad": {
       "location": {
@@ -10,6 +10,14 @@
       }
     },
     "intro": {
+      "location": {
+        "x": 443,
+        "y": 80,
+        "width": 1920,
+        "height": 1280
+      }
+    },
+    "home": {
       "location": {
         "x": 443,
         "y": 88,
@@ -47,6 +55,28 @@
     "intro": {
       "characters": ["hero", "first", "s1", "s2", "s3", "s4", "s5", "triangle"],
       "actions": [
+        { "type": "change hero visibility", "visible": false },
+        {
+          "type": "absolute camera",
+          "x": 480,
+          "y": 320,
+          "zoom": 0
+        },
+        { "type": "move", "name": "hero", "x": -2000, "seconds": 5 },
+        { "type": "play sound", "sound": "Narration1" },
+        { "type": "wait", "seconds": 31 },
+        {
+          "type": "absolute camera",
+          "x": 443,
+          "y": 80,
+          "zoom": 1
+        },
+        { "type": "wait", "seconds": 5 },
+        { "type": "change hero visibility", "visible": true },
+        { "type": "move", "name": "hero", "x": 2000, "seconds": 5 },
+        { "type": "wait", "seconds": 5 },
+        { "type": "camera" },
+        { "type": "wait", "seconds": 25 },
         {
           "type": "change hero head",
           "sprite": "Narration2Head"

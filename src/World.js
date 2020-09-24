@@ -1,5 +1,6 @@
 import { SceneKernel, Scene, makeScene, Camera } from "./Scene.js";
 import { Hero, BULLET_HEIGHT } from "./Hero.js";
+import { startSceneScript } from "./SceneScriptRunner.js";
 
 const MARGIN_X = 60;
 const MARGIN_TOP = 200;
@@ -85,6 +86,11 @@ function initScene(kernel, sceneName) {
         sceneName,
         hero: new Hero(0),
       });
+
+      const script = kernel.gameScript.scripts.has(sceneName);
+      if (script) {
+        startSceneScript(scene, sceneName);
+      }
 
       return scene;
     }
