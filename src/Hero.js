@@ -15,7 +15,7 @@ import {
 } from "../wattle/engine/src/swagl/MatrixStack.js";
 import { Scene, ShadowRadius, fireBullet } from "./Scene.js";
 import { MousePosition } from "./Game.js";
-import { arctan } from "./utils.js";
+import { arctan, dirIsLeft } from "./utils.js";
 
 const HERO_SPEED = 600;
 const BULLET_SPEED = 640;
@@ -293,8 +293,4 @@ export function renderHero(hero) {
 
   body.prepareSpriteType();
   subrenderSprite(body);
-}
-
-function dirIsLeft(direction) {
-  return 0.5 * Math.PI < direction && direction < 1.5 * Math.PI;
 }

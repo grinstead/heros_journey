@@ -24,6 +24,7 @@ export let Camera;
  * @property {number} x
  * @property {number} y
  * @property {number} z
+ * @property {boolean} mirrorX
  * @property {number} direction
  * @property {number} speed
  * @property {number} zSpeed

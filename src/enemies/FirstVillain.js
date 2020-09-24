@@ -7,7 +7,7 @@ import {
   shiftContent,
   rotateAboutY,
 } from "../../wattle/engine/src/swagl/MatrixStack.js";
-import { arctan } from "../utils.js";
+import { arctan, interpolate } from "../utils.js";
 import { killOffEnemy } from "./utils.js";
 
 const ARM_HEIGHT = 178 - 118;
@@ -48,7 +48,11 @@ export function firstVillainMain(runner, object) {
 
     subrender(() => {
       shiftContent(0, 0, ARM_HEIGHT);
-      rotateAboutY(state.heroDirection + state.dirOffset);
+
+      let angle = state.heroDirection + state.dirOffset;
+      if (object.mirrorX) angle = Math.PI - angle;
+
+      rotateAboutY(angle);
       state.armSprite.prepareSpriteType();
       subrenderSprite(state.armSprite);
     });
@@ -63,23 +67,28 @@ export function firstVillainMain(runner, object) {
   let sweepCooldown = startTime + 2;
 
   function fireSweep() {
-    bulletCooldown = startTime;
-    sweepCooldown = startTime + SWEEP_TIME + 2;
-
     const step = () => {
       const sceneTime = scene.sceneTime;
       const state = stateOf(object);
 
       if (sceneTime - startTime > SWEEP_TIME) {
         state.dirOffset = 0;
+        bulletCooldown = sceneTime + 0.2;
+        sweepCooldown = startTime + 2;
         return fireSimple;
       }
 
-      const dirOffset = (sceneTime - startTime) / SWEEP_TIME - 0.5;
-      state.dirOffset = dirOffset;
-
       while (sceneTime >= bulletCooldown) {
-        bulletCooldown += 0.05;
+        const dirOffset = interpolate(
+          bulletCooldown - startTime,
+          SWEEP_TIME,
+          0.8,
+          -0.8
+        );
+        state.dirOffset = dirOffset;
+
+        bulletCooldown += 0.02;
+
         fireBullet(
           scene,
           object.x,
@@ -103,7 +112,7 @@ export function firstVillainMain(runner, object) {
     if (sceneTime >= sweepCooldown) return fireSweep;
 
     if (sceneTime > bulletCooldown) {
-      bulletCooldown = sceneTime + 1;
+      bulletCooldown = sceneTime + 0.2;
       fireBullet(
         scene,
         object.x,
@@ -133,6 +142,7 @@ export function firstVillainMain(runner, object) {
     const state = stateOf(object);
     const hero = scene.hero;
     state.heroDirection = arctan(hero.y - object.y, hero.x - object.x);
+    object.mirrorX = hero.x < object.x;
 
     let newAction = activeAction();
     while (newAction && newAction !== activeAction) {

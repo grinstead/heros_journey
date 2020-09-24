@@ -380,7 +380,9 @@ function renderGame(game) {
       if (sceneTime < object.showDamageUntil) {
         showDamage(rasterProgram);
       }
+
       shiftContent(object.x, object.y, object.z);
+      if (object.mirrorX) scaleAxes(-1, 1, 1);
 
       const render = object.render;
       if (render) {

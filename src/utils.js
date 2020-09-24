@@ -29,3 +29,24 @@ export function arctan(opposite, adjacent) {
 export function magnitudeOf(dx, dy, dz) {
   return Math.sqrt(dx * dx + dy * dy + dz * dz);
 }
+
+/**
+ *
+ * @param {number} direction
+ * @returns {boolean}
+ */
+export function dirIsLeft(direction) {
+  return 0.5 * Math.PI < direction && direction < 1.5 * Math.PI;
+}
+
+/**
+ *
+ * @param {number} current
+ * @param {number} total
+ * @param {number} a
+ * @param {number} b
+ */
+export function interpolate(current, total, a, b) {
+  const p = current / total;
+  return a * (1 - p) + b * p;
+}
