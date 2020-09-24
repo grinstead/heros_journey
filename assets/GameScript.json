@@ -269,6 +269,11 @@
       "flip": true,
       "originX": 95,
       "originY": 118
+    },
+    {
+      "type": "audio",
+      "name": "FirstVillainDyingSound",
+      "src": "First Villian Dying.mp3"
     }
   ]
 }

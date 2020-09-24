@@ -59,3 +59,5 @@ export const makeFirstVillainWalking = defineSprite({name:"FirstVillainWalking",
 
 /** @type {SpriteBuilder} */
 export const makeFirstVillainArm = defineSprite({name:"FirstVillainArm",src:"./assets/First Villain Gun/spritemap1.png",bufferData:[0,0,0,0,0,0,37,0,0,0.578125,92,0,0,0.71875,0,92,37,0,0.71875,0.578125],loops:false,frameTime:0.0625,perFrameData:null,frameElements:[[{i:0,m:new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,5,102,0,1])}]],transform:[-1,0,0,0,0,0,-1,0,0,1,0,0,95,0,118,1]});
+
+registerSound({name:"FirstVillainDyingSound",src:"./assets/First Villian Dying.mp3"})

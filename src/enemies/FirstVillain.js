@@ -81,7 +81,12 @@ export function firstVillainMain(runner, object) {
   let activeAction = fireSimple;
   function Action() {
     if (object.damage >= HEALTH) {
-      return killOffEnemy(scene, object, makeFirstVillainDying);
+      return killOffEnemy(
+        scene,
+        object,
+        makeFirstVillainDying,
+        "FirstVillainDyingSound"
+      );
     }
 
     const state = stateOf(object);
