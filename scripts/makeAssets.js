@@ -52,7 +52,7 @@ function main() {
             src: readString("src"),
             originX: hasKey("originX") ? readNum("originX") : undefined,
             originY: hasKey("originY") ? readNum("originY") : undefined,
-            loops: hasKey("loops") ? readBoolean("loops") : true,
+            loops: hasKey("loops") ? readBoolean("loops") : false,
           });
         case "static":
           hasSprites = true;

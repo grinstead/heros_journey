@@ -97,6 +97,7 @@
       "type": "animated",
       "name": "HeroRunning",
       "src": "Body Running",
+      "loops": true,
       "originX": 101,
       "originY": 187
     },
@@ -104,6 +105,7 @@
       "type": "animated",
       "name": "HeroRunningBackwards",
       "src": "Hero Running Backwards",
+      "loops": true,
       "originX": 101,
       "originY": 187
     },
@@ -111,7 +113,6 @@
       "type": "animated",
       "name": "HeroJump",
       "src": "Bullet Dodge",
-      "loops": false,
       "originX": 125,
       "originY": 380
     },
@@ -119,7 +120,6 @@
       "type": "animated",
       "name": "BigBadGuyLanding",
       "src": "Big Bad Guy Landing",
-      "loops": false,
       "originX": 92,
       "originY": 254
     },
@@ -127,6 +127,7 @@
       "type": "animated",
       "name": "BigBadGuy",
       "src": "Big Bad Guy Marching",
+      "loops": true,
       "originX": 92,
       "originY": 254
     },
@@ -164,9 +165,9 @@
       "src": "Gun Shot.mp3"
     },
     {
-      "type": "static",
+      "type": "animated",
       "name": "BulletBall",
-      "src": "Shot-Gun-Ball.png",
+      "src": "Shot Gun Bullet",
       "originX": 25,
       "originY": 25
     },
