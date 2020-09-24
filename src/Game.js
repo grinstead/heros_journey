@@ -161,6 +161,16 @@ export class Game {
     // sort so that they can be used for collisions
     bullets.sort(compareBulletsByX);
 
+    const hero = scene.hero;
+    if (hero.z === 0) {
+      const { x, y, shadowRadius } = scene.hero;
+      const hits = checkBullets(bullets, x, y, shadowRadius, true);
+      if (hits) {
+        hero.damage += hits;
+        hero.showDamageUntil = sceneTime + 0.125;
+      }
+    }
+
     processHero(scene, mousePosition);
 
     scene.objects.forEach((object) => {
@@ -178,32 +188,17 @@ export class Game {
         object.z += zSpeed * stepSize;
       }
 
-      if (object.z !== 0) return;
-
       // checking for bullet collisions
+      if (object.z === 0 && object.shadowRadius == null) {
+        const { x, y, shadowRadius } = object;
+        const hits = checkBullets(bullets, x, y, shadowRadius, false);
 
-      const { x, y, shadowRadius } = object;
-      const minTestX = x - shadowRadius.x - BULLET_R;
-      const maxTestX = x + shadowRadius.x + BULLET_R;
-
-      let i = 0;
-      const numBullets = bullets.length;
-      while (i < numBullets && bullets[i].x < minTestX) {
-        i++;
-      }
-
-      while (i < numBullets && bullets[i].x < maxTestX) {
-        const bullet = bullets[i++];
-        if (
-          !bullet.isDead &&
-          bullet.isFriendly &&
-          distanceFromEllipseSortOf(x, y, shadowRadius, bullet) < BULLET_R
-        ) {
-          bullet.isDead = true;
+        if (hits) {
           if (object.showDamageUntil >= 0) {
             object.showDamageUntil = sceneTime + 0.125;
           }
-          object.damage++;
+
+          object.damage += hits;
         }
       }
     });
@@ -406,7 +401,9 @@ function renderGame(game) {
       subrenderSprite(bulletSprite);
     });
 
-    subrenderWithArg(renderHero, scene.hero);
+    const hero = scene.hero;
+    if (sceneTime < hero.showDamageUntil) showDamage(rasterProgram);
+    subrenderWithArg(renderHero, hero);
   });
 }
 
@@ -672,4 +669,31 @@ function showDamage(rasterProgram) {
   afterSubrender(() => {
     minColor.set(0, 0, 0, 0);
   });
+}
+
+function checkBullets(bullets, x, y, shadowRadius, isFriendly) {
+  let hits = 0;
+
+  const minTestX = x - shadowRadius.x - BULLET_R;
+  const maxTestX = x + shadowRadius.x + BULLET_R;
+
+  let i = 0;
+  const numBullets = bullets.length;
+  while (i < numBullets && bullets[i].x < minTestX) {
+    i++;
+  }
+
+  while (i < numBullets && bullets[i].x < maxTestX) {
+    const bullet = bullets[i++];
+    if (
+      !bullet.isDead &&
+      bullet.isFriendly !== isFriendly &&
+      distanceFromEllipseSortOf(x, y, shadowRadius, bullet) < BULLET_R
+    ) {
+      bullet.isDead = true;
+      hits++;
+    }
+  }
+
+  return hits;
 }

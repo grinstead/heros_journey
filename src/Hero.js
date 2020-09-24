@@ -56,6 +56,10 @@ export class Hero {
     /** @type {number} */
     this.zSpeed = 0;
     /** @type {number} */
+    this.damage = 0;
+    /** @type {number} */
+    this.showDamageUntil = 0;
+    /** @type {number} */
     this.direction = 0;
     /** @type {number} */
     this.armDirection = 0;
