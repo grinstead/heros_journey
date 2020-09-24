@@ -100,7 +100,7 @@ export class Hero {
    *
    * @param {Scene} scene
    * @param {function():boolean} processStep
-   * @returns {() => boolean} A function that returns true when the step is over
+   * @returns {function():boolean} A function that returns true when the step is over
    */
   changeToScriptedState(scene, processStep) {
     let finished = false;

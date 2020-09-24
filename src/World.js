@@ -123,6 +123,9 @@ export function updateSceneTime(scene, time, maxStepSize) {
 export function processSceneCamera(scene, display) {
   const { sceneBox, sceneCamera, hero } = scene;
 
+  // do not adjust
+  if (sceneCamera.absolute) return;
+
   const targetCamera = sceneCamera.target;
   const heroX = hero.x;
   const heroY = hero.y + BULLET_HEIGHT;

@@ -205,6 +205,7 @@ function runAction(scene, runner, action) {
       const { name, zoom } = action;
       const sceneCamera = scene.sceneCamera;
       sceneCamera.target.zoom = zoom;
+      sceneCamera.absolute = false;
 
       if (name == null) {
         sceneCamera.subtarget = null;
@@ -216,6 +217,17 @@ function runAction(scene, runner, action) {
 
         sceneCamera.subtarget = obj;
       }
+
+      return CONTINUE;
+    }
+    case "absolute camera": {
+      let { x, y, zoom } = action;
+      const { sceneCamera } = scene;
+
+      sceneCamera.absolute = true;
+      sceneCamera.target.x = x - scene.sceneBox.originX;
+      sceneCamera.target.y = y - scene.sceneBox.originY;
+      sceneCamera.target.zoom = zoom;
 
       return CONTINUE;
     }

@@ -71,16 +71,15 @@ function parseGameScript() {
     }
   });
 
+  const changeXToWorld = (x) => (x - 960 / 2) / FULL_SPACE_ZOOM;
+  const changeYToWorld = (y) => (y - 640 / 2) / -FULL_SPACE_ZOOM;
+
   const scenes = processObjectMap("scenes", (name) => {
     const sceneBox = processKey("location", () => {
-      let originX = readNum("x");
-      let originY = readNum("y");
+      let originX = changeXToWorld(readNum("x"));
+      let originY = changeYToWorld(readNum("y"));
       const width = readNum("width", 0, Number.POSITIVE_INFINITY, false);
       const height = readNum("height", 0, Number.POSITIVE_INFINITY, false);
-
-      // change to be world coordinates
-      originX = (originX - 960 / 2) / FULL_SPACE_ZOOM;
-      originY = (originY - 640 / 2) / -FULL_SPACE_ZOOM;
 
       return {
         left: -width / 2,
@@ -170,6 +169,13 @@ function parseGameScript() {
             type,
             name: hasKey("name") ? readCharacterName() : null,
             zoom: hasKey("zoom") ? readNum("zoom", 0, 1, true) : 1,
+          };
+        case "absolute camera":
+          return {
+            type,
+            x: changeXToWorld(readNum("x")),
+            y: changeYToWorld(readNum("y")),
+            zoom: readNum("zoom", 0, 1, true),
           };
         default:
           return { type };
