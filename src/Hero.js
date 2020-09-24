@@ -39,7 +39,7 @@ const ARM_POS = {
  * @typedef {Object} HeroState
  * @property {string} name - Useful for debugging
  * @property {function(Scene):void} processStep - Perform the hero's code
- * @property {function():void} render - Render the hero
+ * @property {?function():void} render - Render the hero
  * @property {?function():void} onExit
  */
 let HeroState;
@@ -80,7 +80,7 @@ export class Hero {
     this.state = {
       name: "unstarted",
       processStep: (scene) => this.changeState(scene, heroStateNormal, null),
-      render: () => {},
+      render: null,
       onExit: null,
     };
   }
@@ -92,6 +92,27 @@ export class Hero {
     const state = stateBuilder(this, scene, arg);
     this.state = state;
     state.processStep(scene);
+  }
+
+  /**
+   *
+   * @param {Scene} scene
+   * @param {function():void} processStep
+   */
+  changeToScriptedState(scene, processStep) {
+    this.changeState(
+      scene,
+      () => ({
+        name: "scripted",
+        processStep: () => {
+          if (processStep()) {
+            this.changeState(scene, heroStateNormal, null);
+          }
+        },
+        render: null,
+      }),
+      null
+    );
   }
 }
 
@@ -139,41 +160,7 @@ function heroStateNormal(hero, scene) {
         });
       }
     },
-    render: () => {
-      const { head, arm, mirrorX } = hero;
-
-      subrender(() => {
-        shiftContent(ARM_POS.x, 0, ARM_POS.y);
-
-        let angle = hero.armDirection;
-        if (mirrorX) angle = Math.PI - angle;
-
-        rotateAboutY(angle - 0.3);
-
-        arm.prepareSpriteType();
-        subrenderSprite(arm);
-      });
-
-      head.prepareSpriteType();
-      subrenderSprite(head);
-
-      let body;
-      if (hero.speed) {
-        if (
-          hero.direction !== Math.PI / 2 &&
-          mirrorX ^ dirIsLeft(hero.direction)
-        ) {
-          body = hero.bodyRunningBackwards;
-        } else {
-          body = hero.bodyRunning;
-        }
-      } else {
-        body = hero.bodyStatic;
-      }
-
-      body.prepareSpriteType();
-      subrenderSprite(body);
-    },
+    render: null,
   };
 }
 
@@ -259,7 +246,44 @@ export function renderHero(hero) {
   const mirrorX = hero.mirrorX;
   if (mirrorX) scaleAxes(-1, 1, 1);
 
-  hero.state.render();
+  const render = hero.state.render;
+  if (render) {
+    render();
+    return;
+  }
+
+  // the default render
+
+  const { head, arm } = hero;
+
+  subrender(() => {
+    shiftContent(ARM_POS.x, 0, ARM_POS.y);
+
+    let angle = hero.armDirection;
+    if (mirrorX) angle = Math.PI - angle;
+
+    rotateAboutY(angle - 0.3);
+
+    arm.prepareSpriteType();
+    subrenderSprite(arm);
+  });
+
+  head.prepareSpriteType();
+  subrenderSprite(head);
+
+  let body;
+  if (hero.speed) {
+    if (hero.direction !== Math.PI / 2 && mirrorX ^ dirIsLeft(hero.direction)) {
+      body = hero.bodyRunningBackwards;
+    } else {
+      body = hero.bodyRunning;
+    }
+  } else {
+    body = hero.bodyStatic;
+  }
+
+  body.prepareSpriteType();
+  subrenderSprite(body);
 }
 
 function dirIsLeft(direction) {

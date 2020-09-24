@@ -147,9 +147,17 @@ function runAction(scene, runner, action) {
     }
     case "move": {
       const { name, seconds, easeIn, easeOut } = action;
-      const obj = scene.objects.find((obj) => obj.name === name);
+      const isHero = name === "hero";
+
+      const obj = isHero
+        ? scene.hero
+        : scene.objects.find((obj) => obj.name === name);
+
       if (!obj) {
-        throw new Error(`No object with name ${name}`);
+        console.error("WOAH");
+        console.log(scene);
+        // throw new Error(`No object with name ${name}`);
+        return;
       }
 
       const dx = action.x;
@@ -171,21 +179,37 @@ function runAction(scene, runner, action) {
 
       const startTime = scene.sceneTime;
 
-      addBasicPendingAction(runner, true, () => {
-        const p = (scene.sceneTime - startTime) / seconds;
-        if (p < 1) {
-          obj.speed = calcSpeedEasing(targetSpeed, p, easeIn, easeOut);
-          obj.zSpeed = calcSpeedEasing(targetZSpeed, p, easeIn, easeOut);
-          return false;
-        } else {
-          obj.x = targetX;
-          obj.y = targetY;
-          obj.z = targetZ;
-          obj.speed = 0;
-          obj.zSpeed = 0;
-          return true;
-        }
-      });
+      if (isHero) {
+        scene.hero.changeToScriptedState(scene, () => {
+          const p = (scene.sceneTime - startTime) / seconds;
+          if (p < 1) {
+            obj.speed = calcSpeedEasing(targetSpeed, p, easeIn, easeOut);
+            return false;
+          } else {
+            obj.x = targetX;
+            obj.y = targetY;
+            obj.z = targetZ;
+            obj.speed = 0;
+            return true;
+          }
+        });
+      } else {
+        addBasicPendingAction(runner, true, () => {
+          const p = (scene.sceneTime - startTime) / seconds;
+          if (p < 1) {
+            obj.speed = calcSpeedEasing(targetSpeed, p, easeIn, easeOut);
+            obj.zSpeed = calcSpeedEasing(targetZSpeed, p, easeIn, easeOut);
+            return false;
+          } else {
+            obj.x = targetX;
+            obj.y = targetY;
+            obj.z = targetZ;
+            obj.speed = 0;
+            obj.zSpeed = 0;
+            return true;
+          }
+        });
+      }
 
       return CONTINUE;
     }
