@@ -122,16 +122,21 @@ function processSpriteAtlas(info) {
       const elements = frames[0].elements;
       assert(elements.length === 1, "Too many symbol elements");
 
-      symbols.set(symbol.SYMBOL_name, elements[0]);
+      symbols.set(symbol.SYMBOL_name, {
+        layer: symbol.TIMELINE.LAYERS[0].Layer_name,
+        element: elements[0],
+      });
     });
   }
 
   const layers = readOrThrow(rawAnim, "ANIMATION", "TIMELINE", "LAYERS");
   assert(layers.length === 1, "Too many layers!");
 
+  const baseLayer = layers[0].Layer_name;
   const frames = layers[0].Frames.map((frame) => {
     const elements = frame.elements.map((start) => {
       let element = start;
+      let layer = baseLayer;
 
       // prettier-ignore
       let matrix = [
@@ -153,7 +158,9 @@ function processSpriteAtlas(info) {
           m.m30, m.m31, m.m32, m.m33,
         ]);
 
-        element = symbols.get(element.SYMBOL_Instance.SYMBOL_name);
+        const symbol = symbols.get(element.SYMBOL_Instance.SYMBOL_name);
+        layer = symbol.layer;
+        element = symbol.element;
       }
 
       element = readOrThrow(element, "ATLAS_SPRITE_instance");
@@ -169,14 +176,21 @@ function processSpriteAtlas(info) {
       ]);
 
       return {
-        i: 4 * getOrThrow(nameToIndices, element.name),
-        m: () => `new Float32Array([${matrix.join(",")}])`,
+        layer,
+        print: {
+          i: 4 * getOrThrow(nameToIndices, element.name),
+          m: () => `new Float32Array([${matrix.join(",")}])`,
+        },
       };
     });
 
+    elements.sort((b, a) =>
+      a.layer <= b.layer ? (a.layer < b.layer ? -1 : 0) : 1
+    );
+
     return {
       holdFor: readOrThrow(frame, "duration"),
-      elements,
+      elements: elements.map((e) => e.print),
     };
   });
 

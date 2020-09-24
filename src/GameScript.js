@@ -166,10 +166,12 @@ function parseGameScript() {
             x,
             y,
             z: hasKey("z") ? readNum("z") : 0,
-            shadowRadius: processKey("shadow radius", () => ({
-              x: readNum("x", 0),
-              y: readNum("y", 0),
-            })),
+            shadowRadius: hasKey("shadow radius")
+              ? processKey("shadow radius", () => ({
+                  x: readNum("x", 0),
+                  y: readNum("y", 0),
+                }))
+              : null,
           };
         }
         case "play sound":

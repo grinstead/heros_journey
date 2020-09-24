@@ -3,9 +3,9 @@
   "scenes": {
     "big bad": {
       "location": {
-        "x": 0,
-        "y": 40,
-        "width": 4000,
+        "x": 844,
+        "y": 393,
+        "width": 3000,
         "height": 4000
       }
     },
@@ -256,8 +256,7 @@
           "sprite": "Treasure",
           "x": 0,
           "y": 0,
-          "z": 200,
-          "shadow radius": { "x": 20, "y": 10 }
+          "z": 200
         },
         {
           "type": "add",
@@ -303,14 +302,18 @@
           "type": "add",
           "name": "prisoner",
           "sprite": "SlaveCage",
-          "x": 100,
-          "y": 0,
-          "shadow radius": { "x": 20, "y": 10 }
+          "x": 800,
+          "y": 0
+        },
+        {
+          "type": "change state",
+          "name": "prisoner",
+          "state": "shaking"
         }
       ]
     },
-    "test2": {
-      "characters": ["hero", "villain"],
+    "big bad": {
+      "characters": ["hero", "big"],
       "actions": [
         {
           "type": "play sound",
@@ -322,7 +325,7 @@
         },
         {
           "type": "add",
-          "name": "villain",
+          "name": "big",
           "sprite": "BigBadGuyLanding",
           "x": 0,
           "y": 0,
@@ -335,15 +338,14 @@
         },
         {
           "type": "move",
-          "name": "villain",
+          "name": "big",
           "seconds": 0.325,
           "z": -1200,
           "ease in": true
         },
-        { "type": "camera", "name": "villain" },
+        { "type": "camera", "name": "big" },
         { "type": "wait" },
-        { "type": "move", "name": "hero", "seconds": 2, "x": -100 },
-        { "type": "fight" }
+        { "type": "change state", "name": "big", "state": "big bad main" }
       ]
     }
   },
@@ -383,6 +385,7 @@
       "type": "animated",
       "name": "BigBadGuyLanding",
       "src": "Big Bad Guy Landing",
+      "flip": true,
       "originX": 92,
       "originY": 254
     },
@@ -390,9 +393,46 @@
       "type": "animated",
       "name": "BigBadGuy",
       "src": "Big Bad Guy Marching",
+      "flip": true,
       "loops": true,
       "originX": 92,
       "originY": 254
+    },
+    {
+      "type": "animated",
+      "name": "BigBadGuyShooting",
+      "src": "Big Bad Guy Shooting",
+      "flip": true,
+      "loops": true,
+      "originX": 92,
+      "originY": 254
+    },
+    {
+      "type": "animated",
+      "name": "BigBadGuyDying",
+      "src": "Big Bad Guy Dying",
+      "originX": 92,
+      "originY": 254
+    },
+    {
+      "type": "audio",
+      "name": "BigBadGuyDying",
+      "src": "Big Bad Guy Dying.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "BigBadGuyHit1",
+      "src": "Big Bad Guy Hit 1.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "BigBadGuyHit2",
+      "src": "Big Bad Guy Hit 2.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "BigBadGuyHit3",
+      "src": "Big Bad Guy Hit 3.mp3"
     },
     {
       "type": "static",

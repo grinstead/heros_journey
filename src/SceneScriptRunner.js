@@ -153,7 +153,7 @@ function runAction(scene, runner, action) {
         x,
         y,
         z: action.z,
-        mirrorX: false,
+        mirrorX: scene.hero.x < x,
         direction: 0,
         speed: 0,
         sprite: makeSpriteFromName(action.sprite, scene.sceneTime),
