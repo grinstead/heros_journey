@@ -13,6 +13,7 @@ import {
   readBoolean,
 } from "./PettyParser.js";
 
+export const PIXELS_PER_UNIT = 0.5;
 export const FULL_SPACE_ZOOM = 1 / 6;
 
 /**
@@ -71,8 +72,10 @@ function parseGameScript() {
     }
   });
 
-  const changeXToWorld = (x) => (x - 960 / 2) / FULL_SPACE_ZOOM;
-  const changeYToWorld = (y) => (y - 640 / 2) / -FULL_SPACE_ZOOM;
+  const changeXToWorld = (x) =>
+    (x - 960 / 2) / PIXELS_PER_UNIT / FULL_SPACE_ZOOM;
+  const changeYToWorld = (y) =>
+    (y - 640 / 2) / PIXELS_PER_UNIT / -FULL_SPACE_ZOOM;
 
   const scenes = processObjectMap("scenes", (name) => {
     const sceneBox = processKey("location", () => {

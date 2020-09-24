@@ -41,7 +41,11 @@ import {
 } from "../wattle/engine/src/swagl/ProgramInput.js";
 import { AudioManager } from "./AudioManager.js";
 import { hexToBuffer } from "./hex.js";
-import { loadUpGameScript, FULL_SPACE_ZOOM } from "./GameScript.js";
+import {
+  loadUpGameScript,
+  FULL_SPACE_ZOOM,
+  PIXELS_PER_UNIT,
+} from "./GameScript.js";
 import { renderHero, processHero, BULLET_HEIGHT } from "./Hero.js";
 import { makeBulletBall } from "./assets.js";
 import { magnitudeOf } from "./utils.js";
@@ -49,7 +53,6 @@ import { startSceneScript, runSceneScripts } from "./SceneScriptRunner.js";
 
 const FPS_SMOOTHING = 0.9;
 const MAX_FRAME_TIME = 1 / 10;
-const PIXELS_PER_UNIT = 0.5;
 const BULLET_R = 10;
 const DMG_COLOR = 0.4;
 
