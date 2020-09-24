@@ -169,6 +169,7 @@ function parseGameScript() {
           return {
             type,
             name: hasKey("name") ? readCharacterName() : null,
+            zoom: hasKey("zoom") ? readNum("zoom", 0, 1, true) : 1,
           };
         default:
           return { type };

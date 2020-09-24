@@ -11,6 +11,14 @@ import { SceneScriptRunner } from "./SceneScriptRunner.js";
 export let ShadowRadius;
 
 /**
+ * @typedef {Object} Camera
+ * @property {number} x
+ * @property {number} y
+ * @property {number} zoom
+ */
+export let Camera;
+
+/**
  * @typedef {Object} GameObject
  * @property {string} name
  * @property {number} x
@@ -75,7 +83,7 @@ export let Bullet;
  * @property {number} sceneTimeOffset - The time to subtract from Date.now() to get sceneTime
  * @property {number} stepSize - The time (in seconds, accurate to ms) since the last render
  * @property {Box} sceneBox
- * @property {?{x:number,y:number}} cameraTarget
+ * @property {{target: Camera, speed: number, subtarget: ?{x:number,y:number}}} sceneCamera
  * @property {!Hero} hero
  * @property {!Array<GameObject>} objects
  * @property {!Array<Bullet>} bullets - Sorted by x
@@ -121,7 +129,11 @@ export function makeScene(options) {
     sceneTimeOffset: offsetAFrameFrom(0),
     stepSize: 0,
     sceneBox: sceneInfo.sceneBox,
-    cameraTarget: null,
+    sceneCamera: {
+      speed: -1,
+      target: { x: 0, y: 0, zoom: 1 },
+      subtarget: null,
+    },
     hero: options.hero,
     objects: [],
     bullets: [],

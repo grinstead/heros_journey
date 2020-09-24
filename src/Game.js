@@ -13,7 +13,12 @@ import {
   Sprite,
 } from "./Sprite.js";
 import { InputManager } from "../wattle/engine/src/InputManager.js";
-import { World, initWorld, updateSceneTime } from "./World.js";
+import {
+  World,
+  initWorld,
+  updateSceneTime,
+  processSceneCamera,
+} from "./World.js";
 import {
   Program,
   renderInProgram,
@@ -47,10 +52,6 @@ const MAX_FRAME_TIME = 1 / 10;
 const PIXELS_PER_UNIT = 0.5;
 const BULLET_R = 10;
 const DMG_COLOR = 0.4;
-const MARGIN_X = 60;
-const MARGIN_TOP = 200;
-const MARGIN_BOTTOM = BULLET_HEIGHT;
-const INNER_MARGIN = 100;
 
 /** @typedef {{x:number, y:number}} MousePosition */
 export let MousePosition;
@@ -113,53 +114,7 @@ export class Game {
     let sceneTime = updateSceneTime(scene, realTime, MAX_FRAME_TIME);
     let stepSize = scene.stepSize;
 
-    const hero = scene.hero;
-
-    {
-      const sceneBox = scene.sceneBox;
-      const targetCamera = world.targetCamera;
-      const heroX = hero.x;
-      const heroY = hero.y + BULLET_HEIGHT;
-      const altTarget = scene.cameraTarget;
-
-      const cameraRx = display.w / PIXELS_PER_UNIT / 2;
-      const cameraRy = display.h / PIXELS_PER_UNIT / 2;
-
-      if (altTarget) {
-        targetCamera.x = (heroX + altTarget.x) / 2;
-        targetCamera.y = (heroY + altTarget.y + BULLET_HEIGHT) / 2;
-
-        // keep the player in frame
-        targetCamera.x = Math.min(
-          Math.max(heroX + INNER_MARGIN + MARGIN_X - cameraRx, targetCamera.x),
-          heroX - INNER_MARGIN - MARGIN_X + cameraRx
-        );
-        targetCamera.y = Math.min(
-          Math.max(
-            heroY + INNER_MARGIN + MARGIN_TOP - cameraRy,
-            targetCamera.y
-          ),
-          heroY - INNER_MARGIN - MARGIN_BOTTOM + cameraRy
-        );
-      } else {
-        targetCamera.x = heroX;
-        targetCamera.y = heroY;
-      }
-
-      targetCamera.x = Math.min(
-        Math.max(sceneBox.left + cameraRx - MARGIN_X, targetCamera.x),
-        sceneBox.right - cameraRx + MARGIN_X
-      );
-      targetCamera.y = Math.min(
-        Math.max(sceneBox.bottom + cameraRy - MARGIN_BOTTOM, targetCamera.y),
-        sceneBox.top - cameraRy + MARGIN_TOP
-      );
-    }
-
-    world.adjustCamera(scene);
-
     const camera = world.camera;
-
     const actualZoom = cameraZoomToActualZoom(camera.zoom);
 
     const mousePosition = {
@@ -243,6 +198,12 @@ export class Game {
     });
 
     runSceneScripts(scene);
+
+    processSceneCamera(scene, {
+      w: display.w / PIXELS_PER_UNIT,
+      h: display.h / PIXELS_PER_UNIT,
+    });
+    world.adjustCamera(scene);
 
     renderGame(this);
   }

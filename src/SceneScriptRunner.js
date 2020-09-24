@@ -190,16 +190,19 @@ function runAction(scene, runner, action) {
       return CONTINUE;
     }
     case "camera": {
-      const { name } = action;
+      const { name, zoom } = action;
+      const sceneCamera = scene.sceneCamera;
+      sceneCamera.target.zoom = zoom;
+
       if (name == null) {
-        scene.cameraTarget = null;
+        sceneCamera.subtarget = null;
       } else {
         const obj = scene.objects.find((obj) => obj.name === name);
         if (!obj) {
           throw new Error(`No object with name ${name}`);
         }
 
-        scene.cameraTarget = obj;
+        sceneCamera.subtarget = obj;
       }
 
       return CONTINUE;

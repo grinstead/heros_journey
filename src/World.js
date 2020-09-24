@@ -1,13 +1,11 @@
-import { SceneKernel, Scene, makeScene } from "./Scene.js";
-import { Hero } from "./Hero.js";
+import { SceneKernel, Scene, makeScene, Camera } from "./Scene.js";
+import { Hero, BULLET_HEIGHT } from "./Hero.js";
 
-/**
- * @typedef {Object} Camera
- * @property {number} x
- * @property {number} y
- * @property {number} zoom
- */
-export let Camera;
+const MARGIN_X = 60;
+const MARGIN_TOP = 200;
+const MARGIN_BOTTOM = BULLET_HEIGHT;
+const INNER_MARGIN = 100;
+const DEFAULT_CAMERA_SPEED = 4;
 
 export class World {
   constructor(kernel, startScene) {
@@ -19,10 +17,6 @@ export class World {
     this.activeScene = startScene;
     /** @type {Camera} */
     this.camera = { x: 0, y: 0, zoom: 1 };
-    /** @type {Camera} */
-    this.targetCamera = { x: 0, y: 0, zoom: 1 };
-    /** @type {number} This number is a bit confusing */
-    this.cameraSpeed = 8;
   }
 
   /**
@@ -53,15 +47,20 @@ export class World {
    * @param {Scene} scene
    */
   adjustCamera(scene) {
-    const { stepSize } = scene;
+    const { stepSize, sceneCamera } = scene;
 
-    const speed = this.cameraSpeed;
     const camera = this.camera;
-    const target = this.targetCamera;
-
-    camera.x = stepTowards(speed, stepSize, camera.x, target.x);
-    camera.y = stepTowards(speed, stepSize, camera.y, target.y);
-    camera.zoom = stepTowards(speed, stepSize, camera.zoom, target.zoom);
+    let { speed, target } = sceneCamera;
+    if (speed < 0) speed = DEFAULT_CAMERA_SPEED;
+    if (speed === 0) {
+      camera.x = target.x;
+      camera.y = target.y;
+      camera.zoom = target.zoom;
+    } else {
+      camera.x = stepTowards(speed, stepSize, camera.x, target.x);
+      camera.y = stepTowards(speed, stepSize, camera.y, target.y);
+      camera.zoom = stepTowards(speed, stepSize, camera.zoom, target.zoom);
+    }
   }
 }
 
@@ -114,6 +113,50 @@ export function updateSceneTime(scene, time, maxStepSize) {
     scene.sceneTimeOffset = time - cappedTime;
     return cappedTime;
   }
+}
+
+/**
+ *
+ * @param {Scene} scene
+ * @param {{w: number, h:number}} display
+ */
+export function processSceneCamera(scene, display) {
+  const { sceneBox, sceneCamera, hero } = scene;
+
+  const targetCamera = sceneCamera.target;
+  const heroX = hero.x;
+  const heroY = hero.y + BULLET_HEIGHT;
+  const altTarget = sceneCamera.subtarget;
+
+  const cameraRx = display.w / 2;
+  const cameraRy = display.h / 2;
+
+  if (altTarget) {
+    targetCamera.x = (heroX + altTarget.x) / 2;
+    targetCamera.y = (heroY + altTarget.y + BULLET_HEIGHT) / 2;
+
+    // keep the player in frame
+    targetCamera.x = Math.min(
+      Math.max(heroX + INNER_MARGIN + MARGIN_X - cameraRx, targetCamera.x),
+      heroX - INNER_MARGIN - MARGIN_X + cameraRx
+    );
+    targetCamera.y = Math.min(
+      Math.max(heroY + INNER_MARGIN + MARGIN_TOP - cameraRy, targetCamera.y),
+      heroY - INNER_MARGIN - MARGIN_BOTTOM + cameraRy
+    );
+  } else {
+    targetCamera.x = heroX;
+    targetCamera.y = heroY;
+  }
+
+  targetCamera.x = Math.min(
+    Math.max(sceneBox.left + cameraRx - MARGIN_X, targetCamera.x),
+    sceneBox.right - cameraRx + MARGIN_X
+  );
+  targetCamera.y = Math.min(
+    Math.max(sceneBox.bottom + cameraRy - MARGIN_BOTTOM, targetCamera.y),
+    sceneBox.top - cameraRy + MARGIN_TOP
+  );
 }
 
 function stepTowards(speed, stepSize, current, target) {
