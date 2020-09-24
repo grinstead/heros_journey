@@ -145,6 +145,21 @@ function runAction(scene, runner, action) {
       obj.sprite = makeSpriteFromName(action.sprite, scene.sceneTime);
       return CONTINUE;
     }
+    case "change hero head": {
+      const hero = scene.hero;
+      const oldHead = hero.head;
+      const head = makeSpriteFromName(action.sprite, scene.sceneTime);
+      hero.head = head;
+      addBasicPendingAction(runner, true, () => {
+        if (!head.isFinished()) return false;
+
+        oldHead.updateTime(scene.sceneTime);
+        hero.head = oldHead;
+        return true;
+      });
+
+      return CONTINUE;
+    }
     case "move": {
       const { name, seconds, easeIn, easeOut } = action;
       const isHero = name === "hero";

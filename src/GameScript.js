@@ -153,6 +153,11 @@ function parseGameScript() {
             name: readCharacterName(),
             sprite: readOneOf("sprite", spriteNames),
           };
+        case "change hero head":
+          return {
+            type,
+            sprite: readOneOf("sprite", spriteNames),
+          };
         case "move":
           return {
             type,
