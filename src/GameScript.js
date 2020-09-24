@@ -95,7 +95,10 @@ function parseGameScript() {
       };
     });
 
-    return { sceneBox };
+    return {
+      sceneBox,
+      heroTotalHealth: hasKey("health") ? readNum("health", 0) : 20,
+    };
   });
 
   const scriptNames = [];

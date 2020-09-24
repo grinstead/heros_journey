@@ -5,6 +5,7 @@ import {
   makeHeroBodyStatic,
   makeHeroRunningBackwards,
   makeHeroJump,
+  makeHeroDying,
 } from "./assets.js";
 import { Sprite, subrenderSprite } from "./Sprite.js";
 import {
@@ -129,11 +130,44 @@ export class Hero {
   }
 }
 
+function heroStateDying(hero, scene) {
+  const sprite = makeHeroDying(scene.sceneTime);
+  hero.showDamageUntil = -1;
+  hero.speed = 0;
+  hero.zSpeed = 0;
+
+  let timeToReset = null;
+
+  return {
+    name: "dying",
+    /** @param {Scene} scene */
+    processStep: (scene) => {
+      sprite.updateTime(scene.sceneTime);
+      if (sprite.isFinished() && timeToReset == null) {
+        timeToReset = scene.sceneTime + 1;
+      }
+
+      if (timeToReset != null && scene.sceneTime >= timeToReset) {
+        scene.exiting = scene.sceneName;
+      }
+    },
+    render: () => {
+      sprite.prepareSpriteType();
+      subrenderSprite(sprite);
+    },
+  };
+}
+
 function heroStateNormal(hero, scene) {
   return {
     name: "normal",
     /** @param {Scene} scene */
     processStep: (scene) => {
+      if (hero.damage >= scene.heroTotalHealth) {
+        hero.changeState(scene, heroStateDying, null);
+        return;
+      }
+
       const { input, sceneTime, stepSize } = scene;
 
       let dx = input.getSignOfAction("left", "right");

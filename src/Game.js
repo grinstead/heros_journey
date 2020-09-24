@@ -131,20 +131,33 @@ export class Game {
       scene.exiting = null;
       scene.bullets = [];
 
+      const oldSceneBox = scene.sceneBox;
       const hero = scene.hero;
-      let heroX = hero.x + scene.sceneBox.originX;
-      let heroY = hero.y + scene.sceneBox.originY;
+      let heroX = hero.x + oldSceneBox.originX;
+      let heroY = hero.y + oldSceneBox.originY;
+
+      if (exiting === scene.sceneName) {
+        const entering = scene.entering;
+        if (entering != null) {
+          heroX = entering.heroX;
+          heroY = entering.heroY;
+        }
+
+        world.resetScene(exiting);
+      }
 
       scene = world.getScene(exiting);
 
-      heroX -= scene.originX;
-      heroY -= scene.originY;
       scene.entering = { heroX, heroY };
+      heroX -= scene.sceneBox.originX;
+      heroY -= scene.sceneBox.originY;
       const newHero = scene.hero;
       newHero.x = heroX;
       newHero.y = heroY;
 
       world.activeScene = scene;
+      world.camera.x += oldSceneBox.originX - scene.sceneBox.originX;
+      world.camera.y += oldSceneBox.originY - scene.sceneBox.originY;
     }
 
     let sceneTime = updateSceneTime(scene, realTime, MAX_FRAME_TIME);
@@ -194,7 +207,9 @@ export class Game {
       const hits = checkBullets(bullets, x, y, shadowRadius, true);
       if (hits) {
         hero.damage += hits;
-        hero.showDamageUntil = sceneTime + 0.125;
+        if (hero.showDamageUntil >= 0) {
+          hero.showDamageUntil = sceneTime + 0.125;
+        }
       }
     }
 
@@ -216,7 +231,7 @@ export class Game {
       }
 
       // checking for bullet collisions
-      if (object.z === 0 && object.shadowRadius == null) {
+      if (object.z === 0 && object.shadowRadius != null) {
         const { x, y, shadowRadius } = object;
         const hits = checkBullets(bullets, x, y, shadowRadius, false);
 
@@ -724,6 +739,14 @@ function showDamage(rasterProgram) {
   });
 }
 
+/**
+ *
+ * @param {Bullet} bullets
+ * @param {number} x
+ * @param {number} y
+ * @param {ShadowRadius} shadowRadius
+ * @param {boolean} isFriendly
+ */
 function checkBullets(bullets, x, y, shadowRadius, isFriendly) {
   let hits = 0;
 

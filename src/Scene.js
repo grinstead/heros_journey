@@ -85,6 +85,7 @@ export let Bullet;
  * @property {number} stepSize - The time (in seconds, accurate to ms) since the last render
  * @property {Box} sceneBox
  * @property {{target: Camera, speed: number, showHero: boolean, subtarget: ?{x:number,y:number}}} sceneCamera
+ * @property {number} heroTotalHealth
  * @property {!Hero} hero
  * @property {!Array<GameObject>} objects
  * @property {!Array<Bullet>} bullets - Sorted by x
@@ -136,6 +137,7 @@ export function makeScene(options) {
       target: { x: 0, y: 0, zoom: 1 },
       subtarget: null,
     },
+    heroTotalHealth: sceneInfo.heroTotalHealth,
     hero: options.hero,
     objects: [],
     bullets: [],

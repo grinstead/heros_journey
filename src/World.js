@@ -20,12 +20,8 @@ export class World {
     this.camera = { x: 0, y: 0, zoom: 1 };
   }
 
-  /**
-   * @param {string} sceneName
-   */
-  switchToScene(sceneName) {
-    if (this.activeScene.name === sceneName) return;
-    this.activeScene = this.getScene(sceneName);
+  resetScene(sceneName) {
+    this.scenes.delete(sceneName);
   }
 
   /**
@@ -62,6 +58,9 @@ export class World {
       camera.y = stepTowards(speed, stepSize, camera.y, target.y);
       camera.zoom = stepTowards(speed, stepSize, camera.zoom, target.zoom);
     }
+
+    camera.x = Math.round(camera.x);
+    camera.y = Math.round(camera.y);
   }
 }
 

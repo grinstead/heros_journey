@@ -1,5 +1,5 @@
 {
-  "opening scene": "intro",
+  "opening scene": "call to action",
   "scenes": {
     "big bad": {
       "location": {
@@ -62,7 +62,7 @@
           "y": 320,
           "zoom": 0
         },
-        { "type": "move", "name": "hero", "x": -2000, "seconds": 5 },
+        { "type": "move", "name": "hero", "x": -2000, "y": -70, "seconds": 5 },
         { "type": "play sound", "sound": "Narration1" },
         { "type": "wait", "seconds": 31 },
         {
@@ -319,6 +319,13 @@
       "type": "static",
       "name": "HeroBodyStatic",
       "src": "Hero-Body-Static.png",
+      "originX": 101,
+      "originY": 187
+    },
+    {
+      "type": "animated",
+      "name": "HeroDying",
+      "src": "Hero Dying",
       "originX": 101,
       "originY": 187
     },
