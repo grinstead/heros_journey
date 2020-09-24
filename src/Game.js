@@ -124,7 +124,28 @@ export class Game {
     }
 
     const { onScreenMousePosition, display, world } = this;
-    const scene = world.activeScene;
+    let scene = world.activeScene;
+
+    while (scene.exiting != null) {
+      const exiting = scene.exiting;
+      scene.exiting = null;
+      scene.bullets = [];
+
+      const hero = scene.hero;
+      let heroX = hero.x + scene.sceneBox.originX;
+      let heroY = hero.y + scene.sceneBox.originY;
+
+      scene = world.getScene(exiting);
+
+      heroX -= scene.originX;
+      heroY -= scene.originY;
+      scene.entering = { heroX, heroY };
+      const newHero = scene.hero;
+      newHero.x = heroX;
+      newHero.y = heroY;
+
+      world.activeScene = scene;
+    }
 
     let sceneTime = updateSceneTime(scene, realTime, MAX_FRAME_TIME);
     let stepSize = scene.stepSize;

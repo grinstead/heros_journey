@@ -48,7 +48,7 @@
         },
         {
           "type": "do",
-          "script": "first villain"
+          "script": "call to action"
         }
       ]
     },
@@ -138,7 +138,9 @@
           "shadow radius": { "x": 30, "y": 15 }
         },
         { "type": "wait", "seconds": 26 },
-        { "type": "do", "script": "main villain intro" }
+        { "type": "do", "script": "main villain intro" },
+        { "type": "wait" },
+        { "type": "transition", "next screen": "call to action" }
       ]
     },
     "main villain intro": {
@@ -184,7 +186,7 @@
         }
       ]
     },
-    "first villain": {
+    "call to action": {
       "characters": ["hero", "first"],
       "actions": [
         {

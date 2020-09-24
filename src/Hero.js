@@ -202,7 +202,6 @@ function heroStateJump(hero, /** @type {Scene} */ scene) {
       subrenderSprite(sprite);
     },
     onExit: () => {
-      console.log("EXIT");
       hero.z = 0;
       hero.zSpeed = 0;
       hero.jumpCooldown = scene.sceneTime + JUMP_COOLDOWN;

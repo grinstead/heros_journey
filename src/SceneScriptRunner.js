@@ -176,7 +176,7 @@ function runAction(scene, runner, action) {
         const endTime = scene.sceneTime + action.seconds;
         return () => scene.sceneTime >= endTime;
       } else {
-        return () => scene.activeActions == null;
+        return () => runner.activeActions == null;
       }
     }
     case "change sprite": {
@@ -303,6 +303,10 @@ function runAction(scene, runner, action) {
     }
     case "change hero visibility": {
       scene.hero.hidden = !action.visible;
+      return CONTINUE;
+    }
+    case "transition": {
+      scene.exiting = action.nextScreen;
       return CONTINUE;
     }
     case "fight": {

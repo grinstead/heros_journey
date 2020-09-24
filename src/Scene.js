@@ -39,10 +39,8 @@ export let GameObject;
 
 /**
  * @typedef {Object} Transition
- * @property {string} sceneName
- * @property {string} transitionType
- * @property {number} realWorldStartTime - ie. Date.now() / 1000
- * @property {number} seconds - The duration
+ * @property {number} heroX
+ * @property {number} heroX
  */
 export let Transition;
 
@@ -93,7 +91,7 @@ export let Bullet;
  * @property {!Array<SceneScriptRunner>} scripts
  * @property {number} inFight
  * @property {?Transition} entering - The transition that brought us here
- * @property {?Transition} exiting - The transition that is taking us away from here
+ * @property {?string} exiting - The screen to go to
  */
 export let Scene;
 

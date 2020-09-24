@@ -118,6 +118,7 @@ function parseGameScript() {
       "absolute camera",
       "change hero visibility",
       "fight",
+      "transition",
     ];
 
     processArray("characters", (name) => {
@@ -237,6 +238,14 @@ function parseGameScript() {
           return {
             type,
             visible: readBoolean("visible"),
+          };
+        case "transition":
+          return {
+            type,
+            nextScreen: validateString(
+              "next screen",
+              (val) => !scenes.has(val) && "is not one of the given scenes"
+            ),
           };
         default:
           return { type };
