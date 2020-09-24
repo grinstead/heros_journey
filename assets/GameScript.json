@@ -13,8 +13,8 @@
       "location": {
         "x": 443,
         "y": 80,
-        "width": 1920,
-        "height": 1280
+        "width": 10000,
+        "height": 10000
       }
     },
     "home": {
@@ -71,12 +71,11 @@
           "y": 80,
           "zoom": 1
         },
-        { "type": "wait", "seconds": 5 },
+        { "type": "wait", "seconds": 4 },
         { "type": "change hero visibility", "visible": true },
         { "type": "move", "name": "hero", "x": 2000, "seconds": 5 },
-        { "type": "wait", "seconds": 5 },
+        { "type": "wait", "seconds": 31 },
         { "type": "camera" },
-        { "type": "wait", "seconds": 25 },
         {
           "type": "change hero head",
           "sprite": "Narration2Head"
@@ -138,7 +137,7 @@
           "z": 180,
           "shadow radius": { "x": 30, "y": 15 }
         },
-        { "type": "wait", "seconds": 36 },
+        { "type": "wait", "seconds": 26 },
         { "type": "do", "script": "main villain intro" }
       ]
     },

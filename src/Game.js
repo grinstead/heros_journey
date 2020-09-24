@@ -56,6 +56,7 @@ const MAX_FRAME_TIME = 1 / 10;
 const BULLET_R = 10;
 const DMG_COLOR = 0.4;
 const BULLET_SHADOW = { x: 10, y: 5 };
+const WHITEBOARD_LAG = 10;
 
 /** @typedef {{x:number, y:number}} MousePosition */
 export let MousePosition;
@@ -109,6 +110,8 @@ export class Game {
     this.bulletSprite = makeBulletBall(0);
     /** @type {boolean} */
     this.firstFrame = true;
+    /** @private {number} */
+    this.startTime = 0;
   }
 
   processGame() {
@@ -116,6 +119,9 @@ export class Game {
     this.firstFrame = false;
 
     const realTime = Date.now() / 1000;
+    if (firstFrame) {
+      this.startTime = realTime;
+    }
 
     const { onScreenMousePosition, display, world } = this;
     const scene = world.activeScene;
@@ -265,6 +271,8 @@ function renderGame(game) {
 
   const zoom = cameraZoomToActualZoom(camera.zoom);
 
+  const whiteboardPercentage = (Date.now() / 1000 - game.startTime) / 30;
+
   const adjustToDisplayCoordinates = () => {
     const dims = game.display;
     scaleAxes(
@@ -306,12 +314,34 @@ function renderGame(game) {
       // note that the image is upside-down at this point
       shiftContent(-(960 / 2), -640 / 2, 0);
 
-      game.whiteboardObjects.forEach((obj) => {
+      const numWhiteboard = game.whiteboardObjects.length;
+      const unfinished =
+        whiteboardPercentage < 1 + WHITEBOARD_LAG / numWhiteboard;
+      game.whiteboardObjects.forEach((obj, index) => {
         gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexBuffer);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj.indexBuffer);
         gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 0, 0);
 
-        gl.drawElements(gl.TRIANGLES, obj.numPoints, gl.UNSIGNED_SHORT, 0);
+        if (unfinished) {
+          const p = Math.min(
+            Math.max(
+              0,
+              whiteboardPercentage * numWhiteboard - index - WHITEBOARD_LAG
+            ) / WHITEBOARD_LAG,
+            1
+          );
+
+          const n = Math.floor((obj.numPoints / 3) * p) * 3;
+
+          gl.drawElements(
+            gl.TRIANGLES,
+            n,
+            gl.UNSIGNED_SHORT,
+            2 * (obj.numPoints - n)
+          );
+        } else {
+          gl.drawElements(gl.TRIANGLES, obj.numPoints, gl.UNSIGNED_SHORT, 0);
+        }
       });
     });
 
