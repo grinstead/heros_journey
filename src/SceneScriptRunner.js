@@ -245,6 +245,8 @@ function runAction(scene, runner, action) {
       const startTime = scene.sceneTime;
 
       const processStep = () => {
+        obj.mirrorX = dx < 0;
+
         const p = (scene.sceneTime - startTime) / seconds;
         if (p < 1) {
           obj.speed = calcSpeedEasing(targetSpeed, p, easeIn, easeOut);

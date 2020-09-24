@@ -112,19 +112,27 @@
           "name": "main",
           "sprite": "MainVillainIntro",
           "absolute": true,
-          "x": 470,
-          "y": 300,
+          "x": 842,
+          "y": 582,
           "z": 0,
           "shadow radius": { "x": 30, "y": 15 }
         },
         { "type": "play sound", "sound": "MainVillainIntroSound" },
-        { "type": "camera", "name": "main", "show hero": false },
+        { "type": "camera", "name": "main", "show hero": false, "zoom": 0.2 },
         {
           "type": "move",
           "name": "main",
           "absolute": true,
-          "x": 510,
-          "y": 91,
+          "x": 660,
+          "y": 108,
+          "seconds": 10
+        },
+        {
+          "type": "move",
+          "name": "hero",
+          "absolute": true,
+          "x": 600,
+          "y": 108,
           "seconds": 10
         },
         { "type": "wait", "seconds": 10 },
@@ -133,17 +141,9 @@
         { "type": "camera" },
         {
           "type": "move",
-          "name": "hero",
-          "x": 2000,
-          "y": -1000,
-          "seconds": 10
-        },
-        {
-          "type": "move",
           "name": "main",
           "x": 2000,
-          "y": -1000,
-          "seconds": 10
+          "seconds": 2
         }
       ]
     },
@@ -386,6 +386,7 @@
       "type": "animated",
       "name": "MainVillainIntro",
       "src": "Main Villain Intro",
+      "flip": true,
       "originX": 200,
       "originY": 370
     },
