@@ -55,6 +55,7 @@ const FPS_SMOOTHING = 0.9;
 const MAX_FRAME_TIME = 1 / 10;
 const BULLET_R = 10;
 const DMG_COLOR = 0.4;
+const BULLET_SHADOW = { x: 10, y: 5 };
 
 /** @typedef {{x:number, y:number}} MousePosition */
 export let MousePosition;
@@ -343,11 +344,11 @@ function renderGame(game) {
       }
       subrenderEach(scene.objects, renderShadow);
 
-      subrenderEach(scene.bullets, ({ x, y, shadowRadius, isDead }) => {
+      subrenderEach(scene.bullets, ({ x, y, isDead }) => {
         if (isDead) return;
 
         shiftContent(x, y, 0);
-        scaleAxes(shadowRadius.x, shadowRadius.y, 1);
+        scaleAxes(BULLET_SHADOW.x, BULLET_SHADOW.y, 1);
         gl.drawArrays(gl.TRIANGLE_FAN, 0, circleShadow.numPoints);
       });
     });
@@ -380,9 +381,15 @@ function renderGame(game) {
         showDamage(rasterProgram);
       }
       shiftContent(object.x, object.y, object.z);
-      const sprite = object.sprite;
-      sprite.prepareSpriteType();
-      subrenderSprite(sprite);
+
+      const render = object.render;
+      if (render) {
+        subrender(render);
+      } else {
+        const sprite = object.sprite;
+        sprite.prepareSpriteType();
+        subrenderSprite(sprite);
+      }
     });
 
     const bulletSprite = game.bulletSprite;

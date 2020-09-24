@@ -50,15 +50,17 @@ function main() {
           return processSpriteAtlas({
             name: readName(),
             src: readString("src"),
+            flip: hasKey("flip") ? readBoolean("flip") : false,
+            loops: hasKey("loops") ? readBoolean("loops") : false,
             originX: hasKey("originX") ? readNum("originX") : undefined,
             originY: hasKey("originY") ? readNum("originY") : undefined,
-            loops: hasKey("loops") ? readBoolean("loops") : false,
           });
         case "static":
           hasSprites = true;
           return processStaticSprite({
             name: readName(),
             src: readString("src"),
+            flip: hasKey("flip") ? readBoolean("flip") : false,
             originX: hasKey("originX") ? readNum("originX") : undefined,
             originY: hasKey("originY") ? readNum("originY") : undefined,
           });
@@ -179,6 +181,17 @@ function processSpriteAtlas(info) {
 
   let transform = BASE_TRANSFORM;
 
+  // maybe mirror over the x
+  if (info.flip) {
+    // prettier-ignore
+    transform = mult(transform, [
+      -1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      0, 0, 0, 1,
+    ]);
+  }
+
   // shift by origin
   // prettier-ignore
   transform = mult(transform, [
@@ -222,6 +235,17 @@ function processStaticSprite(info) {
   ];
 
   let transform = BASE_TRANSFORM;
+
+  // maybe mirror over the x
+  if (info.flip) {
+    // prettier-ignore
+    transform = mult(transform, [
+      -1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      0, 0, 0, 1,
+    ]);
+  }
 
   // shift by origin
   // prettier-ignore

@@ -13,13 +13,12 @@ import {
   subrender,
   rotateAboutY,
 } from "../wattle/engine/src/swagl/MatrixStack.js";
-import { Scene, ShadowRadius } from "./Scene.js";
+import { Scene, ShadowRadius, fireBullet } from "./Scene.js";
 import { MousePosition } from "./Game.js";
 import { arctan } from "./utils.js";
 
 const HERO_SPEED = 600;
 const BULLET_SPEED = 640;
-const BULLET_SHADOW = { x: 10, y: 5 };
 const JUMP_COOLDOWN = 0.25;
 const SHOOT_COOLDOWN = 0.25;
 
@@ -154,20 +153,16 @@ function heroStateNormal(hero, scene) {
       if (scene.inFight && sceneTime >= hero.shootCooldown) {
         hero.shootCooldown = sceneTime + SHOOT_COOLDOWN;
 
-        const cos = Math.cos(armDirection);
-        const sin = Math.sin(armDirection);
-
-        scene.bullets.push({
-          x: hero.x + ARM_LENGTH * cos,
-          y: hero.y + ARM_LENGTH * sin,
-          z: ARM_POS.y,
-          dx: BULLET_SPEED * cos,
-          dy: BULLET_SPEED * sin,
-          shadowRadius: BULLET_SHADOW,
-          isFriendly: true,
-          startTime: 0,
-          isDead: false,
-        });
+        fireBullet(
+          scene,
+          hero.x,
+          hero.y,
+          ARM_POS.y,
+          ARM_LENGTH,
+          armDirection,
+          BULLET_SPEED,
+          true
+        );
       }
     },
     render: null,

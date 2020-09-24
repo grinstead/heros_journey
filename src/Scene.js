@@ -30,6 +30,8 @@ export let Camera;
  * @property {Sprite} sprite
  * @property {ShadowRadius} shadowRadius
  * @property {number} showDamageUntil
+ * @property {?} other
+ * @property {?function():void} render - if not provided, we render the sprite
  */
 export let GameObject;
 
@@ -68,7 +70,6 @@ export let SceneStep;
  * @property {boolean} isFriendly
  * @property {number} startTime
  * @property {boolean} isDead
- * @property {ShadowRadius} shadowRadius
  */
 export let Bullet;
 
@@ -147,4 +148,39 @@ export function makeScene(options) {
 
 export function offsetAFrameFrom(time) {
   return Date.now() / 1000 - 1 / 60 - time;
+}
+
+/**
+ * @param {Scene} scene
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ * @param {number} offset
+ * @param {number} direction
+ * @param {number} speed
+ * @param {boolean} isFriendly
+ */
+export function fireBullet(
+  scene,
+  x,
+  y,
+  z,
+  offset,
+  direction,
+  speed,
+  isFriendly
+) {
+  const cos = Math.cos(direction);
+  const sin = Math.sin(direction);
+
+  scene.bullets.push({
+    x: x + offset * cos,
+    y: y + offset * sin,
+    z,
+    dx: speed * cos,
+    dy: speed * sin,
+    isFriendly,
+    startTime: scene.startTime,
+    isDead: false,
+  });
 }

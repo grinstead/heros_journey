@@ -2,7 +2,7 @@ import { SceneStep, Scene, GameObject } from "./Scene.js";
 import { SceneScript, ScriptAction } from "./GameScript.js";
 import { makeSpriteFromName } from "./Sprite.js";
 import { arctan, magnitudeOf } from "./utils.js";
-import { addNamedState } from "./enemies/EnemyAi.js";
+import { addNamedState, initialStateFor } from "./enemies/EnemyAi.js";
 
 /**
  * @typedef {Object} SceneScriptRunner
@@ -122,6 +122,8 @@ function runAction(scene, runner, action) {
         sprite: makeSpriteFromName(action.sprite, scene.sceneTime),
         shadowRadius: action.shadowRadius,
         showDamageUntil: 0,
+        other: initialStateFor(scene, action.name),
+        render: null,
       });
 
       return CONTINUE;
