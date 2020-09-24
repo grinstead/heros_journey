@@ -13,10 +13,12 @@ import { killOffEnemy } from "./utils.js";
 const ARM_HEIGHT = 178 - 118;
 const ARM_LENGTH = 95 - 2;
 const HEALTH = 10;
+const SWEEP_TIME = 0.5;
 
 /**
  * @typedef {Object} VillainState
- * @property {number} armDirection
+ * @property {number} heroDirection
+ * @property {number} dirOffset
  * @property {!Sprite} armSprite
  */
 let VillainState;
@@ -27,7 +29,8 @@ let VillainState;
  */
 export function firstVillainInitialState(scene) {
   return {
-    armDirection: 0,
+    heroDirection: 0,
+    dirOffset: 0,
     armSprite: makeFirstVillainArm(scene.sceneTime),
   };
 }
@@ -45,7 +48,7 @@ export function firstVillainMain(runner, object) {
 
     subrender(() => {
       shiftContent(0, 0, ARM_HEIGHT);
-      rotateAboutY(state.armDirection);
+      rotateAboutY(state.heroDirection + state.dirOffset);
       state.armSprite.prepareSpriteType();
       subrenderSprite(state.armSprite);
     });
@@ -55,21 +58,59 @@ export function firstVillainMain(runner, object) {
     subrenderSprite(sprite);
   };
 
+  let startTime = scene.sceneTime;
   let bulletCooldown = 0;
+  let sweepCooldown = startTime + 2;
+
+  function fireSweep() {
+    bulletCooldown = startTime;
+    sweepCooldown = startTime + SWEEP_TIME + 2;
+
+    const step = () => {
+      const sceneTime = scene.sceneTime;
+      const state = stateOf(object);
+
+      if (sceneTime - startTime > SWEEP_TIME) {
+        state.dirOffset = 0;
+        return fireSimple;
+      }
+
+      const dirOffset = (sceneTime - startTime) / SWEEP_TIME - 0.5;
+      state.dirOffset = dirOffset;
+
+      while (sceneTime >= bulletCooldown) {
+        bulletCooldown += 0.05;
+        fireBullet(
+          scene,
+          object.x,
+          object.y,
+          ARM_HEIGHT,
+          ARM_LENGTH,
+          state.heroDirection + dirOffset,
+          300,
+          false
+        );
+      }
+
+      return step;
+    };
+
+    return step;
+  }
 
   function fireSimple() {
     const sceneTime = scene.sceneTime;
+    if (sceneTime >= sweepCooldown) return fireSweep;
+
     if (sceneTime > bulletCooldown) {
       bulletCooldown = sceneTime + 1;
-
-      const { armDirection } = stateOf(object);
       fireBullet(
         scene,
         object.x,
         object.y,
         ARM_HEIGHT,
         ARM_LENGTH,
-        armDirection,
+        stateOf(object).heroDirection,
         300,
         false
       );
@@ -91,9 +132,15 @@ export function firstVillainMain(runner, object) {
 
     const state = stateOf(object);
     const hero = scene.hero;
-    state.armDirection = arctan(hero.y - object.y, hero.x - object.x);
+    state.heroDirection = arctan(hero.y - object.y, hero.x - object.x);
 
-    activeAction = activeAction();
+    let newAction = activeAction();
+    while (newAction && newAction !== activeAction) {
+      startTime = scene.sceneTime;
+      activeAction = newAction;
+      newAction = newAction();
+    }
+    activeAction = newAction;
 
     return activeAction && Action;
   }
