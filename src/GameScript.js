@@ -13,6 +13,8 @@ import {
   readBoolean,
 } from "./PettyParser.js";
 
+export const FULL_SPACE_ZOOM = 1 / 6;
+
 /**
  * @typedef {Object} ScriptAction;
  */
@@ -36,22 +38,21 @@ export let GameScript;
  * @param {number} circleRadius
  * @returns !Promise<GameScript>
  */
-export async function loadUpGameScript(circleRadius) {
+export async function loadUpGameScript() {
   try {
     const response = await fetch("./assets/GameScript.json");
     const plainScript = await response.text();
 
-    return parseRawObject(plainScript, () => parseGameScript(circleRadius));
+    return parseRawObject(plainScript, () => parseGameScript());
   } catch (error) {
     alert(String(error));
   }
 }
 
 /**
- * @param {number} circleRadius
  * @returns {GameScript}
  */
-function parseGameScript(circleRadius) {
+function parseGameScript() {
   const spriteNames = [];
   const soundNames = [];
   processObjectArray("assets", () => {
@@ -65,14 +66,14 @@ function parseGameScript(circleRadius) {
 
   const scenes = processObjectMap("scenes", (name) => {
     const sceneBox = processKey("location", () => {
-      const clock = readNum("clock position", 0, 12, true);
+      let originX = readNum("x");
+      let originY = readNum("y");
       const width = readNum("width", 0, Number.POSITIVE_INFINITY, false);
       const height = readNum("height", 0, Number.POSITIVE_INFINITY, false);
 
-      const angle = Math.PI / 2 - 2 * Math.PI * (clock / 12);
-
-      const originX = Math.round(circleRadius * Math.cos(angle));
-      const originY = Math.round(circleRadius * Math.sin(angle));
+      // change to be world coordinates
+      originX = (originX - 960 / 2) / FULL_SPACE_ZOOM;
+      originY = (originY - 640 / 2) / -FULL_SPACE_ZOOM;
 
       return {
         left: -width / 2,

@@ -3,7 +3,8 @@
   "scenes": {
     "big bad": {
       "location": {
-        "clock position": 1,
+        "x": 0,
+        "y": 40,
         "width": 4000,
         "height": 4000
       },
@@ -39,51 +40,6 @@
         { "type": "camera", "name": "villain" },
         { "type": "wait" },
         { "type": "fight" }
-      ]
-    },
-    "example": {
-      "location": {
-        "clock position": 1,
-        "width": 960,
-        "height": 640
-      },
-      "actions": [
-        {
-          "type": "add",
-          "name": "villain",
-          "sprite": "MonsterTruck",
-          "x": 0,
-          "y": -300,
-          "z": 1000,
-          "shadow radius": { "x": 40, "y": 20 }
-        },
-        {
-          "type": "move",
-          "name": "villain",
-          "seconds": 0.5,
-          "z": -1000,
-          "ease in": true
-        },
-        { "type": "wait", "seconds": 0.5 },
-        {
-          "type": "move",
-          "name": "villain",
-          "seconds": 1,
-          "x": 200
-        },
-        {
-          "type": "wait",
-          "seconds": 3
-        },
-        {
-          "type": "change sprite",
-          "name": "villain",
-          "sprite": "BigBadGuyLanding"
-        },
-        {
-          "type": "play sound",
-          "sound": "GunShot"
-        }
       ]
     }
   },
