@@ -139,10 +139,19 @@ function runAction(scene, runner, action) {
     }
     case "add": {
       const { objects } = scene;
+
+      let x = action.x;
+      let y = action.y;
+
+      if (action.absolute) {
+        x -= scene.sceneBox.originX;
+        y -= scene.sceneBox.originY;
+      }
+
       objects.push({
         name: action.name,
-        x: action.x,
-        y: action.y,
+        x,
+        y,
         z: action.z,
         mirrorX: false,
         direction: 0,
@@ -198,7 +207,7 @@ function runAction(scene, runner, action) {
       return CONTINUE;
     }
     case "move": {
-      const { name, seconds, easeIn, easeOut } = action;
+      const { name, seconds, easeIn, easeOut, absolute } = action;
       const isHero = name === "hero";
 
       const obj = isHero
@@ -209,8 +218,15 @@ function runAction(scene, runner, action) {
         throw new Error(`No object with name ${name}`);
       }
 
-      const dx = action.x;
-      const dy = action.y;
+      let dx, dy;
+      if (absolute) {
+        dx = action.x - scene.sceneBox.originX - obj.x;
+        dy = action.y - scene.sceneBox.originY - obj.y;
+      } else {
+        dx = action.x;
+        dy = action.y;
+      }
+
       const dz = action.z;
       const startX = obj.x;
       const startY = obj.y;
@@ -257,7 +273,7 @@ function runAction(scene, runner, action) {
       const { name, zoom } = action;
       const sceneCamera = scene.sceneCamera;
       sceneCamera.target.zoom = zoom;
-      sceneCamera.showHero = true;
+      sceneCamera.showHero = action.showHero;
 
       if (name == null) {
         sceneCamera.subtarget = null;

@@ -107,10 +107,6 @@ export class Sprite {
         this._nextFrameTime = nextFrameTime =
           nextFrameTime + frameTimes[nextFrame];
       }
-
-      if (this._name === "Narration2Head") {
-        console.log(`${this._name}: frame ${this._frameIndex}`);
-      }
     }
 
     return changed;

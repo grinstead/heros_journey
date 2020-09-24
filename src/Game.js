@@ -331,9 +331,11 @@ function renderGame(game) {
        * @param {number} data.x
        * @param {number} data.y
        * @param {number} data.z
-       * @param {{x:number,y:number}} data.shadowRadius
+       * @param {?{x:number,y:number}} data.shadowRadius
        */
       const renderShadow = ({ x, y, z, shadowRadius }) => {
+        if (!shadowRadius) return;
+
         shiftContent(x, y - z, 0);
         scaleAxes(shadowRadius.x, shadowRadius.y, 1);
         gl.drawArrays(gl.TRIANGLE_FAN, 0, circleShadow.numPoints);

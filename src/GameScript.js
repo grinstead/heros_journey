@@ -144,12 +144,22 @@ function parseGameScript() {
           };
         }
         case "add": {
+          const absolute = hasKey("absolute") && readBoolean("absolute");
+          let x = readNum("x");
+          let y = readNum("y");
+
+          if (absolute) {
+            x = changeXToWorld(x);
+            y = changeYToWorld(y);
+          }
+
           return {
             type,
             name: readCharacterName(),
             sprite: readOneOf("sprite", spriteNames),
-            x: readNum("x"),
-            y: readNum("y"),
+            absolute,
+            x,
+            y,
             z: hasKey("z") ? readNum("z") : 0,
             shadowRadius: processKey("shadow radius", () => ({
               x: readNum("x", 0),
@@ -187,22 +197,34 @@ function parseGameScript() {
             type,
             sprite: readOneOf("sprite", spriteNames),
           };
-        case "move":
+        case "move": {
+          const absolute = hasKey("absolute") && readBoolean("absolute");
+          let x = hasKey("x") ? readNum("x") : 0;
+          let y = hasKey("y") ? readNum("y") : 0;
+
+          if (absolute) {
+            x = changeXToWorld(x);
+            y = changeYToWorld(y);
+          }
+
           return {
             type,
             name: readCharacterName(),
             seconds: readNum("seconds", 0),
-            x: hasKey("x") ? readNum("x") : 0,
-            y: hasKey("y") ? readNum("y") : 0,
+            absolute,
+            x,
+            y,
             z: hasKey("z") ? readNum("z") : 0,
             easeIn: hasKey("ease in") && readBoolean("ease in"),
             easeOut: hasKey("ease out") && readBoolean("ease out"),
           };
+        }
         case "camera":
           return {
             type,
             name: hasKey("name") ? readCharacterName() : null,
             zoom: hasKey("zoom") ? readNum("zoom", 0, 1, true) : 1,
+            showHero: hasKey("show hero") ? readBoolean("show hero") : true,
           };
         case "absolute camera":
           return {

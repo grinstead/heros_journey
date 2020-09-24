@@ -29,7 +29,7 @@ export let Camera;
  * @property {number} speed
  * @property {number} zSpeed
  * @property {Sprite} sprite
- * @property {ShadowRadius} shadowRadius
+ * @property {?ShadowRadius} shadowRadius
  * @property {number} showDamageUntil
  * @property {number} damage
  * @property {?} other
