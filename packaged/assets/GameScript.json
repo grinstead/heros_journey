@@ -1,12 +1,92 @@
 {
-  "opening scene": "big bad",
+  "opening scene": "call to action",
   "scenes": {
     "big bad": {
       "location": {
-        "clock position": 1,
+        "x": 0,
+        "y": 40,
         "width": 4000,
         "height": 4000
-      },
+      }
+    },
+    "intro": {
+      "location": {
+        "x": 515,
+        "y": 78,
+        "width": 2000,
+        "height": 2000
+      }
+    },
+    "call to action": {
+      "location": {
+        "x": 620,
+        "y": 122,
+        "width": 4000,
+        "height": 2000
+      }
+    }
+  },
+  "scripts": {
+    "test": {
+      "characters": ["hero", "first"],
+      "actions": [
+        {
+          "type": "do",
+          "script": "first villain"
+        }
+      ]
+    },
+    "intro": {
+      "characters": ["hero"],
+      "actions": [
+        { "type": "change hero visibility", "visible": false },
+        {
+          "type": "absolute camera",
+          "x": 480,
+          "y": 320,
+          "zoom": 0
+        },
+        {
+          "type": "play sound",
+          "sound": "Narration1"
+        },
+        { "type": "wait", "seconds": 31 },
+        {
+          "type": "camera"
+        },
+        { "type": "change hero visibility", "visible": true },
+        { "type": "wait", "seconds": 35 },
+        {
+          "type": "change hero head",
+          "sprite": "Narration2Head"
+        },
+        { "type": "play sound", "sound": "Narration2" }
+      ]
+    },
+    "first villain": {
+      "characters": ["hero", "first"],
+      "actions": [
+        {
+          "type": "add",
+          "name": "first",
+          "sprite": "FirstVillain",
+          "x": 800,
+          "y": 0,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        {
+          "type": "camera",
+          "name": "first"
+        },
+        {
+          "type": "change state",
+          "name": "first",
+          "state": "first villain main"
+        }
+      ]
+    },
+    "test2": {
+      "characters": ["hero", "villain"],
       "actions": [
         {
           "type": "play sound",
@@ -38,52 +118,8 @@
         },
         { "type": "camera", "name": "villain" },
         { "type": "wait" },
+        { "type": "move", "name": "hero", "seconds": 2, "x": -100 },
         { "type": "fight" }
-      ]
-    },
-    "example": {
-      "location": {
-        "clock position": 1,
-        "width": 960,
-        "height": 640
-      },
-      "actions": [
-        {
-          "type": "add",
-          "name": "villain",
-          "sprite": "MonsterTruck",
-          "x": 0,
-          "y": -300,
-          "z": 1000,
-          "shadow radius": { "x": 40, "y": 20 }
-        },
-        {
-          "type": "move",
-          "name": "villain",
-          "seconds": 0.5,
-          "z": -1000,
-          "ease in": true
-        },
-        { "type": "wait", "seconds": 0.5 },
-        {
-          "type": "move",
-          "name": "villain",
-          "seconds": 1,
-          "x": 200
-        },
-        {
-          "type": "wait",
-          "seconds": 3
-        },
-        {
-          "type": "change sprite",
-          "name": "villain",
-          "sprite": "BigBadGuyLanding"
-        },
-        {
-          "type": "play sound",
-          "sound": "GunShot"
-        }
       ]
     }
   },
@@ -178,8 +214,64 @@
     },
     {
       "type": "audio",
+      "name": "Narration1",
+      "src": "Narration 1.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "Narration2",
+      "src": "Narration 2.mp3"
+    },
+    {
+      "type": "animated",
+      "name": "Narration2Head",
+      "src": "Narration 2",
+      "originX": 101,
+      "originY": 187
+    },
+    {
+      "type": "audio",
       "name": "JumpSound",
       "src": "Bullet Dodge.mp3"
+    },
+    {
+      "type": "animated",
+      "name": "FirstVillain",
+      "src": "First Villain",
+      "flip": true,
+      "loops": true,
+      "originX": 97,
+      "originY": 178
+    },
+    {
+      "type": "animated",
+      "name": "FirstVillainDying",
+      "src": "First Villain Dying",
+      "flip": true,
+      "originX": 97,
+      "originY": 178
+    },
+    {
+      "type": "animated",
+      "name": "FirstVillainWalking",
+      "src": "First Villain Walking",
+      "flip": true,
+      "loops": true,
+      "originX": 97,
+      "originY": 178
+    },
+    {
+      "type": "animated",
+      "name": "FirstVillainArm",
+      "src": "First Villain Gun",
+      "flip": true,
+      "originX": 95,
+      "originY": 118
+    },
+    {
+      "type": "audio",
+      "name": "FirstVillainDyingSound",
+      "src": "First Villian Dying.mp3"
     }
   ]
 }

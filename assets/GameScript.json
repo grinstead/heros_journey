@@ -75,6 +75,10 @@
           "shadow radius": { "x": 30, "y": 15 }
         },
         {
+          "type": "camera",
+          "name": "first"
+        },
+        {
           "type": "change state",
           "name": "first",
           "state": "first villain main"
