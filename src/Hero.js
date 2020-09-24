@@ -113,8 +113,8 @@ function heroStateNormal(hero, scene) {
       }
 
       if (sceneTime >= hero.jumpCooldown && input.isPressed("jump")) {
-        a;
         hero.changeState(scene, heroStateJump, null);
+        return;
       }
 
       const armDirection = hero.armDirection;

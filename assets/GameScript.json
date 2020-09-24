@@ -36,8 +36,8 @@
           "z": -1200,
           "ease in": true
         },
-        { "type": "wait", "seconds": 0.325 },
         { "type": "camera", "name": "villain" },
+        { "type": "wait" },
         { "type": "fight" }
       ]
     },

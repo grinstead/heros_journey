@@ -130,7 +130,7 @@ function parseGameScript(circleRadius) {
         case "wait":
           return {
             type,
-            seconds: readNum("seconds", 0),
+            seconds: hasKey("seconds") ? readNum("seconds", 0) : null,
           };
         case "change sprite":
           return {

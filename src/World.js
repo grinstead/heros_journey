@@ -190,8 +190,13 @@ function runAction(scene, action) {
       return CONTINUE;
     }
     case "wait": {
-      const endTime = scene.sceneTime + action.seconds;
-      return () => scene.sceneTime >= endTime;
+      const seconds = action.seconds;
+      if (seconds != null) {
+        const endTime = scene.sceneTime + action.seconds;
+        return () => scene.sceneTime >= endTime;
+      } else {
+        return () => scene.activeActions == null;
+      }
     }
     case "change sprite": {
       const name = action.name;
