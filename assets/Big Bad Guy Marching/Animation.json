@@ -13,7 +13,7 @@
                             "elements": [
                                 {
                                     "SYMBOL_Instance": {
-                                        "SYMBOL_name": "Symbol 2",
+                                        "SYMBOL_name": "Symbol 12",
                                         "Instance_Name": "InstName",
                                         "symbolType": "graphic",
                                         "firstFrame": 0,
@@ -57,7 +57,7 @@
                                 },
                                 {
                                     "SYMBOL_Instance": {
-                                        "SYMBOL_name": "Symbol 3",
+                                        "SYMBOL_name": "Symbol 13",
                                         "Instance_Name": "InstName",
                                         "symbolType": "graphic",
                                         "firstFrame": 0,
@@ -107,7 +107,7 @@
                             "elements": [
                                 {
                                     "SYMBOL_Instance": {
-                                        "SYMBOL_name": "Symbol 2",
+                                        "SYMBOL_name": "Symbol 12",
                                         "Instance_Name": "InstName",
                                         "symbolType": "graphic",
                                         "firstFrame": 0,
@@ -151,7 +151,7 @@
                                 },
                                 {
                                     "SYMBOL_Instance": {
-                                        "SYMBOL_name": "Symbol 3",
+                                        "SYMBOL_name": "Symbol 13",
                                         "Instance_Name": "InstName",
                                         "symbolType": "graphic",
                                         "firstFrame": 0,
@@ -201,7 +201,7 @@
                             "elements": [
                                 {
                                     "SYMBOL_Instance": {
-                                        "SYMBOL_name": "Symbol 4",
+                                        "SYMBOL_name": "Symbol 14",
                                         "Instance_Name": "InstName",
                                         "symbolType": "graphic",
                                         "firstFrame": 0,
@@ -245,7 +245,7 @@
                                 },
                                 {
                                     "SYMBOL_Instance": {
-                                        "SYMBOL_name": "Symbol 3",
+                                        "SYMBOL_name": "Symbol 13",
                                         "Instance_Name": "InstName",
                                         "symbolType": "graphic",
                                         "firstFrame": 0,
@@ -295,7 +295,7 @@
                             "elements": [
                                 {
                                     "SYMBOL_Instance": {
-                                        "SYMBOL_name": "Symbol 4",
+                                        "SYMBOL_name": "Symbol 14",
                                         "Instance_Name": "InstName",
                                         "symbolType": "graphic",
                                         "firstFrame": 0,
@@ -339,7 +339,7 @@
                                 },
                                 {
                                     "SYMBOL_Instance": {
-                                        "SYMBOL_name": "Symbol 3",
+                                        "SYMBOL_name": "Symbol 13",
                                         "Instance_Name": "InstName",
                                         "symbolType": "graphic",
                                         "firstFrame": 0,
@@ -389,7 +389,7 @@
                             "elements": [
                                 {
                                     "SYMBOL_Instance": {
-                                        "SYMBOL_name": "Symbol 5",
+                                        "SYMBOL_name": "Symbol 15",
                                         "Instance_Name": "InstName",
                                         "symbolType": "graphic",
                                         "firstFrame": 0,
@@ -433,7 +433,7 @@
                                 },
                                 {
                                     "SYMBOL_Instance": {
-                                        "SYMBOL_name": "Symbol 3",
+                                        "SYMBOL_name": "Symbol 13",
                                         "Instance_Name": "InstName",
                                         "symbolType": "graphic",
                                         "firstFrame": 0,
@@ -483,7 +483,7 @@
                             "elements": [
                                 {
                                     "SYMBOL_Instance": {
-                                        "SYMBOL_name": "Symbol 5",
+                                        "SYMBOL_name": "Symbol 15",
                                         "Instance_Name": "InstName",
                                         "symbolType": "graphic",
                                         "firstFrame": 0,
@@ -527,7 +527,7 @@
                                 },
                                 {
                                     "SYMBOL_Instance": {
-                                        "SYMBOL_name": "Symbol 3",
+                                        "SYMBOL_name": "Symbol 13",
                                         "Instance_Name": "InstName",
                                         "symbolType": "graphic",
                                         "firstFrame": 0,
@@ -573,8 +573,191 @@
                         },
                         {
                             "index": 6,
-                            "duration": 2,
-                            "elements": []
+                            "duration": 1,
+                            "elements": [
+                                {
+                                    "SYMBOL_Instance": {
+                                        "SYMBOL_name": "Symbol 16",
+                                        "Instance_Name": "InstName",
+                                        "symbolType": "graphic",
+                                        "firstFrame": 0,
+                                        "loop": "loop",
+                                        "Matrix3D": {
+                                            "m00": 1.0,
+                                            "m01": 0.0,
+                                            "m02": 0.0,
+                                            "m03": 0.0,
+                                            "m10": 0.0,
+                                            "m11": 1.0,
+                                            "m12": 0.0,
+                                            "m13": 0.0,
+                                            "m20": 0.0,
+                                            "m21": 0.0,
+                                            "m22": 1.0,
+                                            "m23": 0.0,
+                                            "m30": 0.0,
+                                            "m31": 0.0,
+                                            "m32": 0.0,
+                                            "m33": 1.0
+                                        },
+                                        "DecomposedMatrix": {
+                                            "Position": {
+                                                "x": 0.0,
+                                                "y": 0.0,
+                                                "z": 0.0
+                                            },
+                                            "Rotation": {
+                                                "x": 0.0,
+                                                "y": -0.0,
+                                                "z": 0.0
+                                            },
+                                            "Scaling": {
+                                                "x": 1.0,
+                                                "y": 1.0,
+                                                "z": 1.0
+                                            }
+                                        }
+                                    }
+                                },
+                                {
+                                    "SYMBOL_Instance": {
+                                        "SYMBOL_name": "Symbol 13",
+                                        "Instance_Name": "InstName",
+                                        "symbolType": "graphic",
+                                        "firstFrame": 0,
+                                        "loop": "loop",
+                                        "Matrix3D": {
+                                            "m00": 1.0,
+                                            "m01": 0.0,
+                                            "m02": 0.0,
+                                            "m03": 0.0,
+                                            "m10": 0.0,
+                                            "m11": 1.0,
+                                            "m12": 0.0,
+                                            "m13": 0.0,
+                                            "m20": 0.0,
+                                            "m21": 0.0,
+                                            "m22": 1.0,
+                                            "m23": 0.0,
+                                            "m30": 0.0,
+                                            "m31": 0.0,
+                                            "m32": 0.0,
+                                            "m33": 1.0
+                                        },
+                                        "DecomposedMatrix": {
+                                            "Position": {
+                                                "x": 0.0,
+                                                "y": 0.0,
+                                                "z": 0.0
+                                            },
+                                            "Rotation": {
+                                                "x": 0.0,
+                                                "y": -0.0,
+                                                "z": 0.0
+                                            },
+                                            "Scaling": {
+                                                "x": 1.0,
+                                                "y": 1.0,
+                                                "z": 1.0
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "index": 7,
+                            "duration": 1,
+                            "elements": [
+                                {
+                                    "SYMBOL_Instance": {
+                                        "SYMBOL_name": "Symbol 16",
+                                        "Instance_Name": "InstName",
+                                        "symbolType": "graphic",
+                                        "firstFrame": 0,
+                                        "loop": "loop",
+                                        "Matrix3D": {
+                                            "m00": 1.0,
+                                            "m01": 0.0,
+                                            "m02": 0.0,
+                                            "m03": 0.0,
+                                            "m10": 0.0,
+                                            "m11": 1.0,
+                                            "m12": 0.0,
+                                            "m13": 0.0,
+                                            "m20": 0.0,
+                                            "m21": 0.0,
+                                            "m22": 1.0,
+                                            "m23": 0.0,
+                                            "m30": 0.0,
+                                            "m31": 0.0,
+                                            "m32": 0.0,
+                                            "m33": 1.0
+                                        },
+                                        "DecomposedMatrix": {
+                                            "Position": {
+                                                "x": 0.0,
+                                                "y": 0.0,
+                                                "z": 0.0
+                                            },
+                                            "Rotation": {
+                                                "x": 0.0,
+                                                "y": -0.0,
+                                                "z": 0.0
+                                            },
+                                            "Scaling": {
+                                                "x": 1.0,
+                                                "y": 1.0,
+                                                "z": 1.0
+                                            }
+                                        }
+                                    }
+                                },
+                                {
+                                    "SYMBOL_Instance": {
+                                        "SYMBOL_name": "Symbol 13",
+                                        "Instance_Name": "InstName",
+                                        "symbolType": "graphic",
+                                        "firstFrame": 0,
+                                        "loop": "loop",
+                                        "Matrix3D": {
+                                            "m00": 1.0,
+                                            "m01": 0.0,
+                                            "m02": 0.0,
+                                            "m03": 0.0,
+                                            "m10": 0.0,
+                                            "m11": 1.0,
+                                            "m12": 0.0,
+                                            "m13": 0.0,
+                                            "m20": 0.0,
+                                            "m21": 0.0,
+                                            "m22": 1.0,
+                                            "m23": 0.0,
+                                            "m30": 0.0,
+                                            "m31": 0.0,
+                                            "m32": 0.0,
+                                            "m33": 1.0
+                                        },
+                                        "DecomposedMatrix": {
+                                            "Position": {
+                                                "x": 0.0,
+                                                "y": 0.0,
+                                                "z": 0.0
+                                            },
+                                            "Rotation": {
+                                                "x": 0.0,
+                                                "y": -0.0,
+                                                "z": 0.0
+                                            },
+                                            "Scaling": {
+                                                "x": 1.0,
+                                                "y": 1.0,
+                                                "z": 1.0
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     ]
                 }
@@ -584,7 +767,7 @@
     "SYMBOL_DICTIONARY": {
         "Symbols": [
             {
-                "SYMBOL_name": "Symbol 2",
+                "SYMBOL_name": "Symbol 12",
                 "TIMELINE": {
                     "LAYERS": [
                         {
@@ -610,14 +793,14 @@
                                                     "m21": 0.0,
                                                     "m22": 1.0,
                                                     "m23": 0.0,
-                                                    "m30": 44.0,
+                                                    "m30": 65.0,
                                                     "m31": 121.0,
                                                     "m32": 0.0,
                                                     "m33": 1.0
                                                 },
                                                 "DecomposedMatrix": {
                                                     "Position": {
-                                                        "x": 44.0,
+                                                        "x": 65.0,
                                                         "y": 121.0,
                                                         "z": 0.0
                                                     },
@@ -642,7 +825,7 @@
                 }
             },
             {
-                "SYMBOL_name": "Symbol 3",
+                "SYMBOL_name": "Symbol 13",
                 "TIMELINE": {
                     "LAYERS": [
                         {
@@ -700,7 +883,7 @@
                 }
             },
             {
-                "SYMBOL_name": "Symbol 4",
+                "SYMBOL_name": "Symbol 14",
                 "TIMELINE": {
                     "LAYERS": [
                         {
@@ -713,6 +896,64 @@
                                         {
                                             "ATLAS_SPRITE_instance": {
                                                 "name": "0002",
+                                                "Matrix3D": {
+                                                    "m00": 1.0,
+                                                    "m01": 0.0,
+                                                    "m02": 0.0,
+                                                    "m03": 0.0,
+                                                    "m10": 0.0,
+                                                    "m11": 1.0,
+                                                    "m12": 0.0,
+                                                    "m13": 0.0,
+                                                    "m20": 0.0,
+                                                    "m21": 0.0,
+                                                    "m22": 1.0,
+                                                    "m23": 0.0,
+                                                    "m30": 44.0,
+                                                    "m31": 121.0,
+                                                    "m32": 0.0,
+                                                    "m33": 1.0
+                                                },
+                                                "DecomposedMatrix": {
+                                                    "Position": {
+                                                        "x": 44.0,
+                                                        "y": 121.0,
+                                                        "z": 0.0
+                                                    },
+                                                    "Rotation": {
+                                                        "x": 0.0,
+                                                        "y": -0.0,
+                                                        "z": 0.0
+                                                    },
+                                                    "Scaling": {
+                                                        "x": 1.0,
+                                                        "y": 1.0,
+                                                        "z": 1.0
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "SYMBOL_name": "Symbol 15",
+                "TIMELINE": {
+                    "LAYERS": [
+                        {
+                            "Layer_name": "Layer_2",
+                            "Frames": [
+                                {
+                                    "index": 0,
+                                    "duration": 1,
+                                    "elements": [
+                                        {
+                                            "ATLAS_SPRITE_instance": {
+                                                "name": "0003",
                                                 "Matrix3D": {
                                                     "m00": 1.0,
                                                     "m01": 0.0,
@@ -758,7 +999,7 @@
                 }
             },
             {
-                "SYMBOL_name": "Symbol 5",
+                "SYMBOL_name": "Symbol 16",
                 "TIMELINE": {
                     "LAYERS": [
                         {
@@ -770,7 +1011,7 @@
                                     "elements": [
                                         {
                                             "ATLAS_SPRITE_instance": {
-                                                "name": "0003",
+                                                "name": "0004",
                                                 "Matrix3D": {
                                                     "m00": 1.0,
                                                     "m01": 0.0,
