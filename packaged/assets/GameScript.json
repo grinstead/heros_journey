@@ -4,19 +4,10 @@
     "big bad": {
       "location": {
         "clock position": 1,
-        "width": 960,
-        "height": 640
+        "width": 4000,
+        "height": 4000
       },
       "actions": [
-        {
-          "type": "add",
-          "name": "villain",
-          "sprite": "BigBadGuyLanding",
-          "x": 0,
-          "y": 0,
-          "z": 1200,
-          "shadow radius": { "x": 40, "y": 20 }
-        },
         {
           "type": "play sound",
           "sound": "BigBadGuyLandingSound"
@@ -26,9 +17,13 @@
           "seconds": 1.78
         },
         {
-          "type": "change sprite",
+          "type": "add",
           "name": "villain",
-          "sprite": "BigBadGuyLanding"
+          "sprite": "BigBadGuyLanding",
+          "x": 0,
+          "y": 0,
+          "z": 1200,
+          "shadow radius": { "x": 40, "y": 20 }
         },
         {
           "type": "wait",
@@ -40,7 +35,10 @@
           "seconds": 0.325,
           "z": -1200,
           "ease in": true
-        }
+        },
+        { "type": "camera", "name": "villain" },
+        { "type": "wait" },
+        { "type": "fight" }
       ]
     },
     "example": {
@@ -99,6 +97,7 @@
       "type": "animated",
       "name": "HeroRunning",
       "src": "Body Running",
+      "loops": true,
       "originX": 101,
       "originY": 187
     },
@@ -106,6 +105,7 @@
       "type": "animated",
       "name": "HeroRunningBackwards",
       "src": "Hero Running Backwards",
+      "loops": true,
       "originX": 101,
       "originY": 187
     },
@@ -113,7 +113,6 @@
       "type": "animated",
       "name": "HeroJump",
       "src": "Bullet Dodge",
-      "loops": false,
       "originX": 125,
       "originY": 380
     },
@@ -121,7 +120,6 @@
       "type": "animated",
       "name": "BigBadGuyLanding",
       "src": "Big Bad Guy Landing",
-      "loops": false,
       "originX": 92,
       "originY": 254
     },
@@ -129,6 +127,7 @@
       "type": "animated",
       "name": "BigBadGuy",
       "src": "Big Bad Guy Marching",
+      "loops": true,
       "originX": 92,
       "originY": 254
     },
@@ -166,9 +165,9 @@
       "src": "Gun Shot.mp3"
     },
     {
-      "type": "static",
+      "type": "animated",
       "name": "BulletBall",
-      "src": "Shot-Gun-Ball.png",
+      "src": "Shot Gun Bullet",
       "originX": 25,
       "originY": 25
     },
@@ -176,6 +175,11 @@
       "type": "audio",
       "name": "BigBadGuyLandingSound",
       "src": "Big Bad Guy Landing.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "JumpSound",
+      "src": "Bullet Dodge.mp3"
     }
   ]
 }
