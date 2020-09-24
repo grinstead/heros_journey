@@ -49,7 +49,7 @@ const BULLET_R = 10;
 const DMG_COLOR = 0.4;
 const MARGIN_X = 60;
 const MARGIN_TOP = 200;
-const MARGIN_BOTTOM = 40;
+const MARGIN_BOTTOM = BULLET_HEIGHT;
 const INNER_MARGIN = 100;
 
 /** @typedef {{x:number, y:number}} MousePosition */
@@ -137,7 +137,7 @@ export class Game {
         targetCamera.y = Math.min(
           Math.max(
             heroY + INNER_MARGIN + MARGIN_TOP - cameraRy,
-            targetCamera.x
+            targetCamera.y
           ),
           heroY - INNER_MARGIN - MARGIN_BOTTOM + cameraRy
         );

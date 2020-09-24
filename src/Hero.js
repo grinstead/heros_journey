@@ -113,13 +113,14 @@ function heroStateNormal(hero, scene) {
       }
 
       if (sceneTime >= hero.jumpCooldown && input.isPressed("jump")) {
+        a;
         hero.changeState(scene, heroStateJump, null);
       }
 
       const armDirection = hero.armDirection;
       hero.mirrorX = dirIsLeft(armDirection);
 
-      if (sceneTime >= hero.shootCooldown) {
+      if (scene.inFight && sceneTime >= hero.shootCooldown) {
         hero.shootCooldown = sceneTime + SHOOT_COOLDOWN;
 
         const cos = Math.cos(armDirection);

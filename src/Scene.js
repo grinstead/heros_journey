@@ -80,6 +80,7 @@ export let Bullet;
  * @property {!Array<Bullet>} bullets - Sorted by x
  * @property {?{index: number, waitUntil: function():boolean}} scriptPosition
  * @property {?Array<SceneStep>} activeActions
+ * @property {boolean} inFight
  * @property {?Transition} entering - The transition that brought us here
  * @property {?Transition} exiting - The transition that is taking us away from here
  */
@@ -125,6 +126,7 @@ export function makeScene(options) {
     bullets: [],
     scriptPosition: { index: -1, waitUntil: () => true },
     activeActions: null,
+    inFight: false,
     entering: null,
     exiting: null,
   };

@@ -261,6 +261,10 @@ function runAction(scene, action) {
 
       return CONTINUE;
     }
+    case "fight": {
+      scene.inFight = true;
+      return CONTINUE;
+    }
 
     default:
       throw new Error(`Unrecognized action type ${action.type}`);

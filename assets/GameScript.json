@@ -5,7 +5,7 @@
       "location": {
         "clock position": 1,
         "width": 4000,
-        "height": 2000
+        "height": 4000
       },
       "actions": [
         {
@@ -37,7 +37,8 @@
           "ease in": true
         },
         { "type": "wait", "seconds": 0.325 },
-        { "type": "camera", "name": "villain" }
+        { "type": "camera", "name": "villain" },
+        { "type": "fight" }
       ]
     },
     "example": {

@@ -91,6 +91,7 @@ function parseGameScript(circleRadius) {
       "change sprite",
       "move",
       "camera",
+      "fight",
     ];
 
     const knownNames = new Set();
@@ -153,6 +154,8 @@ function parseGameScript(circleRadius) {
             type,
             name: hasKey("name") ? readKnownName() : null,
           };
+        default:
+          return { type };
       }
     });
 
