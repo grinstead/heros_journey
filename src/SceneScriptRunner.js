@@ -170,6 +170,10 @@ function runAction(scene, runner, action) {
       scene.audio.playNamedSound({}, action.sound);
       return CONTINUE;
     }
+    case "play music": {
+      window["bgMusic"] = action.music;
+      return CONTINUE;
+    }
     case "wait": {
       const seconds = action.seconds;
       if (seconds != null) {

@@ -1,5 +1,5 @@
 {
-  "opening scene": "intro",
+  "opening scene": "call to action",
   "scenes": {
     "big bad": {
       "location": {
@@ -212,6 +212,7 @@
         },
         { "type": "camera", "name": "first" },
         { "type": "wait", "seconds": 2.8 },
+        { "type": "play music", "music": "First Fight Music.mp3" },
         {
           "type": "change state",
           "name": "first",

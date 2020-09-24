@@ -19,4 +19,45 @@ canvas {
   width: 960px;
   height: 640px;
   background-color: #fffefa;
+  opacity: 1;
+}
+
+#intro {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.button {
+  background-color: #660000;
+  color: white;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  font-size: 1.3rem;
+  border-top: 3px solid #990000;
+  border-right: 3px solid #990000;
+  border-left: 3px solid #330000;
+  border-bottom: 3px solid #330000;
+  outline: 3px solid black;
+  cursor: pointer;
+  margin: 5px;
+}
+
+#start {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.hidden {
+  display: none;
 }

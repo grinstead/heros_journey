@@ -112,6 +112,7 @@ function parseGameScript() {
       "do",
       "add",
       "play sound",
+      "play music",
       "wait",
       "change sprite",
       "change state",
@@ -175,6 +176,11 @@ function parseGameScript() {
           return {
             type,
             sound: readOneOf("sound", soundNames),
+          };
+        case "play music":
+          return {
+            type,
+            music: `assets/${readString("music")}`,
           };
         case "wait":
           return {

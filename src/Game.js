@@ -63,6 +63,8 @@ const DMG_COLOR = 0.4;
 const BULLET_SHADOW = { x: 10, y: 5 };
 const WHITEBOARD_LAG = 10;
 
+let ambientAudio = null;
+
 /** @typedef {{x:number, y:number}} MousePosition */
 export let MousePosition;
 
@@ -132,6 +134,8 @@ export class Game {
     let scene = world.activeScene;
 
     while (scene.exiting != null) {
+      window["bgMusic"] = null;
+
       const exiting = scene.exiting;
       scene.exiting = null;
       scene.bullets = [];
@@ -261,6 +265,30 @@ export class Game {
     world.adjustCamera(scene, firstFrame);
 
     renderGame(this);
+
+    const bgMusic = window["bgMusic"];
+    if (bgMusic) {
+      if (!ambientAudio) {
+        const audio = new Audio(bgMusic);
+        audio.hidden = true;
+        audio.autoplay = true;
+        audio.loop = true;
+
+        ambientAudio = {
+          src: bgMusic,
+          audio,
+        };
+
+        document.body.appendChild(audio);
+      } else if (bgMusic !== ambientAudio.src) {
+        ambientAudio.audio.src = ambientAudio.src;
+      }
+    } else if (ambientAudio) {
+      /** @type {!HTMLAudioElement} */
+      const audio = ambientAudio.audio;
+      audio.pause();
+      audio.remove();
+    }
   }
 
   startRunning() {

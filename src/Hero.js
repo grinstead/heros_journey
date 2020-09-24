@@ -140,6 +140,7 @@ function heroStateDying(hero, scene) {
   hero.speed = 0;
   hero.zSpeed = 0;
 
+  window["bgMusic"] = null;
   scene.audio.playOneOf(hero, HERO_DEATH);
 
   let timeToReset = scene.sceneTime + 11;
