@@ -62,6 +62,7 @@ const BULLET_R = 10;
 const DMG_COLOR = 0.4;
 const BULLET_SHADOW = { x: 10, y: 5 };
 const WHITEBOARD_LAG = 10;
+const BULLET_MARGIN = 100;
 
 let ambientAudio = null;
 
@@ -188,6 +189,11 @@ export class Game {
         camera.y,
     };
 
+    const leftBulletLimit = scene.sceneBox.left - BULLET_MARGIN;
+    const rightBulletLimit = scene.sceneBox.right + BULLET_MARGIN;
+    const topBulletLimit = scene.sceneBox.top + BULLET_MARGIN;
+    const bottomBulletLimit = scene.sceneBox.bottom - BULLET_MARGIN;
+
     let numDeadBullets = 0;
     let bullets = scene.bullets;
     bullets.forEach((bullet) => {
@@ -199,7 +205,15 @@ export class Game {
       bullet.x += stepSize * bullet.dx;
       bullet.y += stepSize * bullet.dy;
 
-      // TODO: kill off bullets
+      if (
+        bullet.x < leftBulletLimit ||
+        rightBulletLimit < bullet.x ||
+        bullet.y < bottomBulletLimit ||
+        topBulletLimit < bullet.y
+      ) {
+        bullet.isDead = true;
+        numDeadBullets++;
+      }
     });
 
     if (numDeadBullets > 100) {
