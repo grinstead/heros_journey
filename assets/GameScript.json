@@ -1,5 +1,5 @@
 {
-  "opening scene": "intro",
+  "opening scene": "call to action",
   "scenes": {
     "big bad": {
       "location": {
@@ -16,34 +16,29 @@
         "width": 2000,
         "height": 2000
       }
+    },
+    "call to action": {
+      "location": {
+        "x": 620,
+        "y": 122,
+        "width": 4000,
+        "height": 2000
+      }
     }
   },
   "scripts": {
     "test": {
-      "characters": ["hero"],
+      "characters": ["hero", "first"],
       "actions": [
-        { "type": "change hero visibility", "visible": false },
         {
-          "type": "absolute camera",
-          "x": 480,
-          "y": 320,
-          "zoom": 0
+          "type": "add",
+          "name": "first",
+          "sprite": "FirstVillainWalking",
+          "x": 0,
+          "y": 0,
+          "shadow radius": { "x": 30, "y": 15 }
         },
-        {
-          "type": "play sound",
-          "sound": "Narration1"
-        },
-        { "type": "wait", "seconds": 31 },
-        {
-          "type": "camera"
-        },
-        { "type": "change hero visibility", "visible": true },
-        { "type": "wait", "seconds": 35 },
-        {
-          "type": "change hero head",
-          "sprite": "Narration2Head"
-        },
-        { "type": "play sound", "sound": "Narration2" }
+        { "type": "fight" }
       ]
     },
     "intro": {
@@ -71,6 +66,20 @@
           "sprite": "Narration2Head"
         },
         { "type": "play sound", "sound": "Narration2" }
+      ]
+    },
+    "first villain": {
+      "characters": ["hero", "first"],
+      "actions": [
+        {
+          "type": "add",
+          "name": "first",
+          "sprite": "FirstVillain",
+          "x": 0,
+          "y": 0,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        { "type": "fight" }
       ]
     },
     "test2": {
@@ -221,6 +230,29 @@
       "type": "audio",
       "name": "JumpSound",
       "src": "Bullet Dodge.mp3"
+    },
+    {
+      "type": "animated",
+      "name": "FirstVillain",
+      "src": "First Villain",
+      "loops": true,
+      "originX": 97,
+      "originY": 178
+    },
+    {
+      "type": "animated",
+      "name": "FirstVillainDying",
+      "src": "First Villain Dying",
+      "originX": 97,
+      "originY": 178
+    },
+    {
+      "type": "animated",
+      "name": "FirstVillainWalking",
+      "src": "First Villain Walking",
+      "loops": true,
+      "originX": 97,
+      "originY": 178
     }
   ]
 }

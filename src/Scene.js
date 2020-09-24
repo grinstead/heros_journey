@@ -131,6 +131,7 @@ export function makeScene(options) {
     sceneBox: sceneInfo.sceneBox,
     sceneCamera: {
       speed: -1,
+      showHero: true,
       target: { x: 0, y: 0, zoom: 1 },
       subtarget: null,
     },
