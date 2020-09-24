@@ -32,6 +32,14 @@
         "width": 3000,
         "height": 2000
       }
+    },
+    "home2": {
+      "location": {
+        "x": 443,
+        "y": 88,
+        "width": 10000,
+        "height": 10000
+      }
     }
   },
   "scripts": {
@@ -217,7 +225,31 @@
           "type": "change state",
           "name": "first",
           "state": "first villain main"
-        }
+        },
+        { "type": "wait" },
+        { "type": "transition", "next screen": "home2" }
+      ]
+    },
+    "home2": {
+      "characters": ["hero", "main"],
+      "actions": [
+        {
+          "type": "add",
+          "name": "main",
+          "sprite": "MainVillain",
+          "x": 0,
+          "y": 0,
+          "shadow radius": { "x": 60, "y": 20 }
+        },
+        {
+          "type": "move",
+          "name": "main",
+          "absolute": true,
+          "x": 934,
+          "y": 210,
+          "seconds": 5
+        },
+        { "type": "camera", "name": "main" }
       ]
     },
     "test2": {
@@ -261,8 +293,11 @@
   "assets": [
     {
       "type": "animated",
-      "name": "MonsterTruck",
-      "src": "Monster Truck Bad Guy"
+      "name": "MainVillain",
+      "src": "Monster Truck Bad Guy",
+      "loops": true,
+      "originX": 200,
+      "originY": 370
     },
     {
       "type": "animated",
@@ -395,9 +430,21 @@
       "src": "Narration 2.mp3"
     },
     {
+      "type": "audio",
+      "name": "Narration3",
+      "src": "Narration 3.mp3"
+    },
+    {
       "type": "animated",
       "name": "Narration2Head",
       "src": "Narration 2",
+      "originX": 101,
+      "originY": 187
+    },
+    {
+      "type": "animated",
+      "name": "Narration3Head",
+      "src": "Narration 3 Head",
       "originX": 101,
       "originY": 187
     },

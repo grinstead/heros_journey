@@ -120,6 +120,8 @@ export class Game {
     this.firstFrame = true;
     /** @private {number} */
     this.startTime = 0;
+    /** @private {boolean} */
+    this.startedFromBeginning = args.world.activeScene.name === "intro";
   }
 
   processGame() {
@@ -355,7 +357,9 @@ function renderGame(game) {
 
   const zoom = cameraZoomToActualZoom(camera.zoom);
 
-  const whiteboardPercentage = (Date.now() / 1000 - game.startTime) / 30;
+  const whiteboardPercentage = game.startedFromBeginning
+    ? (Date.now() / 1000 - game.startTime) / 30
+    : 2;
 
   const adjustToDisplayCoordinates = () => {
     const dims = game.display;
