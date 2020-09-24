@@ -46,13 +46,13 @@ export class World {
    *
    * @param {Scene} scene
    */
-  adjustCamera(scene) {
+  adjustCamera(scene, jumpTo) {
     const { stepSize, sceneCamera } = scene;
 
     const camera = this.camera;
     let { speed, target } = sceneCamera;
     if (speed < 0) speed = DEFAULT_CAMERA_SPEED;
-    if (speed === 0) {
+    if (speed === 0 || jumpTo) {
       camera.x = target.x;
       camera.y = target.y;
       camera.zoom = target.zoom;

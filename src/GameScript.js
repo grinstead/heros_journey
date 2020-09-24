@@ -177,6 +177,11 @@ function parseGameScript() {
             y: changeYToWorld(readNum("y")),
             zoom: readNum("zoom", 0, 1, true),
           };
+        case "change hero visibility":
+          return {
+            type,
+            visible: readBoolean("visible"),
+          };
         default:
           return { type };
       }

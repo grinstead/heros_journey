@@ -78,6 +78,8 @@ export class Hero {
     this.jumpCooldown = 0;
     /** @type {number} */
     this.shootCooldown = 0;
+    /** @type {boolean} */
+    this.hidden = false;
     /** @type {HeroState} */
     this.state = {
       name: "unstarted",
@@ -251,6 +253,8 @@ export function processHero(scene, mousePosition) {
  * @param {Hero} hero
  */
 export function renderHero(hero) {
+  if (hero.hidden) return;
+
   shiftContent(hero.x, hero.y, 0);
 
   const mirrorX = hero.mirrorX;

@@ -103,9 +103,14 @@ export class Game {
     this.onScreenMousePosition = args.mousePosition;
     /** @type {Sprite} */
     this.bulletSprite = makeBulletBall(0);
+    /** @type {boolean} */
+    this.firstFrame = true;
   }
 
   processGame() {
+    const firstFrame = this.firstFrame;
+    this.firstFrame = false;
+
     const realTime = Date.now() / 1000;
 
     const { onScreenMousePosition, display, world } = this;
@@ -203,7 +208,8 @@ export class Game {
       w: display.w / PIXELS_PER_UNIT,
       h: display.h / PIXELS_PER_UNIT,
     });
-    world.adjustCamera(scene);
+
+    world.adjustCamera(scene, firstFrame);
 
     renderGame(this);
   }
@@ -329,7 +335,9 @@ function renderGame(game) {
         gl.drawArrays(gl.TRIANGLE_FAN, 0, circleShadow.numPoints);
       };
 
-      subrenderWithArg(renderShadow, scene.hero);
+      if (!scene.hero.hidden) {
+        subrenderWithArg(renderShadow, scene.hero);
+      }
       subrenderEach(scene.objects, renderShadow);
 
       subrenderEach(scene.bullets, ({ x, y, shadowRadius, isDead }) => {

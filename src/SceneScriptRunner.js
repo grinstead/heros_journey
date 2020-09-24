@@ -231,6 +231,10 @@ function runAction(scene, runner, action) {
 
       return CONTINUE;
     }
+    case "change hero visibility": {
+      scene.hero.hidden = !action.visible;
+      return CONTINUE;
+    }
     case "fight": {
       scene.inFight = true;
       return CONTINUE;
