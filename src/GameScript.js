@@ -22,20 +22,27 @@ export let ScriptAction;
 
 /**
  * @typedef {Object} SceneScript
- * @property {Box} sceneBox
+ * @property {string} scriptName
+ * @property {!Set<string>} characters
  * @property {!Array<ScriptAction>} actions
  */
 export let SceneScript;
 
 /**
+ * @typedef {Object} SceneInfo
+ * @property {Box} sceneBox
+ */
+export let SceneInfo;
+
+/**
  * @typedef {Object} GameScript
  * @property {string} openingScene
- * @property {!Map<string, SceneScript>} scenes
+ * @property {!Map<string, SceneInfo>} scenes
+ * @property {!Map<string, GameCode>} scripts
  */
 export let GameScript;
 
 /**
- * @param {number} circleRadius
  * @returns !Promise<GameScript>
  */
 export async function loadUpGameScript() {
@@ -85,6 +92,11 @@ function parseGameScript() {
       };
     });
 
+    return { sceneBox };
+  });
+
+  const scripts = processObjectMap("scripts", (scriptName) => {
+    const characters = new Set();
     const actionTypes = [
       "add",
       "play sound",
@@ -95,12 +107,17 @@ function parseGameScript() {
       "fight",
     ];
 
-    const knownNames = new Set();
-    const readKnownName = () =>
+    processArray("characters", (name) => {
+      if (typeof name !== "string") throw "is supposed to be a string";
+      characters.add(name);
+    });
+
+    const readCharacterName = () =>
       validateString(
         "name",
         (name) =>
-          !knownNames.has(name) && "is trying to modify an unrecognized name"
+          !characters.has(name) &&
+          "is trying to modify an unrecognized character"
       );
 
     const actions = processObjectArray("actions", (action) => {
@@ -108,11 +125,9 @@ function parseGameScript() {
 
       switch (type) {
         case "add": {
-          const name = readString("name");
-          knownNames.add(name);
           return {
             type,
-            name,
+            name: readCharacterName(),
             sprite: readOneOf("sprite", spriteNames),
             x: readNum("x"),
             y: readNum("y"),
@@ -136,13 +151,13 @@ function parseGameScript() {
         case "change sprite":
           return {
             type,
-            name: readKnownName(),
+            name: readCharacterName(),
             sprite: readOneOf("sprite", spriteNames),
           };
         case "move":
           return {
             type,
-            name: readKnownName(),
+            name: readCharacterName(),
             seconds: readNum("seconds", 0),
             x: hasKey("x") ? readNum("x") : 0,
             y: hasKey("y") ? readNum("y") : 0,
@@ -153,14 +168,14 @@ function parseGameScript() {
         case "camera":
           return {
             type,
-            name: hasKey("name") ? readKnownName() : null,
+            name: hasKey("name") ? readCharacterName() : null,
           };
         default:
           return { type };
       }
     });
 
-    return { sceneBox, actions };
+    return { scriptName, actions, characters };
   });
 
   const openingScene = validateString(
@@ -168,5 +183,5 @@ function parseGameScript() {
     (val) => !scenes.has(val) && "is not one of the given scenes"
   );
 
-  return { openingScene, scenes };
+  return { openingScene, scenes, scripts };
 }

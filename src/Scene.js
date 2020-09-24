@@ -3,6 +3,7 @@ import { AudioManager } from "./AudioManager.js";
 import { Sprite } from "./Sprite.js";
 import { SceneScript, GameScript } from "./GameScript.js";
 import { Hero } from "./Hero.js";
+import { SceneScriptRunner } from "./SceneScriptRunner.js";
 
 /**
  * @typedef {{x: number, y: number}} ShadowRadius
@@ -67,9 +68,9 @@ export let Bullet;
  * A data structure containing almost everything relevant for the game
  * @typedef {Object} Scene
  * @property {string} sceneName - The name of the scene
+ * @property {GameScript} gameScript
  * @property {InputManager} input - The inputs the user is giving
  * @property {AudioManager} audio - The audio context for the game
- * @property {SceneScript} sceneScript - The script for this scene
  * @property {number} sceneTime - The time (in seconds, accurate to ms) since the start of the scene
  * @property {number} sceneTimeOffset - The time to subtract from Date.now() to get sceneTime
  * @property {number} stepSize - The time (in seconds, accurate to ms) since the last render
@@ -78,8 +79,7 @@ export let Bullet;
  * @property {!Hero} hero
  * @property {!Array<GameObject>} objects
  * @property {!Array<Bullet>} bullets - Sorted by x
- * @property {?{index: number, waitUntil: function():boolean}} scriptPosition
- * @property {?Array<SceneStep>} activeActions
+ * @property {!Array<SceneScriptRunner>} scripts
  * @property {boolean} inFight
  * @property {?Transition} entering - The transition that brought us here
  * @property {?Transition} exiting - The transition that is taking us away from here
@@ -106,26 +106,26 @@ export let SceneKernel;
 export function makeScene(options) {
   const { kernel, sceneName } = options;
 
-  const sceneScript = kernel.gameScript.scenes.get(sceneName);
-  if (!sceneScript) {
-    throw new Error(`No script for scene ${sceneName}`);
+  const gameScript = kernel.gameScript;
+  const sceneInfo = gameScript.scenes.get(sceneName);
+  if (!sceneInfo) {
+    throw new Error(`No info for scene ${sceneName}`);
   }
 
   return {
     sceneName,
+    gameScript,
     input: kernel.input,
     audio: kernel.audio,
-    sceneScript,
     sceneTime: 0,
     sceneTimeOffset: offsetAFrameFrom(0),
     stepSize: 0,
-    sceneBox: sceneScript.sceneBox,
+    sceneBox: sceneInfo.sceneBox,
     cameraTarget: null,
     hero: options.hero,
     objects: [],
     bullets: [],
-    scriptPosition: { index: -1, waitUntil: () => true },
-    activeActions: null,
+    scripts: [],
     inFight: false,
     entering: null,
     exiting: null,

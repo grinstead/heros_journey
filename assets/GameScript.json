@@ -7,7 +7,12 @@
         "y": 40,
         "width": 4000,
         "height": 4000
-      },
+      }
+    }
+  },
+  "scripts": {
+    "test": {
+      "characters": ["hero", "villain"],
       "actions": [
         {
           "type": "play sound",

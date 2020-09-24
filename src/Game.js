@@ -13,7 +13,7 @@ import {
   Sprite,
 } from "./Sprite.js";
 import { InputManager } from "../wattle/engine/src/InputManager.js";
-import { World, initWorld, updateSceneTime, runSceneScript } from "./World.js";
+import { World, initWorld, updateSceneTime } from "./World.js";
 import {
   Program,
   renderInProgram,
@@ -40,6 +40,7 @@ import { loadUpGameScript, FULL_SPACE_ZOOM } from "./GameScript.js";
 import { renderHero, processHero, BULLET_HEIGHT } from "./Hero.js";
 import { makeBulletBall } from "./assets.js";
 import { magnitudeOf } from "./utils.js";
+import { startSceneScript, runSceneScripts } from "./SceneScriptRunner.js";
 
 const FPS_SMOOTHING = 0.9;
 const MAX_FRAME_TIME = 1 / 10;
@@ -103,7 +104,7 @@ export class Game {
     this.bulletSprite = makeBulletBall(0);
   }
 
-  performStep() {
+  processGame() {
     const realTime = Date.now() / 1000;
 
     const { onScreenMousePosition, display, world } = this;
@@ -213,7 +214,11 @@ export class Game {
         object.z += zSpeed * stepSize;
       }
 
-      const { x, y, z, shadowRadius } = object;
+      if (object.z !== 0) return;
+
+      // checking for bullet collisions
+
+      const { x, y, shadowRadius } = object;
       const minTestX = x - shadowRadius.x - BULLET_R;
       const maxTestX = x + shadowRadius.x + BULLET_R;
 
@@ -228,7 +233,6 @@ export class Game {
         if (
           !bullet.isDead &&
           bullet.isFriendly &&
-          bullet.z >= z && // checking the enemy is not off the ground
           distanceFromEllipseSortOf(x, y, shadowRadius, bullet) < BULLET_R
         ) {
           bullet.isDead = true;
@@ -238,7 +242,7 @@ export class Game {
       }
     });
 
-    runSceneScript(scene);
+    runSceneScripts(scene);
 
     renderGame(this);
   }
@@ -263,7 +267,7 @@ export class Game {
       lastTimeMs = now;
 
       // run code (this could technically stop the game)
-      this.performStep();
+      this.processGame();
 
       if (this.runningTimerId !== timerId) return;
       this.runningTimerId = timerId = requestAnimationFrame(onFrame);
@@ -451,7 +455,7 @@ export async function makeGame({ canvas, input, mousePosition }) {
 
   const [finishLoadingSprites, gameScript] = await Promise.all([
     loadAllSpriteTextures(),
-    loadUpGameScript(500 / FULL_SPACE_ZOOM),
+    loadUpGameScript(),
     audio.loadAllSounds(),
   ]);
 
@@ -592,7 +596,7 @@ output_color = max(color, u_min_color);
     const circleShadow = makeCircle(gl);
     onCleanUp(() => void gl.deleteBuffer(circleShadow.buffer));
 
-    return new Game({
+    const game = new Game({
       world,
       widthPx,
       heightPx,
@@ -603,6 +607,10 @@ output_color = max(color, u_min_color);
       circleShadow,
       mousePosition,
     });
+
+    startSceneScript(game.world.activeScene, "test");
+
+    return game;
   });
 }
 
