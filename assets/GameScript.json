@@ -1,5 +1,5 @@
 {
-  "opening scene": "intro",
+  "opening scene": "call to action",
   "scenes": {
     "big bad": {
       "location": {
@@ -19,9 +19,9 @@
     },
     "call to action": {
       "location": {
-        "x": 620,
-        "y": 122,
-        "width": 4000,
+        "x": 660,
+        "y": 108,
+        "width": 3000,
         "height": 2000
       }
     }
@@ -31,8 +31,16 @@
       "characters": ["hero", "first", "s1", "s2", "s3", "s4", "s5", "triangle"],
       "actions": [
         {
+          "type": "move",
+          "name": "hero",
+          "absolute": true,
+          "x": 600,
+          "y": 108,
+          "seconds": 0
+        },
+        {
           "type": "do",
-          "script": "main villain intro"
+          "script": "first villain"
         }
       ]
     },
@@ -153,15 +161,26 @@
         {
           "type": "add",
           "name": "first",
-          "sprite": "FirstVillain",
-          "x": 800,
+          "sprite": "FirstVillainEntrance",
+          "x": 60,
           "y": 0,
+          "z": 1200,
           "shadow radius": { "x": 30, "y": 15 }
         },
+        { "type": "play sound", "sound": "FirstVillainIntroSound" },
         {
-          "type": "camera",
-          "name": "first"
+          "type": "wait",
+          "seconds": 2.375
         },
+        {
+          "type": "move",
+          "name": "first",
+          "seconds": 0.5,
+          "z": -1200,
+          "ease in": true
+        },
+        { "type": "camera", "name": "first" },
+        { "type": "wait", "seconds": 2.8 },
         {
           "type": "change state",
           "name": "first",
@@ -394,6 +413,11 @@
       "type": "audio",
       "name": "MainVillainIntroSound",
       "src": "Main Enemy Intro.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "FirstVillainIntroSound",
+      "src": "First Villain Entrance.mp3"
     }
   ]
 }
