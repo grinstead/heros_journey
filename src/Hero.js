@@ -55,6 +55,8 @@ export class Hero {
     /** @type {number} */
     this.speed = 0;
     /** @type {number} */
+    this.zSpeed = 0;
+    /** @type {number} */
     this.direction = 0;
     /** @type {number} */
     this.armDirection = 0;
@@ -97,15 +99,19 @@ export class Hero {
   /**
    *
    * @param {Scene} scene
-   * @param {function():void} processStep
+   * @param {function():boolean} processStep
+   * @returns {() => boolean} A function that returns true when the step is over
    */
   changeToScriptedState(scene, processStep) {
+    let finished = false;
+
     this.changeState(
       scene,
       () => ({
         name: "scripted",
         processStep: () => {
           if (processStep()) {
+            finished = true;
             this.changeState(scene, heroStateNormal, null);
           }
         },
@@ -113,6 +119,8 @@ export class Hero {
       }),
       null
     );
+
+    return () => finished;
   }
 }
 
@@ -181,9 +189,8 @@ function heroStateJump(hero, /** @type {Scene} */ scene) {
       sprite.updateTime(sceneTime);
 
       // moves the shadow
-      hero.z =
-        BULLET_HEIGHT *
-        Math.max(0, Math.sin((Math.PI * (sceneTime - startTime)) / 0.75));
+      const p = (sceneTime - startTime) / 0.875;
+      hero.zSpeed = BULLET_HEIGHT * (4 * (0.5 - p));
 
       if (sprite.isFinished()) {
         hero.changeState(scene, heroStateNormal, null);
@@ -194,7 +201,9 @@ function heroStateJump(hero, /** @type {Scene} */ scene) {
       subrenderSprite(sprite);
     },
     onExit: () => {
+      console.log("EXIT");
       hero.z = 0;
+      hero.zSpeed = 0;
       hero.jumpCooldown = scene.sceneTime + JUMP_COOLDOWN;
     },
   };
@@ -222,6 +231,7 @@ export function processHero(scene, mousePosition) {
   const { speed, direction } = hero;
   let x = (hero.x += stepSize * speed * Math.cos(direction));
   let y = (hero.y += stepSize * speed * Math.sin(direction));
+  hero.z += stepSize * hero.zSpeed;
 
   if (x < sceneBox.left) {
     hero.x = sceneBox.left;

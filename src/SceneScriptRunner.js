@@ -154,10 +154,7 @@ function runAction(scene, runner, action) {
         : scene.objects.find((obj) => obj.name === name);
 
       if (!obj) {
-        console.error("WOAH");
-        console.log(scene);
-        // throw new Error(`No object with name ${name}`);
-        return;
+        throw new Error(`No object with name ${name}`);
       }
 
       const dx = action.x;
@@ -165,7 +162,7 @@ function runAction(scene, runner, action) {
       const dz = action.z;
       const startX = obj.x;
       const startY = obj.y;
-      const startZ = obj.z;
+      const startZ = isHero ? 0 : obj.z; // hack for now
       const targetX = startX + dx;
       const targetY = startY + dy;
       const targetZ = startZ + dz;
@@ -179,36 +176,27 @@ function runAction(scene, runner, action) {
 
       const startTime = scene.sceneTime;
 
+      const processStep = () => {
+        const p = (scene.sceneTime - startTime) / seconds;
+        if (p < 1) {
+          obj.speed = calcSpeedEasing(targetSpeed, p, easeIn, easeOut);
+          obj.zSpeed = calcSpeedEasing(targetZSpeed, p, easeIn, easeOut);
+          return false;
+        } else {
+          obj.x = targetX;
+          obj.y = targetY;
+          obj.z = targetZ;
+          obj.speed = 0;
+          obj.zSpeed = 0;
+          return true;
+        }
+      };
+
       if (isHero) {
-        scene.hero.changeToScriptedState(scene, () => {
-          const p = (scene.sceneTime - startTime) / seconds;
-          if (p < 1) {
-            obj.speed = calcSpeedEasing(targetSpeed, p, easeIn, easeOut);
-            return false;
-          } else {
-            obj.x = targetX;
-            obj.y = targetY;
-            obj.z = targetZ;
-            obj.speed = 0;
-            return true;
-          }
-        });
+        const isFinished = scene.hero.changeToScriptedState(scene, processStep);
+        addBasicPendingAction(runner, true, isFinished);
       } else {
-        addBasicPendingAction(runner, true, () => {
-          const p = (scene.sceneTime - startTime) / seconds;
-          if (p < 1) {
-            obj.speed = calcSpeedEasing(targetSpeed, p, easeIn, easeOut);
-            obj.zSpeed = calcSpeedEasing(targetZSpeed, p, easeIn, easeOut);
-            return false;
-          } else {
-            obj.x = targetX;
-            obj.y = targetY;
-            obj.z = targetZ;
-            obj.speed = 0;
-            obj.zSpeed = 0;
-            return true;
-          }
-        });
+        addBasicPendingAction(runner, true, processStep);
       }
 
       return CONTINUE;
@@ -266,9 +254,9 @@ function calcSpeedEasing(speed, percentage, easeIn, easeOut) {
   if (easeIn && easeOut) {
     return speed * Math.sin(p * Math.PI) * HALF_PI;
   } else if (easeIn) {
-    return speed * Math.sin(p * HALF_PI) * HALF_PI;
+    return speed * 2 * p;
   } else if (easeOut) {
-    return speed * Math.cos(p * HALF_PI) * HALF_PI;
+    return speed * 2 * (1 - p);
   } else {
     return speed;
   }
