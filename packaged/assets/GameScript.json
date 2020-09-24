@@ -1,5 +1,5 @@
 {
-  "opening scene": "call to action",
+  "opening scene": "intro",
   "scenes": {
     "big bad": {
       "location": {
@@ -11,33 +11,49 @@
     },
     "intro": {
       "location": {
-        "x": 515,
-        "y": 78,
-        "width": 2000,
-        "height": 2000
+        "x": 443,
+        "y": 80,
+        "width": 10000,
+        "height": 10000
+      }
+    },
+    "home": {
+      "location": {
+        "x": 443,
+        "y": 88,
+        "width": 10000,
+        "height": 10000
       }
     },
     "call to action": {
       "location": {
-        "x": 620,
-        "y": 122,
-        "width": 4000,
+        "x": 600,
+        "y": 108,
+        "width": 3000,
         "height": 2000
       }
     }
   },
   "scripts": {
     "test": {
-      "characters": ["hero", "first"],
+      "characters": ["hero", "first", "s1", "s2", "s3", "s4", "s5", "triangle"],
       "actions": [
         {
+          "type": "move",
+          "name": "hero",
+          "absolute": true,
+          "x": 600,
+          "y": 108,
+          "seconds": 0
+        },
+        {
           "type": "do",
-          "script": "first villain"
+          "script": "call to action"
         }
       ]
     },
     "intro": {
-      "characters": ["hero"],
+      "characters": ["hero", "first", "s1", "s2", "s3", "s4", "s5", "triangle"],
       "actions": [
         { "type": "change hero visibility", "visible": false },
         {
@@ -46,38 +62,156 @@
           "y": 320,
           "zoom": 0
         },
-        {
-          "type": "play sound",
-          "sound": "Narration1"
-        },
+        { "type": "move", "name": "hero", "x": -2000, "y": -70, "seconds": 5 },
+        { "type": "play sound", "sound": "Narration1" },
         { "type": "wait", "seconds": 31 },
         {
-          "type": "camera"
+          "type": "absolute camera",
+          "x": 443,
+          "y": 80,
+          "zoom": 1
         },
+        { "type": "wait", "seconds": 4 },
         { "type": "change hero visibility", "visible": true },
-        { "type": "wait", "seconds": 35 },
+        { "type": "move", "name": "hero", "x": 2000, "seconds": 5 },
+        { "type": "wait", "seconds": 31 },
+        { "type": "camera" },
         {
           "type": "change hero head",
           "sprite": "Narration2Head"
         },
-        { "type": "play sound", "sound": "Narration2" }
+        { "type": "play sound", "sound": "Narration2" },
+        { "type": "wait", "seconds": 25 },
+        {
+          "type": "add",
+          "name": "s1",
+          "sprite": "Squiggle",
+          "x": -300,
+          "y": 200,
+          "z": 80,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        {
+          "type": "add",
+          "name": "s2",
+          "sprite": "Squiggle",
+          "x": -150,
+          "y": 200,
+          "z": 80,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        {
+          "type": "add",
+          "name": "s3",
+          "sprite": "Squiggle",
+          "x": 0,
+          "y": 200,
+          "z": 80,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        {
+          "type": "add",
+          "name": "s4",
+          "sprite": "Squiggle",
+          "x": 150,
+          "y": 200,
+          "z": 80,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        {
+          "type": "add",
+          "name": "s5",
+          "sprite": "Squiggle",
+          "x": 300,
+          "y": 200,
+          "z": 80,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        { "type": "wait", "seconds": 4 },
+        {
+          "type": "add",
+          "name": "triangle",
+          "sprite": "Triangle",
+          "x": 0,
+          "y": 200,
+          "z": 180,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        { "type": "wait", "seconds": 26 },
+        { "type": "do", "script": "main villain intro" },
+        { "type": "wait" },
+        { "type": "transition", "next screen": "call to action" }
       ]
     },
-    "first villain": {
+    "main villain intro": {
+      "characters": ["hero", "main"],
+      "actions": [
+        {
+          "type": "add",
+          "name": "main",
+          "sprite": "MainVillainIntro",
+          "absolute": true,
+          "x": 842,
+          "y": 582,
+          "z": 0,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        { "type": "play sound", "sound": "MainVillainIntroSound" },
+        { "type": "camera", "name": "main", "show hero": false, "zoom": 0.2 },
+        {
+          "type": "move",
+          "name": "main",
+          "absolute": true,
+          "x": 660,
+          "y": 108,
+          "seconds": 10
+        },
+        {
+          "type": "move",
+          "name": "hero",
+          "absolute": true,
+          "x": 600,
+          "y": 108,
+          "seconds": 10
+        },
+        { "type": "wait", "seconds": 10 },
+        { "type": "camera", "name": "main" },
+        { "type": "wait", "seconds": 4 },
+        { "type": "camera" },
+        {
+          "type": "move",
+          "name": "main",
+          "x": 2000,
+          "seconds": 2
+        }
+      ]
+    },
+    "call to action": {
       "characters": ["hero", "first"],
       "actions": [
         {
           "type": "add",
           "name": "first",
-          "sprite": "FirstVillain",
-          "x": 800,
+          "sprite": "FirstVillainEntrance",
+          "x": 400,
           "y": 0,
+          "z": 1200,
           "shadow radius": { "x": 30, "y": 15 }
         },
+        { "type": "play sound", "sound": "FirstVillainIntroSound" },
         {
-          "type": "camera",
-          "name": "first"
+          "type": "wait",
+          "seconds": 2.125
         },
+        {
+          "type": "move",
+          "name": "first",
+          "seconds": 0.5,
+          "z": -1200,
+          "ease in": true
+        },
+        { "type": "camera", "name": "first" },
+        { "type": "wait", "seconds": 2.8 },
         {
           "type": "change state",
           "name": "first",
@@ -189,6 +323,43 @@
       "originY": 187
     },
     {
+      "type": "animated",
+      "name": "HeroDying",
+      "src": "Hero Dying",
+      "originX": 101,
+      "originY": 187
+    },
+    {
+      "type": "audio",
+      "name": "HeroDying1",
+      "src": "Hero Dying.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "HeroDying2",
+      "src": "Hero Dying 2.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "HeroDying3",
+      "src": "Hero Dying 3.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "HeroHit1",
+      "src": "Hero Hit 1.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "HeroHit2",
+      "src": "Hero Hit 2.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "HeroHit3",
+      "src": "Hero Hit 3.mp3"
+    },
+    {
       "type": "static",
       "name": "BulletCone",
       "src": "Bullet.png",
@@ -245,6 +416,14 @@
     },
     {
       "type": "animated",
+      "name": "FirstVillainEntrance",
+      "src": "First Villain Entrance",
+      "loops": true,
+      "originX": 97,
+      "originY": 178
+    },
+    {
+      "type": "animated",
       "name": "FirstVillainDying",
       "src": "First Villain Dying",
       "flip": true,
@@ -272,6 +451,55 @@
       "type": "audio",
       "name": "FirstVillainDyingSound",
       "src": "First Villian Dying.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "FirstVillainHit1",
+      "src": "First Villain Hit.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "FirstVillainHit2",
+      "src": "First Villain Hit 2.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "FirstVillainHit3",
+      "src": "First Villain Hit 3.mp3"
+    },
+    {
+      "type": "animated",
+      "name": "Squiggle",
+      "src": "Golden Squiggle",
+      "loops": true,
+      "originX": 46,
+      "originY": 48
+    },
+    {
+      "type": "animated",
+      "name": "Triangle",
+      "src": "Golden Triangle",
+      "loops": true,
+      "originX": 48,
+      "originY": 55
+    },
+    {
+      "type": "animated",
+      "name": "MainVillainIntro",
+      "src": "Main Villain Intro",
+      "flip": true,
+      "originX": 200,
+      "originY": 370
+    },
+    {
+      "type": "audio",
+      "name": "MainVillainIntroSound",
+      "src": "Main Enemy Intro.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "FirstVillainIntroSound",
+      "src": "First Villain Entrance.mp3"
     }
   ]
 }
