@@ -200,7 +200,9 @@ export class Game {
           distanceFromEllipseSortOf(x, y, shadowRadius, bullet) < BULLET_R
         ) {
           bullet.isDead = true;
-          object.showDamageUntil = sceneTime + 0.125;
+          if (object.showDamageUntil >= 0) {
+            object.showDamageUntil = sceneTime + 0.125;
+          }
           object.damage++;
         }
       }

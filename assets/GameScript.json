@@ -19,7 +19,7 @@
     },
     "call to action": {
       "location": {
-        "x": 660,
+        "x": 600,
         "y": 108,
         "width": 3000,
         "height": 2000
@@ -162,7 +162,7 @@
           "type": "add",
           "name": "first",
           "sprite": "FirstVillainEntrance",
-          "x": 60,
+          "x": 400,
           "y": 0,
           "z": 1200,
           "shadow radius": { "x": 30, "y": 15 }
@@ -350,7 +350,6 @@
       "type": "animated",
       "name": "FirstVillainEntrance",
       "src": "First Villain Entrance",
-      "flip": true,
       "loops": true,
       "originX": 97,
       "originY": 178

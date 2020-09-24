@@ -19,6 +19,7 @@ export function killOffEnemy(scene, object, makeSprite, soundName) {
   object.speed = 0;
   object.zSpeed = 0;
   object.z = 0;
+  object.showDamageUntil = -1;
 
   scene.audio.playNamedSound(object, soundName);
 
