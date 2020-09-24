@@ -2,7 +2,7 @@ import { SceneScriptRunner } from "../SceneScriptRunner.js";
 import { firstVillainMain, firstVillainInitialState } from "./FirstVillain.js";
 import { SceneStep, GameObject, Scene } from "../Scene.js";
 
-/** @type {!Map<string, function(Scene):?} */
+/** @type {!Map<string, function(Scene):?>} */
 const initStates = new Map();
 
 /** @type {!Map<string, function(SceneScriptRunner,GameObject):SceneStep>} */
@@ -34,6 +34,8 @@ export function addNamedState(runner, object, name) {
       runner.activeActions = [action];
     }
   }
+
+  return null;
 }
 
 /**

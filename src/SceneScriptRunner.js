@@ -47,46 +47,8 @@ export function runSceneScripts(scene) {
   let scriptFinished = false;
 
   scene.scripts.forEach((runner) => {
-    const { activeActions, scriptPosition } = runner;
-
-    // run all the active actions
-    if (activeActions) {
-      const length = activeActions.length;
-      let removedSome = false;
-      for (let i = 0; i < length; ++i) {
-        const update = activeActions[i]();
-        activeActions[i] = update;
-        if (update == null) removedSome = true;
-      }
-
-      if (removedSome) {
-        const remaining = activeActions.filter(Boolean);
-        if (remaining.length) {
-          runner.activeActions = remaining;
-        } else {
-          runner.activeActions = null;
-          if (!runner.scriptPosition) scriptFinished = true;
-        }
-      }
-    }
-
-    // run the main script
-
-    if (!scriptPosition || !scriptPosition.waitUntil()) return;
-
-    const actions = runner.sceneScript.actions;
-    let index = scriptPosition.index;
-    let waitUntil = null;
-
-    while (!(waitUntil && !waitUntil()) && ++index < actions.length) {
-      waitUntil = runAction(scene, runner, actions[index]);
-    }
-
-    if (index < actions.length) {
-      runner.scriptPosition = { index, waitUntil };
-    } else {
-      runner.scriptPosition = null;
-      if (!runner.activeActions) scriptFinished = true;
+    if (runScriptRunner(runner)) {
+      scriptFinished = true;
     }
   });
 
@@ -95,6 +57,57 @@ export function runSceneScripts(scene) {
       (r) => r.scriptPosition || r.activeActions
     );
   }
+}
+
+/**
+ *
+ * @param {SceneScriptRunner} runner
+ */
+function runScriptRunner(runner) {
+  let scriptFinished = false;
+  const { activeActions, scriptPosition } = runner;
+
+  // run all the active actions
+  if (activeActions) {
+    const length = activeActions.length;
+    let removedSome = false;
+    for (let i = 0; i < length; ++i) {
+      const update = activeActions[i]();
+      activeActions[i] = update;
+      if (update == null) removedSome = true;
+    }
+
+    if (removedSome) {
+      const remaining = activeActions.filter(Boolean);
+      if (remaining.length) {
+        runner.activeActions = remaining;
+      } else {
+        runner.activeActions = null;
+        if (!runner.scriptPosition) scriptFinished = true;
+      }
+    }
+  }
+
+  // run the main script
+
+  if (!scriptPosition || !scriptPosition.waitUntil()) return scriptFinished;
+
+  const actions = runner.sceneScript.actions;
+  let index = scriptPosition.index;
+  let waitUntil = null;
+
+  while (!(waitUntil && !waitUntil()) && ++index < actions.length) {
+    waitUntil = runAction(runner.scene, runner, actions[index]);
+  }
+
+  if (index < actions.length) {
+    runner.scriptPosition = { index, waitUntil };
+  } else {
+    runner.scriptPosition = null;
+    if (!runner.activeActions) scriptFinished = true;
+  }
+
+  return scriptFinished;
 }
 
 /**
@@ -110,6 +123,20 @@ function runAction(scene, runner, action) {
   );
 
   switch (action.type) {
+    case "do": {
+      const subRunner = {
+        scene,
+        sceneScript: scene.gameScript.scripts.get(action.script),
+        scriptPosition: UNSTARTED,
+        activeActions: null,
+      };
+
+      addBasicPendingAction(runner, true, () => {
+        return runScriptRunner(subRunner);
+      });
+
+      return CONTINUE;
+    }
     case "add": {
       const { objects } = scene;
       objects.push({
@@ -153,7 +180,7 @@ function runAction(scene, runner, action) {
       const name = action.name;
       const obj = findObject(scene, action.name);
       const maybe = addNamedState(runner, obj, action.state);
-      return maybe ? maybe() : CONTINUE;
+      return maybe || CONTINUE;
     }
     case "change hero head": {
       const hero = scene.hero;

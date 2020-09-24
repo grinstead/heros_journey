@@ -1,7 +1,11 @@
 import { SceneStep, GameObject, Scene, fireBullet } from "../Scene.js";
 import { SceneScriptRunner } from "../SceneScriptRunner.js";
 import { Sprite, subrenderSprite } from "../Sprite.js";
-import { makeFirstVillainArm, makeFirstVillainDying } from "../assets.js";
+import {
+  makeFirstVillainArm,
+  makeFirstVillainDying,
+  makeFirstVillainWalking,
+} from "../assets.js";
 import {
   subrender,
   shiftContent,
@@ -42,6 +46,9 @@ export function firstVillainInitialState(scene) {
  */
 export function firstVillainMain(runner, object) {
   const scene = runner.scene;
+  scene.inFight++;
+
+  object.sprite = makeFirstVillainWalking(scene.sceneTime);
 
   object.render = () => {
     const state = stateOf(object);
@@ -138,6 +145,10 @@ export function firstVillainMain(runner, object) {
         "FirstVillainDyingSound"
       );
     }
+
+    // 90 degrees off center, forms a circle
+    object.direction = arctan(object.x, -object.y);
+    object.speed = interpolate(object.damage, HEALTH, 200, 400);
 
     const state = stateOf(object);
     const hero = scene.hero;

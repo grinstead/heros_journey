@@ -98,9 +98,15 @@ function parseGameScript() {
     return { sceneBox };
   });
 
+  const scriptNames = [];
+  processObjectMap("scripts", (scriptName) => {
+    scriptNames.push(scriptName);
+  });
+
   const scripts = processObjectMap("scripts", (scriptName) => {
     const characters = new Set();
     const actionTypes = [
+      "do",
       "add",
       "play sound",
       "wait",
@@ -131,6 +137,12 @@ function parseGameScript() {
       const type = readOneOf("type", actionTypes);
 
       switch (type) {
+        case "do": {
+          return {
+            type,
+            script: readOneOf("script", scriptNames),
+          };
+        }
         case "add": {
           return {
             type,

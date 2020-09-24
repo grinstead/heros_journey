@@ -31,19 +31,9 @@
       "characters": ["hero", "first"],
       "actions": [
         {
-          "type": "add",
-          "name": "first",
-          "sprite": "FirstVillain",
-          "x": 0,
-          "y": 0,
-          "shadow radius": { "x": 30, "y": 15 }
-        },
-        {
-          "type": "change state",
-          "name": "first",
-          "state": "first villain main"
-        },
-        { "type": "fight" }
+          "type": "do",
+          "script": "first villain"
+        }
       ]
     },
     "intro": {
@@ -80,11 +70,15 @@
           "type": "add",
           "name": "first",
           "sprite": "FirstVillain",
-          "x": 0,
+          "x": 800,
           "y": 0,
           "shadow radius": { "x": 30, "y": 15 }
         },
-        { "type": "fight" }
+        {
+          "type": "change state",
+          "name": "first",
+          "state": "first villain main"
+        }
       ]
     },
     "test2": {
