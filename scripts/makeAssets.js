@@ -133,8 +133,26 @@ function processSpriteAtlas(info) {
     const elements = frame.elements.map((start) => {
       let element = start;
 
+      // prettier-ignore
+      let matrix = [
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1,
+      ];
+
       // resolve symbols
       while (element.SYMBOL_Instance) {
+        const m = element.SYMBOL_Instance.Matrix3D;
+
+        // prettier-ignore
+        matrix = mult([
+          m.m00, m.m01, m.m02, m.m03,
+          m.m10, m.m11, m.m12, m.m13,
+          m.m20, m.m21, m.m22, m.m23,
+          m.m30, m.m31, m.m32, m.m33,
+        ], matrix);
+
         element = symbols.get(element.SYMBOL_Instance.SYMBOL_name);
       }
 
@@ -143,12 +161,12 @@ function processSpriteAtlas(info) {
       const m = readOrThrow(element, "Matrix3D");
 
       // prettier-ignore
-      const matrix = [
+      matrix = mult([
         m.m00, m.m01, m.m02, m.m03,
         m.m10, m.m11, m.m12, m.m13,
         m.m20, m.m21, m.m22, m.m23,
         m.m30, m.m31, m.m32, m.m33,
-      ];
+      ], matrix);
 
       return {
         i: 4 * getOrThrow(nameToIndices, element.name),
