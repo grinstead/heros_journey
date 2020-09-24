@@ -33,10 +33,15 @@
         {
           "type": "add",
           "name": "first",
-          "sprite": "FirstVillainWalking",
+          "sprite": "FirstVillain",
           "x": 0,
           "y": 0,
           "shadow radius": { "x": 30, "y": 15 }
+        },
+        {
+          "type": "change state",
+          "name": "first",
+          "state": "first villain main"
         },
         { "type": "fight" }
       ]

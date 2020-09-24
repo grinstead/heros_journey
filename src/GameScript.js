@@ -12,6 +12,7 @@ import {
   hasKey,
   readBoolean,
 } from "./PettyParser.js";
+import { namedStateExists } from "./enemies/EnemyAi.js";
 
 export const PIXELS_PER_UNIT = 0.5;
 export const FULL_SPACE_ZOOM = 1 / 6;
@@ -104,6 +105,7 @@ function parseGameScript() {
       "play sound",
       "wait",
       "change sprite",
+      "change state",
       "change hero head",
       "move",
       "camera",
@@ -158,6 +160,15 @@ function parseGameScript() {
             type,
             name: readCharacterName(),
             sprite: readOneOf("sprite", spriteNames),
+          };
+        case "change state":
+          return {
+            type,
+            name: readCharacterName(),
+            state: validateString(
+              "state",
+              (name) => !namedStateExists(name) && "is not a known state"
+            ),
           };
         case "change hero head":
           return {

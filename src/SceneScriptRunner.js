@@ -1,10 +1,12 @@
-import { SceneStep, Scene } from "./Scene.js";
+import { SceneStep, Scene, GameObject } from "./Scene.js";
 import { SceneScript, ScriptAction } from "./GameScript.js";
 import { makeSpriteFromName } from "./Sprite.js";
 import { arctan, magnitudeOf } from "./utils.js";
+import { addNamedState } from "./enemies/EnemyAi.js";
 
 /**
  * @typedef {Object} SceneScriptRunner
+ * @property {Scene} scene
  * @property {SceneScript} sceneScript
  * @property {?{index: number, waitUntil: function():boolean}} scriptPosition
  * @property {?Array<SceneStep>} activeActions
@@ -31,6 +33,7 @@ export function startSceneScript(scene, scriptName) {
   }
 
   scene.scripts.push({
+    scene,
     sceneScript,
     scriptPosition: UNSTARTED,
     activeActions: null,
@@ -138,12 +141,15 @@ function runAction(scene, runner, action) {
     }
     case "change sprite": {
       const name = action.name;
-      const obj = scene.objects.find((obj) => obj.name === name);
-      if (!obj) {
-        throw new Error(`No object with name ${name}`);
-      }
+      const obj = findObject(scene, name);
       obj.sprite = makeSpriteFromName(action.sprite, scene.sceneTime);
       return CONTINUE;
+    }
+    case "change state": {
+      const name = action.name;
+      const obj = findObject(scene, action.name);
+      const maybe = addNamedState(runner, obj, action.state);
+      return maybe ? maybe() : CONTINUE;
     }
     case "change hero head": {
       const hero = scene.hero;
@@ -291,4 +297,18 @@ function calcSpeedEasing(speed, percentage, easeIn, easeOut) {
   } else {
     return speed;
   }
+}
+
+/**
+ *
+ * @param {Scene} scene
+ * @param {string} name
+ * @returns {GameObject}
+ */
+function findObject(scene, name) {
+  const obj = scene.objects.find((obj) => obj.name === name);
+  if (!obj) {
+    throw new Error(`No object with name ${name}`);
+  }
+  return obj;
 }
