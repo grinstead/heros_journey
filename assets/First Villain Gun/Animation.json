@@ -1,7 +1,7 @@
 {
     "ANIMATION": {
-        "name": "Another Villain",
-        "SYMBOL_name": "First Villain.swf",
+        "name": "Untitled-7",
+        "SYMBOL_name": "First Villain Gun.swf",
         "TIMELINE": {
             "LAYERS": [
                 {
@@ -27,15 +27,15 @@
                                             "m21": 0.0,
                                             "m22": 1.0,
                                             "m23": 0.0,
-                                            "m30": 52.0,
-                                            "m31": 12.0,
+                                            "m30": 5.0,
+                                            "m31": 102.0,
                                             "m32": 0.0,
                                             "m33": 1.0
                                         },
                                         "DecomposedMatrix": {
                                             "Position": {
-                                                "x": 52.0,
-                                                "y": 12.0,
+                                                "x": 5.0,
+                                                "y": 102.0,
                                                 "z": 0.0
                                             },
                                             "Rotation": {
