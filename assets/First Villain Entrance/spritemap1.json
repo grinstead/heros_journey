@@ -1,10 +1,12 @@
 ﻿{"ATLAS": {"SPRITES":[ 
-{"SPRITE" : {"name": "0000","x":142,"y":0,"w":142,"h":163,"rotated": false}},
-{"SPRITE" : {"name": "0001","x":0,"y":0,"w":142,"h":173,"rotated": false}},
-{"SPRITE" : {"name": "0002","x":247,"y":163,"w":128,"h":103,"rotated": false}},
-{"SPRITE" : {"name": "0003","x":142,"y":163,"w":105,"h":143,"rotated": false}},
-{"SPRITE" : {"name": "0004","x":0,"y":173,"w":105,"h":143,"rotated": false}},
-{"SPRITE" : {"name": "0005","x":284,"y":0,"w":10,"h":10,"rotated": false}}
+{"SPRITE" : {"name": "0000","x":0,"y":346,"w":142,"h":163,"rotated": false}},
+{"SPRITE" : {"name": "0001","x":0,"y":173,"w":142,"h":173,"rotated": false}},
+{"SPRITE" : {"name": "0002","x":152,"y":0,"w":127,"h":147,"rotated": false}},
+{"SPRITE" : {"name": "0003","x":142,"y":337,"w":127,"h":147,"rotated": false}},
+{"SPRITE" : {"name": "0004","x":142,"y":173,"w":126,"h":164,"rotated": false}},
+{"SPRITE" : {"name": "0005","x":0,"y":0,"w":152,"h":173,"rotated": false}},
+{"SPRITE" : {"name": "0006","x":152,"y":147,"w":10,"h":10,"rotated": false}},
+{"SPRITE" : {"name": "0007","x":0,"y":0,"w":152,"h":173,"rotated": false}}
 ]},
 "meta": {
 "app": "Adobe Animate",
