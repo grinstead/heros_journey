@@ -122,6 +122,7 @@ function runAction(scene, runner, action) {
         sprite: makeSpriteFromName(action.sprite, scene.sceneTime),
         shadowRadius: action.shadowRadius,
         showDamageUntil: 0,
+        damage: 0,
         other: initialStateFor(scene, action.name),
         render: null,
       });
@@ -259,7 +260,7 @@ function runAction(scene, runner, action) {
       return CONTINUE;
     }
     case "fight": {
-      scene.inFight = true;
+      scene.inFight++;
       return CONTINUE;
     }
 

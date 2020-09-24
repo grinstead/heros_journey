@@ -30,6 +30,7 @@ export let Camera;
  * @property {Sprite} sprite
  * @property {ShadowRadius} shadowRadius
  * @property {number} showDamageUntil
+ * @property {number} damage
  * @property {?} other
  * @property {?function():void} render - if not provided, we render the sprite
  */
@@ -89,7 +90,7 @@ export let Bullet;
  * @property {!Array<GameObject>} objects
  * @property {!Array<Bullet>} bullets - Sorted by x
  * @property {!Array<SceneScriptRunner>} scripts
- * @property {boolean} inFight
+ * @property {number} inFight
  * @property {?Transition} entering - The transition that brought us here
  * @property {?Transition} exiting - The transition that is taking us away from here
  */
@@ -140,7 +141,7 @@ export function makeScene(options) {
     objects: [],
     bullets: [],
     scripts: [],
-    inFight: false,
+    inFight: 0,
     entering: null,
     exiting: null,
   };

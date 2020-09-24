@@ -1,16 +1,18 @@
 import { SceneStep, GameObject, Scene, fireBullet } from "../Scene.js";
 import { SceneScriptRunner } from "../SceneScriptRunner.js";
 import { Sprite, subrenderSprite } from "../Sprite.js";
-import { makeFirstVillainArm } from "../assets.js";
+import { makeFirstVillainArm, makeFirstVillainDying } from "../assets.js";
 import {
   subrender,
   shiftContent,
   rotateAboutY,
 } from "../../wattle/engine/src/swagl/MatrixStack.js";
 import { arctan } from "../utils.js";
+import { killOffEnemy } from "./utils.js";
 
 const ARM_HEIGHT = 178 - 118;
 const ARM_LENGTH = 95 - 2;
+const HEALTH = 10;
 
 /**
  * @typedef {Object} VillainState
@@ -78,6 +80,10 @@ export function firstVillainMain(runner, object) {
 
   let activeAction = fireSimple;
   function Action() {
+    if (object.damage >= HEALTH) {
+      return killOffEnemy(scene, object, makeFirstVillainDying);
+    }
+
     const state = stateOf(object);
     const hero = scene.hero;
     state.armDirection = arctan(hero.y - object.y, hero.x - object.x);

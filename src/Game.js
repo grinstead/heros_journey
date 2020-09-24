@@ -201,7 +201,7 @@ export class Game {
         ) {
           bullet.isDead = true;
           object.showDamageUntil = sceneTime + 0.125;
-          // TODO: register hit
+          object.damage++;
         }
       }
     });
