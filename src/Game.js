@@ -571,6 +571,8 @@ export async function makeGame({ canvas, input, mousePosition }) {
       alpha: false,
     });
 
+    if (!gl) throw "browser";
+
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.enable(gl.DEPTH_TEST);
@@ -712,6 +714,8 @@ output_color = max(color, u_min_color);
     if (game.world.activeScene.scripts.length === 0) {
       startSceneScript(game.world.activeScene, "test");
     }
+
+    renderGame(game);
 
     return game;
   });

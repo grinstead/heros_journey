@@ -6,7 +6,6 @@ import { cleanUpObject } from "../wattle/engine/src/utils/raii.js";
 let game = null;
 /** @type {HTMLCanvasElement} */
 let maybeCanvas = null;
-let shouldRun = false;
 const mousePosition = { x: 0, y: 0 };
 
 function startGame() {
@@ -55,19 +54,24 @@ async function onLoad() {
 
   if (!canvas) throw new Error("Bad Canvas");
 
-  prepareStartButton();
-
-  game = await makeGame({
-    canvas,
-    input: new InputManager(document.body),
-    mousePosition,
-  });
-
-  prepareStartButton();
-
-  if (shouldRun) {
-    game.startRunning();
+  try {
+    game = await makeGame({
+      canvas,
+      input: new InputManager(document.body),
+      mousePosition,
+    });
+  } catch (error) {
+    if (error === "browser") {
+      document.getElementById("loading").innerText =
+        "Unfortunately, this game only works on the latest Firefox or Chrome";
+    } else {
+      document.getElementById(
+        "loading"
+      ).innerText = `Error while loading: ${error}`;
+    }
   }
+
+  prepareStartButton();
 
   // for debugging
   window["debug"] = game;

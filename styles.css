@@ -45,6 +45,14 @@ canvas {
   margin: 5px;
 }
 
+#loading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: black;
+}
+
 #start {
   position: absolute;
   left: 50%;

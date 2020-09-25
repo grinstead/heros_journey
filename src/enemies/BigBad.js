@@ -52,8 +52,6 @@ export function bigBadMain(runner, object) {
   let biasRight = scene.hero.x < object.x;
 
   let startTime = scene.sceneTime;
-  object.sprite = makeBigBadGuyShooting(startTime); //makeBigBadGuy(startTime);
-
   let bulletCooldown = startTime + 1;
 
   let blastCount = 0;
@@ -141,7 +139,7 @@ export function bigBadMain(runner, object) {
 
   let prevDamage = object.damage;
 
-  let activeAction = upAndDown;
+  let activeAction = returnToMarching;
   function Action() {
     if (object.damage >= HEALTH) {
       return killOffEnemy(scene, object, makeBigBadGuyDying, "BigBadGuyDying");
