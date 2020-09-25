@@ -181,6 +181,8 @@ export function heroStateSquiggle(hero, scene, squiggle) {
   const sprite = makeGrabbingSquiggle(scene.sceneTime);
   hero.speed = 0;
 
+  scene.audio.playNamedSound(hero, "Squiggles");
+
   return {
     name: "squiggle",
     /** @param {Scene} scene */

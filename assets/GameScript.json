@@ -432,8 +432,8 @@
         "broken",
         "s1",
         "s2",
-        "s3",
         "s4",
+        "s3",
         "s5"
       ],
       "actions": [
@@ -469,12 +469,57 @@
           "type": "add",
           "name": "s1",
           "sprite": "Squiggle",
-          "x": 200,
-          "y": -400,
+          "absolute": true,
+          "x": 752,
+          "y": 432,
+          "z": 40,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        {
+          "type": "add",
+          "name": "s2",
+          "sprite": "Squiggle",
+          "absolute": true,
+          "x": 757,
+          "y": 474,
+          "z": 40,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        {
+          "type": "add",
+          "name": "s3",
+          "sprite": "Squiggle",
+          "absolute": true,
+          "x": 817,
+          "y": 421,
+          "z": 40,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        {
+          "type": "add",
+          "name": "s4",
+          "sprite": "Squiggle",
+          "absolute": true,
+          "x": 788,
+          "y": 491,
+          "z": 40,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        {
+          "type": "add",
+          "name": "s5",
+          "sprite": "Squiggle",
+          "absolute": true,
+          "x": 710,
+          "y": 500,
           "z": 40,
           "shadow radius": { "x": 30, "y": 15 }
         },
         { "type": "change state", "name": "s1", "state": "collectable" },
+        { "type": "change state", "name": "s2", "state": "collectable" },
+        { "type": "change state", "name": "s3", "state": "collectable" },
+        { "type": "change state", "name": "s4", "state": "collectable" },
+        { "type": "change state", "name": "s5", "state": "collectable" },
         {
           "type": "wait until within",
           "name": "folks",
@@ -507,7 +552,8 @@
         {
           "type": "change hero head",
           "sprite": "SlaveInteraction3Hero"
-        }
+        },
+        { "type": "do", "script": "search 2 - next" }
       ]
     },
     "search 2 - next": {
@@ -1176,6 +1222,82 @@
       "type": "audio",
       "name": "FirstVillainIntroSound",
       "src": "First Villain Entrance.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "BossHit",
+      "src": "Boss Hit.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "BossHit2",
+      "src": "Boss Hit 2.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "BossHit3",
+      "src": "Boss Hit 3.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "BossDeath",
+      "src": "Boss Death.mp3"
+    },
+    {
+      "type": "animated",
+      "name": "BossDying",
+      "src": "Boss Dying",
+      "flip": true,
+      "originX": 200,
+      "originY": 370
+    },
+    {
+      "type": "audio",
+      "name": "Narration6",
+      "src": "Narration 6.mp3"
+    },
+    {
+      "type": "animated",
+      "name": "Narration6Head",
+      "src": "Narration 6 Head",
+      "originX": 101,
+      "originY": 187
+    },
+    {
+      "type": "animated",
+      "name": "FinalNarrationHead",
+      "src": "Final Narration Head",
+      "originX": 101,
+      "originY": 187
+    },
+    {
+      "type": "audio",
+      "name": "FinalNarration",
+      "src": "Final Narration.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "MinionRunaway",
+      "src": "Minion Runaway.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "Squiggles",
+      "src": "Squiggles.mp3"
+    },
+    {
+      "type": "animated",
+      "name": "HipHipHooray",
+      "src": "Hip Hip Hooray",
+      "originX": 164,
+      "originY": 439
+    },
+    {
+      "type": "animated",
+      "name": "GameBy",
+      "src": "Game By",
+      "originX": 480,
+      "originY": 600
     }
   ]
 }
