@@ -1,7 +1,7 @@
 {
     "ANIMATION": {
-        "name": "Slaves Broken Cage",
-        "SYMBOL_name": "3 Slaves Standing.swf",
+        "name": "Untitled-32",
+        "SYMBOL_name": "Broken Cage.swf",
         "TIMELINE": {
             "LAYERS": [
                 {
@@ -27,15 +27,15 @@
                                             "m21": 0.0,
                                             "m22": 1.0,
                                             "m23": 0.0,
-                                            "m30": 129.0,
-                                            "m31": 166.0,
+                                            "m30": 24.0,
+                                            "m31": 106.0,
                                             "m32": 0.0,
                                             "m33": 1.0
                                         },
                                         "DecomposedMatrix": {
                                             "Position": {
-                                                "x": 129.0,
-                                                "y": 166.0,
+                                                "x": 24.0,
+                                                "y": 106.0,
                                                 "z": 0.0
                                             },
                                             "Rotation": {
