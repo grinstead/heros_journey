@@ -170,7 +170,7 @@ export function firstVillainMain(runner, object) {
     const state = stateOf(object);
     state.stage = Math.min(
       MAX_STAGE,
-      Math.floor(object.damage / 5) + state.startStage
+      Math.ceil(object.damage / 5) + state.startStage
     );
 
     // 90 degrees off center, forms a circle
