@@ -127,7 +127,7 @@ export function bigBadMain(runner, object) {
 
     const wait = () => {
       if (object.sprite.isFinished()) {
-        if (object.damage >= blastCount * 3) {
+        if (object.damage >= blastCount * 2.5) {
           return fireBlast;
         }
 

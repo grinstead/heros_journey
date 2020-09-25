@@ -111,6 +111,7 @@ function parseGameScript() {
     const actionTypes = [
       "do",
       "add",
+      "remove",
       "play sound",
       "play music",
       "wait",
@@ -173,6 +174,9 @@ function parseGameScript() {
                 }))
               : null,
           };
+        }
+        case "remove": {
+          return { type, name: readCharacterName() };
         }
         case "play sound":
           return {

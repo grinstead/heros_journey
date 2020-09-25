@@ -231,7 +231,7 @@ export class Game {
       const { x, y, shadowRadius } = scene.hero;
       const hits = checkBullets(bullets, x, y, shadowRadius, true);
       if (hits) {
-        hero.damage += hits;
+        if (scene.inFight) hero.damage += hits;
         if (hero.showDamageUntil >= 0) {
           hero.showDamageUntil = sceneTime + 0.125;
           scene.audio.playOneOf(hero, HERO_BULLET_HITS);

@@ -166,6 +166,10 @@ function runAction(scene, runner, action) {
 
       return CONTINUE;
     }
+    case "remove": {
+      scene.objects = scene.objects.filter((obj) => obj.name !== action.name);
+      return CONTINUE;
+    }
     case "play sound": {
       scene.audio.playNamedSound({}, action.sound);
       return CONTINUE;

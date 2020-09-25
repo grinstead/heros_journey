@@ -256,7 +256,7 @@
           "sprite": "Treasure",
           "x": 0,
           "y": 0,
-          "z": 200
+          "z": 240
         },
         {
           "type": "add",
@@ -288,6 +288,9 @@
         { "type": "camera" },
         { "type": "change hero head", "sprite": "Narration3Head" },
         { "type": "play sound", "sound": "Narration3" },
+        { "type": "wait", "seconds": 2 },
+        { "type": "remove", "name": "main" },
+        { "type": "remove", "name": "treasure" },
         {
           "type": "change sprite",
           "name": "slave",
