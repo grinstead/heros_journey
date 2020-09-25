@@ -85,7 +85,8 @@
           "type": "absolute camera",
           "x": 443,
           "y": 80,
-          "zoom": 1
+          "zoom": 1,
+          "speed": 1
         },
         { "type": "wait", "seconds": 4 },
         { "type": "change hero visibility", "visible": true },

@@ -53,7 +53,7 @@ import {
   HERO_BULLET_HITS,
 } from "./Hero.js";
 import { makeBulletBall } from "./assets.js";
-import { magnitudeOf } from "./utils.js";
+import { magnitudeOf, interpolate } from "./utils.js";
 import { startSceneScript, runSceneScripts } from "./SceneScriptRunner.js";
 
 const FPS_SMOOTHING = 0.9;
@@ -390,7 +390,8 @@ function renderGame(game) {
     shiftContent(-camera.x, -camera.y, 0);
 
     subrender(() => {
-      svgProgram.inputs.color.set(0.7, 0.7, 0.9, 1);
+      const rg = interpolate(camera.zoom, 1, 0.2, 0.7);
+      svgProgram.inputs.color.set(rg, rg, 0.9, 1);
 
       // move according to the center of the current screen
       const sceneBox = scene.sceneBox;

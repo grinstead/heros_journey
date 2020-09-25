@@ -249,6 +249,7 @@ function parseGameScript() {
             x: changeXToWorld(readNum("x")),
             y: changeYToWorld(readNum("y")),
             zoom: readNum("zoom", 0, 1, true),
+            speed: hasKey("speed") ? readNum("speed") : -1,
           };
         case "change hero visibility":
           return {

@@ -57,6 +57,7 @@ export class World {
       camera.x = stepTowards(speed, stepSize, camera.x, target.x);
       camera.y = stepTowards(speed, stepSize, camera.y, target.y);
       camera.zoom = stepTowards(speed, stepSize, camera.zoom, target.zoom);
+      // 1 / stepTowards(speed, stepSize, 1 / camera.zoom, 1 / target.zoom);
     }
 
     camera.x = Math.round(camera.x);

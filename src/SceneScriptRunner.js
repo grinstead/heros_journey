@@ -284,6 +284,7 @@ function runAction(scene, runner, action) {
       const sceneCamera = scene.sceneCamera;
       sceneCamera.target.zoom = zoom;
       sceneCamera.showHero = action.showHero;
+      sceneCamera.speed = -1;
 
       if (name == null) {
         sceneCamera.subtarget = null;
@@ -306,6 +307,7 @@ function runAction(scene, runner, action) {
       sceneCamera.target.x = x - scene.sceneBox.originX;
       sceneCamera.target.y = y - scene.sceneBox.originY;
       sceneCamera.target.zoom = zoom;
+      sceneCamera.speed = action.speed;
 
       return CONTINUE;
     }
