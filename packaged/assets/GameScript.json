@@ -1,6 +1,14 @@
 {
-  "opening scene": "search 2",
+  "opening scene": "transformation",
   "scenes": {
+    "transformation": {
+      "location": {
+        "x": 287,
+        "y": 520,
+        "width": 10000,
+        "height": 10000
+      }
+    },
     "intro": {
       "location": {
         "x": 443,
@@ -91,6 +99,66 @@
           "script": "call to action"
         }
       ]
+    },
+    "transformation": {
+      "characters": ["hero", "folks", "folk2", "folk1", "first1", "first2"],
+      "actions": [
+          { "type": "play sound", "sound": "Narration6" },
+                  { "type": "wait", "seconds": 22 },
+
+          {
+            "type": "change hero head",
+            "sprite": "Narration6Head"
+              },
+              {
+                "type": "add",
+                "name": "folks",
+                "x": 1500,
+                "y": 0,
+                "sprite": "SlaveBrokenCage"
+              },
+              {
+                "type": "add",
+                "name": "folk2",
+                "x": 1600,
+                "y": -30,
+                "sprite": "Slave"
+              },
+              {
+                "type": "add",
+                "name": "folk1",
+                "x": 1300,
+                "y": 20,
+                "sprite": "Slave"
+              },
+              {
+                "type": "add",
+                "name": "first1",
+                "sprite": "FirstVillainWalking",
+                "x": 1200,
+                "y": -50,
+                "shadow radius": { "x": 30, "y": 15 }
+              },
+              {
+                "type": "add",
+                "name": "first2",
+                "sprite": "FirstVillainWalking",
+                "x": 1100,
+                "y": -60,
+                "shadow radius": { "x": 30, "y": 15 }
+              },
+              {
+        { "type": "wait", "seconds": 22 },
+        {
+                  "type": "move",
+                  "name": "hero",
+                  "absolute": true,
+                  "x": 462,
+                  "y": 530,
+                  "seconds": 5
+             }
+            ]
+
     },
     "intro": {
       "characters": ["hero", "first", "s1", "s2", "s3", "s4", "s5", "triangle"],
