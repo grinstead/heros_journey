@@ -51,10 +51,10 @@
     },
     "search 2": {
       "location": {
-        "x": 700,
-        "y": 500,
-        "width": 8000,
-        "height": 3000
+        "x": 844,
+        "y": 393,
+        "width": 5000,
+        "height": 4000
       }
     },
     "main first": {
@@ -416,6 +416,73 @@
       ]
     },
     "search 2": {
+      "characters": ["hero", "folks", "folk1", "folk2", "broken"],
+      "actions": [
+        {
+          "type": "add",
+          "name": "folks",
+          "x": 1500,
+          "y": 0,
+          "sprite": "SlaveBrokenCage"
+        },
+        {
+          "type": "add",
+          "name": "broken",
+          "x": 1580,
+          "y": 100,
+          "sprite": "BrokenCage"
+        },
+        {
+          "type": "add",
+          "name": "folk2",
+          "x": 1600,
+          "y": -30,
+          "sprite": "Slave"
+        },
+        {
+          "type": "add",
+          "name": "folk1",
+          "x": 1300,
+          "y": 20,
+          "sprite": "Slave"
+        },
+        {
+          "type": "wait until within",
+          "name": "folks",
+          "x": 400,
+          "y": 200
+        },
+        {
+          "type": "play sound",
+          "sound": "SlaveInteraction2"
+        },
+        {
+          "type": "change sprite",
+          "name": "folk1",
+          "sprite": "SlaveInteraction2"
+        },
+        {
+          "type": "change hero head",
+          "sprite": "SlaveInteraction2Hero"
+        },
+        { "type": "wait", "seconds": 5 },
+        {
+          "type": "play sound",
+          "sound": "SlaveInteraction3"
+        },
+        {
+          "type": "change sprite",
+          "name": "folk2",
+          "sprite": "SlaveInteraction3"
+        },
+        {
+          "type": "change hero head",
+          "sprite": "SlaveInteraction3Hero"
+        },
+        { "type": "do", "script": "search 2 - next" }
+      ]
+    },
+    "search 2 - next": {
       "characters": ["hero", "main", "first1", "first2"],
       "actions": [
         {
@@ -433,7 +500,7 @@
         { "type": "transition", "next screen": "main first" }
       ]
     },
-    "main first": {
+    "main first fast": {
       "characters": ["hero", "main", "first1", "first2"],
       "actions": [
         {
@@ -450,39 +517,20 @@
         { "type": "free hero" }
       ]
     },
-    "main first 2": {
+    "main first": {
       "characters": ["hero", "main", "first1", "first2"],
       "actions": [
         {
           "type": "add",
           "name": "main",
-          "sprite": "MainVillain",
+          "sprite": "BossLevel1",
           "absolute": true,
           "x": 600,
           "y": 500,
           "shadow radius": { "x": 140, "y": 60 }
         },
         { "type": "camera", "name": "main" },
-        {
-          "type": "add",
-          "name": "first1",
-          "sprite": "FirstVillainEntrance",
-          "absolute": true,
-          "x": 600,
-          "y": 520,
-          "z": 1200,
-          "shadow radius": { "x": 30, "y": 15 }
-        },
-        {
-          "type": "add",
-          "name": "first2",
-          "sprite": "FirstVillainEntrance",
-          "absolute": true,
-          "x": 600,
-          "y": 480,
-          "z": 1200,
-          "shadow radius": { "x": 30, "y": 15 }
-        },
+        { "type": "play sound", "sound": "BossLevel1" },
         {
           "type": "move",
           "name": "hero",
@@ -491,16 +539,39 @@
           "y": 500,
           "seconds": 2
         },
+        { "type": "wait", "seconds": 14.1 },
         {
-          "type": "wait",
-          "seconds": 2.125
+          "type": "add",
+          "name": "first1",
+          "sprite": "MinionEntrance",
+          "absolute": true,
+          "x": 600,
+          "y": 520,
+          "z": 1200,
+          "shadow radius": { "x": 30, "y": 15 }
         },
+        { "type": "wait", "seconds": 1.2 },
+        {
+          "type": "add",
+          "name": "first2",
+          "sprite": "MinionEntrance",
+          "absolute": true,
+          "x": 600,
+          "y": 480,
+          "z": 1200,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        { "type": "wait", "seconds": 0.9 },
         {
           "type": "move",
           "name": "first1",
           "seconds": 0.5,
           "z": -1200,
           "ease in": true
+        },
+        {
+          "type": "wait",
+          "seconds": 1.2
         },
         {
           "type": "move",
@@ -534,6 +605,19 @@
       "loops": true,
       "originX": 200,
       "originY": 350
+    },
+    {
+      "type": "animated",
+      "name": "BossLevel1",
+      "src": "Boss Level 1",
+      "flip": true,
+      "originX": 200,
+      "originY": 350
+    },
+    {
+      "type": "audio",
+      "name": "BossLevel1",
+      "src": "Boss Level 1.mp3"
     },
     {
       "type": "animated",
@@ -722,6 +806,27 @@
       "originY": 187
     },
     {
+      "type": "animated",
+      "name": "SlaveInteraction2Hero",
+      "src": "Slave Interaction 2 Hero",
+      "originX": 101,
+      "originY": 187
+    },
+    {
+      "type": "animated",
+      "name": "SlaveInteraction3Hero",
+      "src": "Slave Interaction 3 Hero",
+      "originX": 101,
+      "originY": 187
+    },
+    {
+      "type": "animated",
+      "name": "GrabbingSquiggle",
+      "src": "Grabbing Squiggle",
+      "originX": 82,
+      "originY": 268
+    },
+    {
       "type": "audio",
       "name": "JumpSound",
       "src": "Bullet Dodge.mp3"
@@ -740,7 +845,14 @@
       "name": "FirstVillainEntrance",
       "src": "First Villain Entrance",
       "flip": true,
-      "loops": true,
+      "originX": 97,
+      "originY": 178
+    },
+    {
+      "type": "animated",
+      "name": "MinionEntrance",
+      "src": "Minion Entrance",
+      "flip": true,
       "originX": 97,
       "originY": 178
     },
@@ -839,6 +951,44 @@
       "src": "Slave Shaking Bars",
       "originX": 135,
       "originY": 254
+    },
+    {
+      "type": "animated",
+      "name": "SlaveBrokenCage",
+      "src": "Slaves Broken Cage",
+      "originX": 164,
+      "originY": 439
+    },
+    {
+      "type": "animated",
+      "name": "BrokenCage",
+      "src": "Broken Cage",
+      "originX": 135,
+      "originY": 254
+    },
+    {
+      "type": "animated",
+      "name": "SlaveInteraction2",
+      "src": "Slave Interaction 2",
+      "originX": 90,
+      "originY": 184
+    },
+    {
+      "type": "animated",
+      "name": "SlaveInteraction3",
+      "src": "Slave Interaction 3",
+      "originX": 90,
+      "originY": 184
+    },
+    {
+      "type": "audio",
+      "name": "SlaveInteraction2",
+      "src": "Slave Interaction 2.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "SlaveInteraction3",
+      "src": "Slave Interaction 3.mp3"
     },
     {
       "type": "audio",
