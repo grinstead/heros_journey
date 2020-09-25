@@ -2,6 +2,7 @@ import { SceneStep, GameObject, Scene, fireBullet } from "../Scene.js";
 import { SceneScriptRunner } from "../SceneScriptRunner.js";
 import { arctan, interpolate, dirIsLeft, magnitudeOf } from "../utils.js";
 import { killOffEnemy } from "./utils.js";
+import { makeBigBadGuyDying } from "../assets.js";
 
 const ARM_HEIGHT = 350 - 192;
 const ARM_LENGTH = 200 - 50;
