@@ -1,14 +1,6 @@
 {
-  "opening scene": "intro",
+  "opening scene": "home2",
   "scenes": {
-    "big bad": {
-      "location": {
-        "x": 844,
-        "y": 393,
-        "width": 3000,
-        "height": 4000
-      }
-    },
     "intro": {
       "location": {
         "x": 443,
@@ -46,7 +38,23 @@
         "x": 844,
         "y": 393,
         "width": 3000,
-        "height": 2000
+        "height": 4000
+      }
+    },
+    "big bad": {
+      "location": {
+        "x": 844,
+        "y": 393,
+        "width": 3000,
+        "height": 4000
+      }
+    },
+    "search 2": {
+      "location": {
+        "x": 844,
+        "y": 393,
+        "width": 4000,
+        "height": 3000
       }
     }
   },
@@ -289,19 +297,42 @@
         { "type": "camera" },
         { "type": "change hero head", "sprite": "Narration3Head" },
         { "type": "play sound", "sound": "Narration3" },
-        { "type": "wait", "seconds": 2 },
-        { "type": "remove", "name": "main" },
-        { "type": "remove", "name": "treasure" },
         {
           "type": "change sprite",
           "name": "slave",
           "sprite": "SlaveNarration3"
+        },
+        { "type": "wait", "seconds": 2 },
+        { "type": "remove", "name": "main" },
+        { "type": "remove", "name": "treasure" },
+        { "type": "wait", "seconds": 8 },
+        {
+          "type": "move",
+          "name": "hero",
+          "absolute": true,
+          "x": 830,
+          "y": 260,
+          "seconds": 4
+        },
+        { "type": "wait", "seconds": 26 },
+        {
+          "type": "transition",
+          "next screen": "search"
         }
       ]
     },
     "search": {
-      "characters": ["hero", "prisoner"],
+      "characters": ["hero", "prisoner", "villager"],
       "actions": [
+        {
+          "type": "add",
+          "name": "villager",
+          "sprite": "Slave",
+          "absolute": true,
+          "x": 800,
+          "y": 260,
+          "shadow radius": { "x": 20, "y": 10 }
+        },
         {
           "type": "add",
           "name": "prisoner",
@@ -350,7 +381,9 @@
         { "type": "camera", "name": "big" },
         { "type": "wait", "seconds": 3.4 },
         { "type": "play music", "music": "Fight 2 Music.mp3" },
-        { "type": "change state", "name": "big", "state": "big bad main" }
+        { "type": "change state", "name": "big", "state": "big bad main" },
+        { "type": "wait" },
+        { "type": "transition", "next screen": "search 2" }
       ]
     }
   },

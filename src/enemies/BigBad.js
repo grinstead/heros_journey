@@ -16,7 +16,7 @@ import { killOffEnemy } from "./utils.js";
 
 const ARM_HEIGHT = 254 - 158;
 const ARM_LENGTH = 92;
-const HEALTH = 20;
+const HEALTH = 30;
 const MARGIN = 200;
 
 const VILLAIN_HIT_SOUNDS = ["BigBadGuyHit1", "BigBadGuyHit2", "BigBadGuyHit3"];
@@ -102,9 +102,9 @@ export function bigBadMain(runner, object) {
     object.speed = 0;
     bulletCooldown = sceneTime + 2;
 
-    const arc = Math.PI - 0.125;
+    const arc = Math.PI - 0.125 + blastCount / 10;
     const rayStart = stateOf(object).heroDirection - arc / 2;
-    const count = 60;
+    const count = 30;
     const increment = arc / count;
     const gunDir = object.mirrorX ? Math.PI : 0;
 
