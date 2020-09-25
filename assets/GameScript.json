@@ -1,5 +1,5 @@
 {
-  "opening scene": "big bad",
+  "opening scene": "search",
   "scenes": {
     "intro": {
       "location": {
@@ -344,7 +344,14 @@
           "type": "change state",
           "name": "prisoner",
           "state": "shaking"
-        }
+        },
+        {
+          "type": "wait until within",
+          "name": "prisoner",
+          "x": 400,
+          "y": 200
+        },
+        { "type": "transition", "next screen": "big bad" }
       ]
     },
     "big bad": {

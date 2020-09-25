@@ -115,6 +115,7 @@ function parseGameScript() {
       "play sound",
       "play music",
       "wait",
+      "wait until within",
       "change sprite",
       "change state",
       "change hero head",
@@ -193,6 +194,13 @@ function parseGameScript() {
           return {
             type,
             seconds: hasKey("seconds") ? readNum("seconds", 0) : null,
+          };
+        case "wait until within":
+          return {
+            type,
+            name: readCharacterName(),
+            x: readNum("x", 0),
+            y: readNum("y", 0),
           };
         case "change sprite":
           return {

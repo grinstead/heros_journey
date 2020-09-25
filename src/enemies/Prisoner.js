@@ -27,11 +27,6 @@ export function prisonerShaking(runner, object) {
       scene.audio.playNamedSound(object, "SlaveCage");
     }
 
-    const hero = scene.hero;
-    if (magnitudeOf(hero.x - object.x, hero.y - object.y, 0) < 800) {
-      scene.exiting = "big bad";
-    }
-
     return shakeCage;
   }
 

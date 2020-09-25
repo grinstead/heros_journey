@@ -187,6 +187,13 @@ function runAction(scene, runner, action) {
         return () => runner.activeActions == null;
       }
     }
+    case "wait until within": {
+      const { x, y } = action;
+      const obj = findObject(scene, action.name);
+      return () =>
+        Math.abs(scene.hero.x - obj.x) < x &&
+        Math.abs(scene.hero.y - obj.y) < y;
+    }
     case "change sprite": {
       const name = action.name;
       const obj = findObject(scene, name);
