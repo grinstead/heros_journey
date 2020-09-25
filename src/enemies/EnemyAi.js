@@ -3,6 +3,7 @@ import { firstVillainMain, firstVillainInitialState } from "./FirstVillain.js";
 import { SceneStep, GameObject, Scene } from "../Scene.js";
 import { prisonerShaking, prisonerKnockedOver } from "./Prisoner.js";
 import { bigBadInitialState, bigBadMain } from "./BigBad.js";
+import { mainBossMain, mainBossInitialState } from "./MainBoss.js";
 
 /** @type {!Map<string, function(Scene):?>} */
 const initStates = new Map();
@@ -20,6 +21,9 @@ namedStates.set("knocked over", prisonerKnockedOver);
 
 initStates.set("big", bigBadInitialState);
 namedStates.set("big bad main", bigBadMain);
+
+initStates.set("main", mainBossInitialState);
+namedStates.set("boss main", mainBossMain);
 
 /**
  *
