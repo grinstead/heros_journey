@@ -61,8 +61,8 @@
       "location": {
         "x": 600,
         "y": 500,
-        "width": 6000,
-        "height": 2000
+        "width": 3000,
+        "height": 1500
       }
     }
   },
@@ -446,18 +446,6 @@
           "shadow radius": { "x": 140, "y": 60 }
         },
         { "type": "camera", "name": "main" },
-        {
-          "type": "move",
-          "name": "hero",
-          "absolute": true,
-          "x": 700,
-          "y": 500,
-          "seconds": 2
-        },
-        {
-          "type": "wait",
-          "seconds": 2.125
-        },
         { "type": "change state", "name": "main", "state": "boss main" },
         { "type": "free hero" }
       ]
