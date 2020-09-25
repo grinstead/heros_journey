@@ -1212,7 +1212,7 @@
     {
       "type": "audio",
       "name": "FirstVillainHit2",
-      "src": "First Villain Hit 2.mp3"
+      "src": "FIrst Villain Hit 2.mp3"
     },
     {
       "type": "audio",
@@ -1235,7 +1235,7 @@
     {
       "type": "animated",
       "name": "Treasure",
-      "src": "Squiggles And Triangle",
+      "src": "Squiggles and Triangle",
       "loops": true,
       "originX": 49,
       "originY": 95
