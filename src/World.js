@@ -10,7 +10,7 @@ const DEFAULT_CAMERA_SPEED = 4;
 
 export class World {
   constructor(kernel, startScene) {
-    /** @private {SceneKernel} */
+    /** @type {SceneKernel} */
     this.kernel = kernel;
     /** @private {Map<string, Scene>} Maps the initialized scenes' names to their data */
     this.scenes = new Map([[startScene.sceneName, startScene]]);

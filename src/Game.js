@@ -121,7 +121,8 @@ export class Game {
     /** @private {number} */
     this.startTime = 0;
     /** @private {boolean} */
-    this.startedFromBeginning = args.world.activeScene.name === "intro";
+    this.startedFromBeginning =
+      args.world.kernel.gameScript.openingScene === "intro";
   }
 
   processGame() {

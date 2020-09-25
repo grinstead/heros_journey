@@ -1,5 +1,5 @@
 {
-  "opening scene": "search",
+  "opening scene": "big bad",
   "scenes": {
     "big bad": {
       "location": {
@@ -347,7 +347,8 @@
           "ease in": true
         },
         { "type": "camera", "name": "big" },
-        { "type": "wait" },
+        { "type": "wait", "seconds": 3.4 },
+        { "type": "play music", "music": "Fight 2 Music.mp3" },
         { "type": "change state", "name": "big", "state": "big bad main" }
       ]
     }

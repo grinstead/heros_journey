@@ -48,6 +48,7 @@ function prepareStartButton() {
 }
 
 async function onLoad() {
+  /** @suppress {checkTypes} */
   maybeCanvas = document.getElementById("canvas");
   /** @type {HTMLCanvasElement} */
   const canvas = maybeCanvas instanceof HTMLCanvasElement ? maybeCanvas : null;
