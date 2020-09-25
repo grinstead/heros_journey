@@ -161,6 +161,7 @@ export function offsetAFrameFrom(time) {
  * @param {number} direction
  * @param {number} speed
  * @param {boolean} isFriendly
+ * @param {number=} bulletDirection
  */
 export function fireBullet(
   scene,
@@ -170,17 +171,15 @@ export function fireBullet(
   offset,
   direction,
   speed,
-  isFriendly
+  isFriendly,
+  bulletDirection = direction
 ) {
-  const cos = Math.cos(direction);
-  const sin = Math.sin(direction);
-
   scene.bullets.push({
-    x: x + offset * cos,
-    y: y + offset * sin,
+    x: x + offset * Math.cos(direction),
+    y: y + offset * Math.sin(direction),
     z,
-    dx: speed * cos,
-    dy: speed * sin,
+    dx: speed * Math.cos(bulletDirection),
+    dy: speed * Math.sin(bulletDirection),
     isFriendly,
     startTime: scene.startTime,
     isDead: false,

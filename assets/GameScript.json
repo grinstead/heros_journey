@@ -403,7 +403,6 @@
       "name": "BigBadGuyShooting",
       "src": "Big Bad Guy Shooting",
       "flip": true,
-      "loops": true,
       "originX": 92,
       "originY": 254
     },
