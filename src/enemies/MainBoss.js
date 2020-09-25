@@ -134,7 +134,7 @@ export function mainBossMain(runner, object) {
   let activeAction = moveToSide;
   function Action() {
     if (object.damage >= HEALTH) {
-      return killOffEnemy(scene, object, makeBossDying, "BossDying");
+      return killOffEnemy(scene, object, makeBossDying, "BossDeath");
     }
 
     if (object.damage !== prevDamage) {

@@ -1,5 +1,5 @@
 {
-  "opening scene": "abyss",
+  "opening scene": "intro",
   "scenes": {
     "intro": {
       "location": {
@@ -78,7 +78,15 @@
         "x": 290,
         "y": 520,
         "width": 4000,
-        "height": 3000
+        "height": 2000
+      }
+    },
+    "transformation": {
+      "location": {
+        "x": 287,
+        "y": 520,
+        "width": 100000,
+        "height": 100000
       }
     }
   },
@@ -790,8 +798,60 @@
         { "type": "change hero head", "sprite": "BossLevel2Head" },
         { "type": "wait", "seconds": 7.8 },
         { "type": "change state", "name": "main", "state": "boss main" },
-        { "type": "play music", "music": "Boss Level 2 Music.mp3" },
-        { "type": "free hero" }
+        { "type": "play music", "music": "Boss Fight 2 Music.mp3" },
+        { "type": "free hero" },
+        { "type": "wait" },
+        { "type": "transition", "next screen": "transformation" }
+      ]
+    },
+    "transformation": {
+      "characters": ["hero", "folks"],
+      "actions": [
+        { "type": "play sound", "sound": "Narration6" },
+        {
+          "type": "change hero head",
+          "sprite": "Narration6Head"
+        },
+        {
+          "type": "move",
+          "name": "hero",
+          "absolute": true,
+          "x": 151,
+          "y": 330,
+          "seconds": 22
+        },
+        { "type": "wait", "seconds": 22 },
+        {
+          "type": "move",
+          "name": "hero",
+          "absolute": true,
+          "x": 430,
+          "y": 60,
+          "seconds": 20
+        },
+        {
+          "type": "add",
+          "name": "folks",
+          "sprite": "HipHipHooray",
+          "absolute": true,
+          "x": 430,
+          "y": 95
+        },
+        { "type": "play sound", "sound": "FinalNarration" },
+        {
+          "type": "change hero head",
+          "sprite": "FinalNarrationHead"
+        },
+        { "type": "wait", "seconds": 13 },
+        { "type": "camera", "name": "folks" },
+        { "type": "wait", "seconds": 42 },
+        {
+          "type": "absolute camera",
+          "zoom": 0,
+          "x": 480,
+          "y": 320,
+          "speed": 0.5
+        }
       ]
     }
   },
