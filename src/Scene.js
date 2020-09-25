@@ -187,3 +187,20 @@ export function fireBullet(
     isDead: false,
   });
 }
+
+window["worldObjects"] = []; // its a hack for sure
+/**
+ * @param {Scene} scene
+ * @param {number} x
+ * @param {number} y
+ * @param {boolean} mirrorX
+ * @param {Sprite} sprite
+ */
+export function addWorldObject(scene, x, y, mirrorX, sprite) {
+  window["worldObjects"].push({
+    x: x + scene.sceneBox.originX,
+    y: y + scene.sceneBox.originY,
+    mirrorX,
+    sprite,
+  });
+}

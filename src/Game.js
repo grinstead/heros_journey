@@ -494,6 +494,15 @@ function renderGame(game) {
 
     shiftContent(-camera.x, -camera.y, 0);
 
+    const sceneBox = scene.sceneBox;
+    subrenderEach(window["worldObjects"], (object) => {
+      shiftContent(object.x - sceneBox.originX, object.y - sceneBox.originY, 0);
+      if (object.mirrorX) scaleAxes(-1, 1, 1);
+      const sprite = object.sprite;
+      sprite.prepareSpriteType();
+      subrenderSprite(sprite);
+    });
+
     const sceneTime = scene.sceneTime;
     subrenderEach(scene.objects, (object) => {
       if (sceneTime < object.showDamageUntil) {

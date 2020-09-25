@@ -1,4 +1,4 @@
-import { GameObject, Scene, SceneStep } from "../Scene.js";
+import { GameObject, Scene, SceneStep, addWorldObject } from "../Scene.js";
 import { SpriteBuilder } from "../Sprite.js";
 
 /**
@@ -27,6 +27,8 @@ export function killOffEnemy(scene, object, makeSprite, soundName) {
     sprite.updateTime(scene.sceneTime);
 
     if (!sprite.isFinished()) return waitUntilDeath;
+
+    addWorldObject(scene, object.x, object.y, object.mirrorX, sprite);
 
     return null;
   }
