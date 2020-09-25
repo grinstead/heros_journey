@@ -1,14 +1,6 @@
 {
-  "opening scene": "transformation",
+  "opening scene": "intro",
   "scenes": {
-    "transformation": {
-      "location": {
-        "x": 287,
-        "y": 520,
-        "width": 10000,
-        "height": 10000
-      }
-    },
     "intro": {
       "location": {
         "x": 443,
@@ -61,7 +53,7 @@
       "location": {
         "x": 844,
         "y": 393,
-        "width": 5000,
+        "width": 6000,
         "height": 4000
       }
     },
@@ -79,6 +71,22 @@
         "y": 557,
         "width": 10000,
         "height": 10000
+      }
+    },
+    "main 2": {
+      "location": {
+        "x": 290,
+        "y": 520,
+        "width": 4000,
+        "height": 2000
+      }
+    },
+    "transformation": {
+      "location": {
+        "x": 287,
+        "y": 520,
+        "width": 100000,
+        "height": 100000
       }
     }
   },
@@ -99,66 +107,6 @@
           "script": "call to action"
         }
       ]
-    },
-    "transformation": {
-      "characters": ["hero", "folks", "folk2", "folk1", "first1", "first2"],
-      "actions": [
-          { "type": "play sound", "sound": "Narration6" },
-                  { "type": "wait", "seconds": 22 },
-
-          {
-            "type": "change hero head",
-            "sprite": "Narration6Head"
-              },
-              {
-                "type": "add",
-                "name": "folks",
-                "x": 1500,
-                "y": 0,
-                "sprite": "SlaveBrokenCage"
-              },
-              {
-                "type": "add",
-                "name": "folk2",
-                "x": 1600,
-                "y": -30,
-                "sprite": "Slave"
-              },
-              {
-                "type": "add",
-                "name": "folk1",
-                "x": 1300,
-                "y": 20,
-                "sprite": "Slave"
-              },
-              {
-                "type": "add",
-                "name": "first1",
-                "sprite": "FirstVillainWalking",
-                "x": 1200,
-                "y": -50,
-                "shadow radius": { "x": 30, "y": 15 }
-              },
-              {
-                "type": "add",
-                "name": "first2",
-                "sprite": "FirstVillainWalking",
-                "x": 1100,
-                "y": -60,
-                "shadow radius": { "x": 30, "y": 15 }
-              },
-              {
-        { "type": "wait", "seconds": 22 },
-        {
-                  "type": "move",
-                  "name": "hero",
-                  "absolute": true,
-                  "x": 462,
-                  "y": 530,
-                  "seconds": 5
-             }
-            ]
-
     },
     "intro": {
       "characters": ["hero", "first", "s1", "s2", "s3", "s4", "s5", "triangle"],
@@ -491,19 +439,8 @@
         { "type": "transition", "next screen": "search 2" }
       ]
     },
-    "search 2": {
-      "characters": [
-        "hero",
-        "folks",
-        "folk1",
-        "folk2",
-        "broken",
-        "s1",
-        "s2",
-        "s4",
-        "s3",
-        "s5"
-      ],
+    "search 2 - folks": {
+      "characters": ["hero", "folks", "folk1", "folk2", "broken"],
       "actions": [
         {
           "type": "add",
@@ -533,6 +470,54 @@
           "y": 20,
           "sprite": "Slave"
         },
+        {
+          "type": "wait until within",
+          "name": "folks",
+          "x": 400,
+          "y": 200
+        },
+        {
+          "type": "play sound",
+          "sound": "SlaveInteraction2"
+        },
+        {
+          "type": "change sprite",
+          "name": "folk1",
+          "sprite": "SlaveInteraction2"
+        },
+        {
+          "type": "change hero head",
+          "sprite": "SlaveInteraction2Hero"
+        },
+        { "type": "wait", "seconds": 5 },
+        {
+          "type": "play sound",
+          "sound": "SlaveInteraction3"
+        },
+        {
+          "type": "change sprite",
+          "name": "folk2",
+          "sprite": "SlaveInteraction3"
+        },
+        {
+          "type": "change hero head",
+          "sprite": "SlaveInteraction3Hero"
+        }
+      ]
+    },
+    "search 2": {
+      "characters": ["hero", "main", "s1", "s2", "s4", "s3", "s5"],
+      "actions": [
+        {
+          "type": "add",
+          "name": "main",
+          "sprite": "MainVillain",
+          "absolute": true,
+          "x": 600,
+          "y": 500,
+          "shadow radius": { "x": 140, "y": 60 }
+        },
+        { "type": "do", "script": "search 2 - folks" },
         {
           "type": "add",
           "name": "s1",
@@ -588,57 +573,7 @@
         { "type": "change state", "name": "s3", "state": "collectable" },
         { "type": "change state", "name": "s4", "state": "collectable" },
         { "type": "change state", "name": "s5", "state": "collectable" },
-        {
-          "type": "wait until within",
-          "name": "folks",
-          "x": 400,
-          "y": 200
-        },
-        {
-          "type": "play sound",
-          "sound": "SlaveInteraction2"
-        },
-        {
-          "type": "change sprite",
-          "name": "folk1",
-          "sprite": "SlaveInteraction2"
-        },
-        {
-          "type": "change hero head",
-          "sprite": "SlaveInteraction2Hero"
-        },
-        { "type": "wait", "seconds": 5 },
-        {
-          "type": "play sound",
-          "sound": "SlaveInteraction3"
-        },
-        {
-          "type": "change sprite",
-          "name": "folk2",
-          "sprite": "SlaveInteraction3"
-        },
-        {
-          "type": "change hero head",
-          "sprite": "SlaveInteraction3Hero"
-        },
-        { "type": "do", "script": "search 2 - next" }
-      ]
-    },
-    "search 2 - next": {
-      "characters": ["hero", "main", "first1", "first2"],
-      "actions": [
-        {
-          "type": "add",
-          "name": "main",
-          "sprite": "MainVillain",
-          "absolute": true,
-          "x": 600,
-          "y": 500,
-          "shadow radius": { "x": 140, "y": 60 }
-        },
         { "type": "wait until within", "name": "main", "x": 1000, "y": 10000 },
-        { "type": "camera", "name": "main" },
-        { "type": "wait until within", "name": "main", "x": 400, "y": 10000 },
         { "type": "transition", "next screen": "main first" }
       ]
     },
@@ -739,9 +674,17 @@
       ]
     },
     "abyss": {
-      "characters": ["hero", "captured", "folks", "first1", "first2"],
+      "characters": ["hero", "captured", "folks", "first1", "first2", "main"],
       "actions": [
         { "type": "change hero visibility", "visible": false },
+        {
+          "type": "move",
+          "name": "hero",
+          "absolute": true,
+          "x": 512,
+          "y": 563,
+          "seconds": 36.65
+        },
         { "type": "play sound", "sound": "Narration5" },
         {
           "type": "add",
@@ -790,23 +733,124 @@
         {
           "type": "move",
           "name": "first1",
-          "x": -6000,
-          "y": -4000,
-          "seconds": 7
+          "x": -12000,
+          "y": -8000,
+          "seconds": 10
         },
         {
           "type": "move",
           "name": "first2",
-          "x": -6000,
-          "y": -4000,
-          "seconds": 7
+          "x": -12000,
+          "y": -8000,
+          "seconds": 10
         },
         {
           "type": "move",
           "name": "folks",
-          "x": -3000,
-          "y": -2000,
-          "seconds": 6
+          "x": -6000,
+          "y": -4000,
+          "seconds": 8
+        },
+        { "type": "change hero visibility", "visible": true },
+        { "type": "camera" },
+        { "type": "remove", "name": "captured" },
+        {
+          "type": "add",
+          "name": "main",
+          "sprite": "MainVillain",
+          "absolute": true,
+          "x": 290,
+          "y": 520,
+          "shadow radius": { "x": 140, "y": 60 }
+        },
+        { "type": "wait", "seconds": 4 },
+        { "type": "remove", "name": "folks" },
+        { "type": "remove", "name": "first1" },
+        { "type": "remove", "name": "first2" },
+        { "type": "free hero" },
+        { "type": "wait until within", "name": "main", "x": 1500, "y": 10000 },
+        { "type": "camera", "name": "main" },
+        { "type": "wait until within", "name": "main", "x": 1000, "y": 1000 },
+        {
+          "type": "move",
+          "name": "hero",
+          "absolute": true,
+          "x": 310,
+          "y": 520,
+          "seconds": 1
+        },
+        { "type": "transition", "next screen": "main 2" }
+      ]
+    },
+    "main 2": {
+      "characters": ["hero", "main"],
+      "actions": [
+        {
+          "type": "add",
+          "name": "main",
+          "sprite": "BossLevel2",
+          "x": 0,
+          "y": 0,
+          "shadow radius": { "x": 140, "y": 60 }
+        },
+        { "type": "camera", "name": "main" },
+        { "type": "play sound", "sound": "BossLevel2" },
+        { "type": "change hero head", "sprite": "BossLevel2Head" },
+        { "type": "wait", "seconds": 7.8 },
+        { "type": "change state", "name": "main", "state": "boss main" },
+        { "type": "play music", "music": "Boss Fight 2 Music.mp3" },
+        { "type": "free hero" },
+        { "type": "wait" },
+        { "type": "transition", "next screen": "transformation" }
+      ]
+    },
+    "transformation": {
+      "characters": ["hero", "folks"],
+      "actions": [
+        { "type": "play sound", "sound": "Narration6" },
+        {
+          "type": "change hero head",
+          "sprite": "Narration6Head"
+        },
+        {
+          "type": "move",
+          "name": "hero",
+          "absolute": true,
+          "x": 151,
+          "y": 330,
+          "seconds": 22
+        },
+        { "type": "wait", "seconds": 22 },
+        {
+          "type": "move",
+          "name": "hero",
+          "absolute": true,
+          "x": 430,
+          "y": 60,
+          "seconds": 20
+        },
+        {
+          "type": "add",
+          "name": "folks",
+          "sprite": "HipHipHooray",
+          "absolute": true,
+          "x": 430,
+          "y": 95
+        },
+        { "type": "play sound", "sound": "FinalNarration" },
+        {
+          "type": "change hero head",
+          "sprite": "FinalNarrationHead"
+        },
+        { "type": "wait", "seconds": 13 },
+        { "type": "camera", "name": "folks" },
+        { "type": "wait", "seconds": 42 },
+        {
+          "type": "absolute camera",
+          "zoom": 0,
+          "x": 480,
+          "y": 320,
+          "speed": 0.5
         }
       ]
     }
