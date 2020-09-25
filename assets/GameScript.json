@@ -1,5 +1,5 @@
 {
-  "opening scene": "home2",
+  "opening scene": "big bad",
   "scenes": {
     "intro": {
       "location": {
@@ -348,8 +348,15 @@
       ]
     },
     "big bad": {
-      "characters": ["hero", "big"],
+      "characters": ["hero", "big", "prisoner"],
       "actions": [
+        {
+          "type": "add",
+          "name": "prisoner",
+          "sprite": "SlaveCage",
+          "x": 800,
+          "y": 0
+        },
         {
           "type": "play sound",
           "sound": "BigBadGuyLandingSound"
@@ -362,7 +369,8 @@
           "type": "add",
           "name": "big",
           "sprite": "BigBadGuyLanding",
-          "x": 0,
+          "flip": true,
+          "x": 800,
           "y": 0,
           "z": 1200,
           "shadow radius": { "x": 40, "y": 20 }
@@ -378,8 +386,14 @@
           "z": -1200,
           "ease in": true
         },
+        { "type": "wait" },
+        {
+          "type": "change state",
+          "name": "prisoner",
+          "state": "knocked over"
+        },
         { "type": "camera", "name": "big" },
-        { "type": "wait", "seconds": 3.4 },
+        { "type": "wait", "seconds": 3 },
         { "type": "play music", "music": "Fight 2 Music.mp3" },
         { "type": "change state", "name": "big", "state": "big bad main" },
         { "type": "wait" },

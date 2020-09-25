@@ -104,7 +104,7 @@ export function bigBadMain(runner, object) {
 
     const arc = Math.PI - 0.125 + blastCount / 10;
     const rayStart = stateOf(object).heroDirection - arc / 2;
-    const count = 30;
+    const count = 31;
     const increment = arc / count;
     const gunDir = object.mirrorX ? Math.PI : 0;
 
