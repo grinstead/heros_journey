@@ -1,5 +1,5 @@
 {
-  "opening scene": "main first",
+  "opening scene": "abyss",
   "scenes": {
     "intro": {
       "location": {
@@ -63,6 +63,14 @@
         "y": 500,
         "width": 3000,
         "height": 1500
+      }
+    },
+    "abyss": {
+      "location": {
+        "x": 512,
+        "y": 557,
+        "width": 10000,
+        "height": 10000
       }
     }
   },
@@ -592,7 +600,80 @@
           "state": "first villain main"
         },
         { "type": "change state", "name": "main", "state": "boss main" },
+        { "type": "play music", "music": "Boss Level 1 Music.mp3" },
         { "type": "free hero" }
+      ]
+    },
+    "abyss": {
+      "characters": ["hero", "captured", "folks", "first1", "first2"],
+      "actions": [
+        { "type": "change hero visibility", "visible": false },
+        { "type": "play sound", "sound": "Narration5" },
+        {
+          "type": "add",
+          "name": "captured",
+          "sprite": "Abyss",
+          "x": 0,
+          "y": -60
+        },
+        { "type": "camera", "show hero": false, "name": "captured" },
+        { "type": "wait", "seconds": 28.8 },
+        {
+          "type": "add",
+          "name": "folks",
+          "sprite": "Rescued",
+          "x": 2000,
+          "y": 1000
+        },
+        { "type": "play sound", "sound": "Saved" },
+        {
+          "type": "move",
+          "name": "folks",
+          "x": -1600,
+          "y": -1100,
+          "seconds": 4
+        },
+        { "type": "wait", "seconds": 5.75 },
+        { "type": "change sprite", "name": "captured", "sprite": "CageBreak" },
+        { "type": "play sound", "sound": "CageBreak" },
+        {
+          "type": "add",
+          "name": "first1",
+          "sprite": "FirstVillainWalking",
+          "x": 2000,
+          "y": 1000,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        {
+          "type": "add",
+          "name": "first2",
+          "sprite": "FirstVillainWalking",
+          "x": 1800,
+          "y": 800,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        { "type": "wait", "seconds": 2.1 },
+        {
+          "type": "move",
+          "name": "first1",
+          "x": -6000,
+          "y": -4000,
+          "seconds": 7
+        },
+        {
+          "type": "move",
+          "name": "first2",
+          "x": -6000,
+          "y": -4000,
+          "seconds": 7
+        },
+        {
+          "type": "move",
+          "name": "folks",
+          "x": -3000,
+          "y": -2000,
+          "seconds": 6
+        }
       ]
     }
   },
@@ -618,6 +699,26 @@
       "type": "audio",
       "name": "BossLevel1",
       "src": "Boss Level 1.mp3"
+    },
+    {
+      "type": "animated",
+      "name": "BossLevel2",
+      "src": "Boss Level 2 Boss",
+      "flip": true,
+      "originX": 200,
+      "originY": 350
+    },
+    {
+      "type": "audio",
+      "name": "BossLevel2",
+      "src": "Boss Level 2.mp3"
+    },
+    {
+      "type": "animated",
+      "name": "BossLevel2Head",
+      "src": "Boss Level 2 Head",
+      "originX": 101,
+      "originY": 187
     },
     {
       "type": "animated",
@@ -674,6 +775,45 @@
       "originX": 92,
       "originY": 254
     },
+    {
+      "type": "audio",
+      "name": "HeroCaptured",
+      "src": "Hero Captured.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "Narration5",
+      "src": "Narration 5.mp3"
+    },
+
+    {
+      "type": "animated",
+      "name": "Abyss",
+      "src": "Abyss",
+      "originX": 207,
+      "originY": 367
+    },
+    {
+      "type": "animated",
+      "name": "CageBreak",
+      "src": "Cage Break",
+      "originX": 207,
+      "originY": 367
+    },
+    {
+      "type": "animated",
+      "name": "Rescued",
+      "src": "Saved Slaves",
+      "flip": true,
+      "originX": 136,
+      "originY": 259
+    },
+    {
+      "type": "audio",
+      "name": "Saved",
+      "src": "Saved.mp3"
+    },
+
     {
       "type": "audio",
       "name": "BigBadGuyDying",
@@ -965,6 +1105,11 @@
       "src": "Broken Cage",
       "originX": 135,
       "originY": 254
+    },
+    {
+      "type": "audio",
+      "name": "CageBreak",
+      "src": "Cage Break.mp3"
     },
     {
       "type": "animated",
