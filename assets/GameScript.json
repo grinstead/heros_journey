@@ -1,5 +1,5 @@
 {
-  "opening scene": "abyss",
+  "opening scene": "search 2",
   "scenes": {
     "intro": {
       "location": {
@@ -424,7 +424,18 @@
       ]
     },
     "search 2": {
-      "characters": ["hero", "folks", "folk1", "folk2", "broken"],
+      "characters": [
+        "hero",
+        "folks",
+        "folk1",
+        "folk2",
+        "broken",
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5"
+      ],
       "actions": [
         {
           "type": "add",
@@ -454,6 +465,16 @@
           "y": 20,
           "sprite": "Slave"
         },
+        {
+          "type": "add",
+          "name": "s1",
+          "sprite": "Squiggle",
+          "x": 200,
+          "y": -400,
+          "z": 40,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        { "type": "change state", "name": "s1", "state": "collectable" },
         {
           "type": "wait until within",
           "name": "folks",
@@ -486,8 +507,7 @@
         {
           "type": "change hero head",
           "sprite": "SlaveInteraction3Hero"
-        },
-        { "type": "do", "script": "search 2 - next" }
+        }
       ]
     },
     "search 2 - next": {

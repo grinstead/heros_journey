@@ -7,6 +7,7 @@ import {
   rotateAboutZ,
 } from "../../wattle/engine/src/swagl/MatrixStack.js";
 import { subrenderSprite } from "../Sprite.js";
+import { heroStateSquiggle } from "../Hero.js";
 
 /**
  * @param {SceneScriptRunner} runner
@@ -77,4 +78,26 @@ export function prisonerKnockedOver(runner, object) {
   }
 
   return step;
+}
+
+/**
+ * @param {SceneScriptRunner} runner
+ * @param {GameObject} object
+ * @returns {SceneStep}
+ */
+export function collectableSquiggle(runner, object) {
+  const scene = runner.scene;
+
+  function waitForHero() {
+    const hero = scene.hero;
+    if (magnitudeOf(hero.x - object.x, hero.y - object.y, 0) < 50) {
+      scene.objects = scene.objects.filter((obj) => obj !== object);
+      hero.changeState(scene, heroStateSquiggle, object);
+      return null;
+    }
+
+    return waitForHero;
+  }
+
+  return waitForHero;
 }

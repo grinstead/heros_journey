@@ -6,6 +6,7 @@ import {
   makeHeroRunningBackwards,
   makeHeroJump,
   makeHeroDying,
+  makeGrabbingSquiggle,
 } from "./assets.js";
 import { Sprite, subrenderSprite } from "./Sprite.js";
 import {
@@ -167,6 +168,26 @@ function heroStateDying(hero, scene) {
       sprite.updateTime(scene.sceneTime);
       if (scene.sceneTime >= timeToReset) {
         scene.exiting = scene.sceneName;
+      }
+    },
+    render: () => {
+      sprite.prepareSpriteType();
+      subrenderSprite(sprite);
+    },
+  };
+}
+
+export function heroStateSquiggle(hero, scene, squiggle) {
+  const sprite = makeGrabbingSquiggle(scene.sceneTime);
+  hero.speed = 0;
+
+  return {
+    name: "squiggle",
+    /** @param {Scene} scene */
+    processStep: (scene) => {
+      sprite.updateTime(scene.sceneTime);
+      if (sprite.isFinished()) {
+        hero.changeState(scene, heroStateNormal, null);
       }
     },
     render: () => {

@@ -1,7 +1,11 @@
 import { SceneScriptRunner } from "../SceneScriptRunner.js";
 import { firstVillainMain, firstVillainInitialState } from "./FirstVillain.js";
 import { SceneStep, GameObject, Scene } from "../Scene.js";
-import { prisonerShaking, prisonerKnockedOver } from "./Prisoner.js";
+import {
+  prisonerShaking,
+  prisonerKnockedOver,
+  collectableSquiggle,
+} from "./Prisoner.js";
 import { bigBadInitialState, bigBadMain } from "./BigBad.js";
 import { mainBossMain, mainBossInitialState } from "./MainBoss.js";
 
@@ -18,6 +22,7 @@ namedStates.set("first villain main", firstVillainMain);
 
 namedStates.set("shaking", prisonerShaking);
 namedStates.set("knocked over", prisonerKnockedOver);
+namedStates.set("collectable", collectableSquiggle);
 
 initStates.set("big", bigBadInitialState);
 namedStates.set("big bad main", bigBadMain);

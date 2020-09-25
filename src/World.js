@@ -79,22 +79,33 @@ export function initWorld(kernel) {
  * @returns {Scene}
  */
 function initScene(kernel, sceneName) {
+  let scene;
+
   switch (sceneName) {
-    default: {
-      const scene = makeScene({
+    case "search 2": {
+      scene = makeScene({
         kernel,
         sceneName,
         hero: new Hero(0),
       });
 
-      const script = kernel.gameScript.scripts.has(sceneName);
-      if (script) {
-        startSceneScript(scene, sceneName);
-      }
-
-      return scene;
+      break;
+    }
+    default: {
+      scene = makeScene({
+        kernel,
+        sceneName,
+        hero: new Hero(0),
+      });
     }
   }
+
+  const script = kernel.gameScript.scripts.has(sceneName);
+  if (script) {
+    startSceneScript(scene, sceneName);
+  }
+
+  return scene;
 }
 
 /**
