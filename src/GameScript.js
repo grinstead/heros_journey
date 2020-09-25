@@ -118,6 +118,7 @@ function parseGameScript() {
       "change sprite",
       "change state",
       "change hero head",
+      "free hero",
       "move",
       "camera",
       "absolute camera",

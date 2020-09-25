@@ -715,7 +715,9 @@ output_color = max(color, u_min_color);
       startSceneScript(game.world.activeScene, "test");
     }
 
-    renderGame(game);
+    const bg = game.backgroundColor;
+    gl.clearColor(bg[0], bg[1], bg[2], 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
 
     return game;
   });

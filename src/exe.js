@@ -46,7 +46,7 @@ function prepareStartButton() {
   );
 }
 
-async function onLoad() {
+function onLoad() {
   /** @suppress {checkTypes} */
   maybeCanvas = document.getElementById("canvas");
   /** @type {HTMLCanvasElement} */
@@ -54,38 +54,41 @@ async function onLoad() {
 
   if (!canvas) throw new Error("Bad Canvas");
 
-  try {
-    game = await makeGame({
-      canvas,
-      input: new InputManager(document.body),
-      mousePosition,
-    });
-  } catch (error) {
-    if (error === "browser") {
-      document.getElementById("loading").innerText =
-        "Unfortunately, this game only works on the latest Firefox or Chrome";
-    } else {
-      document.getElementById(
-        "loading"
-      ).innerText = `Error while loading: ${error}`;
-    }
-  }
+  makeGame({
+    canvas,
+    input: new InputManager(document.body),
+    mousePosition,
+  }).then(
+    (result) => {
+      game = result;
 
-  prepareStartButton();
+      prepareStartButton();
 
-  // for debugging
-  window["debug"] = game;
+      // for debugging
+      window["debug"] = game;
 
-  const fpsNode = document.getElementById("fps");
-  if (fpsNode) {
-    const updateFps = () => {
-      fpsNode.innerText = `${Math.round(game.fps)} fps`;
-      if (game.isRunning) {
+      const fpsNode = document.getElementById("fps");
+      if (fpsNode) {
+        const updateFps = () => {
+          fpsNode.innerText = `${Math.round(game.fps)} fps`;
+          if (game.isRunning) {
+            requestAnimationFrame(updateFps);
+          }
+        };
         requestAnimationFrame(updateFps);
       }
-    };
-    requestAnimationFrame(updateFps);
-  }
+    },
+    (error) => {
+      if (error === "browser") {
+        document.getElementById("loading").innerText =
+          "Unfortunately, this game only works on the latest Firefox or Chrome";
+      } else {
+        document.getElementById(
+          "loading"
+        ).innerText = `Error while loading: ${error}`;
+      }
+    }
+  );
 }
 
 window["onload"] = onLoad;

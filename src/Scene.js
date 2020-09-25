@@ -122,6 +122,8 @@ export function makeScene(options) {
     throw new Error(`No info for scene ${sceneName}`);
   }
 
+  options.hero.bounds = sceneInfo.sceneBox;
+
   return {
     sceneName,
     gameScript,

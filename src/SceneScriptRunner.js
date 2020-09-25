@@ -317,8 +317,8 @@ function runAction(scene, runner, action) {
       scene.exiting = action.nextScreen;
       return CONTINUE;
     }
-    case "fight": {
-      scene.inFight++;
+    case "unbind hero": {
+      scene.hero.bounds = scene.sceneBox;
       return CONTINUE;
     }
 

@@ -14,7 +14,7 @@ import {
   subrender,
   rotateAboutY,
 } from "../wattle/engine/src/swagl/MatrixStack.js";
-import { Scene, ShadowRadius, fireBullet } from "./Scene.js";
+import { Scene, ShadowRadius, fireBullet, Box } from "./Scene.js";
 import { MousePosition } from "./Game.js";
 import { arctan, dirIsLeft } from "./utils.js";
 
@@ -88,6 +88,8 @@ export class Hero {
     this.shootCooldown = 0;
     /** @type {boolean} */
     this.hidden = false;
+    /** @type {?Box} */
+    this.bounds = null;
     /** @type {HeroState} */
     this.state = {
       name: "unstarted",
@@ -114,6 +116,7 @@ export class Hero {
    */
   changeToScriptedState(scene, processStep) {
     let finished = false;
+    this.bounds = null;
 
     this.changeState(
       scene,
@@ -126,6 +129,18 @@ export class Hero {
           }
         },
         render: null,
+        onExit: () => {
+          const x = this.x;
+          const y = this.y;
+          this.bounds = {
+            left: x - 800,
+            right: x + 800,
+            top: y + 400,
+            bottom: y - 400,
+            originX: x,
+            originY: y,
+          };
+        },
       }),
       null
     );
@@ -270,16 +285,20 @@ export function processHero(scene, mousePosition) {
   let y = (hero.y += stepSize * speed * Math.sin(direction));
   hero.z += stepSize * hero.zSpeed;
 
-  if (x < sceneBox.left) {
-    hero.x = sceneBox.left;
-  } else if (x > sceneBox.right) {
-    hero.x = sceneBox.right;
-  }
+  const bounds = hero.bounds;
 
-  if (y < sceneBox.bottom) {
-    hero.y = sceneBox.bottom;
-  } else if (y > sceneBox.top) {
-    hero.y = sceneBox.top;
+  if (bounds) {
+    if (x < bounds.left) {
+      hero.x = bounds.left;
+    } else if (x > bounds.right) {
+      hero.x = bounds.right;
+    }
+
+    if (y < bounds.bottom) {
+      hero.y = bounds.bottom;
+    } else if (y > bounds.top) {
+      hero.y = bounds.top;
+    }
   }
 }
 
