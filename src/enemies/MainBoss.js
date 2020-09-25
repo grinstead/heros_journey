@@ -1,15 +1,15 @@
 import { SceneStep, GameObject, Scene, fireBullet } from "../Scene.js";
 import { SceneScriptRunner } from "../SceneScriptRunner.js";
-import { arctan, interpolate, dirIsLeft, magnitudeOf } from "../utils.js";
+import { arctan, magnitudeOf } from "../utils.js";
 import { killOffEnemy } from "./utils.js";
-import { makeBigBadGuyDying } from "../assets.js";
+import { makeBossDying } from "../assets.js";
 
 const ARM_HEIGHT = 350 - 192;
 const ARM_LENGTH = 200 - 50;
-const HEALTH = 100;
+const HEALTH = 30;
 const MARGIN = 200;
 
-const VILLAIN_HIT_SOUNDS = ["BigBadGuyHit1", "BigBadGuyHit2", "BigBadGuyHit3"];
+const VILLAIN_HIT_SOUNDS = ["BossHit", "BossHit2", "BossHit3"];
 
 /**
  * @typedef {Object} VillainState
@@ -134,7 +134,7 @@ export function mainBossMain(runner, object) {
   let activeAction = moveToSide;
   function Action() {
     if (object.damage >= HEALTH) {
-      return killOffEnemy(scene, object, makeBigBadGuyDying, "BigBadGuyDying");
+      return killOffEnemy(scene, object, makeBossDying, "BossDying");
     }
 
     if (object.damage !== prevDamage) {

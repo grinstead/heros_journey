@@ -1,5 +1,5 @@
 {
-  "opening scene": "search 2",
+  "opening scene": "abyss",
   "scenes": {
     "intro": {
       "location": {
@@ -71,6 +71,14 @@
         "y": 557,
         "width": 10000,
         "height": 10000
+      }
+    },
+    "main 2": {
+      "location": {
+        "x": 290,
+        "y": 520,
+        "width": 4000,
+        "height": 3000
       }
     }
   },
@@ -561,24 +569,6 @@
         { "type": "transition", "next screen": "main first" }
       ]
     },
-    "search 2 - next": {
-      "characters": ["hero", "main", "first1", "first2"],
-      "actions": [
-        {
-          "type": "add",
-          "name": "main",
-          "sprite": "MainVillain",
-          "absolute": true,
-          "x": 600,
-          "y": 500,
-          "shadow radius": { "x": 140, "y": 60 }
-        },
-        { "type": "wait until within", "name": "main", "x": 1000, "y": 10000 },
-        { "type": "camera", "name": "main" },
-        { "type": "wait until within", "name": "main", "x": 400, "y": 10000 },
-        { "type": "transition", "next screen": "main first" }
-      ]
-    },
     "main first fast": {
       "characters": ["hero", "main", "first1", "first2"],
       "actions": [
@@ -676,9 +666,17 @@
       ]
     },
     "abyss": {
-      "characters": ["hero", "captured", "folks", "first1", "first2"],
+      "characters": ["hero", "captured", "folks", "first1", "first2", "main"],
       "actions": [
         { "type": "change hero visibility", "visible": false },
+        {
+          "type": "move",
+          "name": "hero",
+          "absolute": true,
+          "x": 512,
+          "y": 563,
+          "seconds": 36.65
+        },
         { "type": "play sound", "sound": "Narration5" },
         {
           "type": "add",
@@ -727,24 +725,73 @@
         {
           "type": "move",
           "name": "first1",
-          "x": -6000,
-          "y": -4000,
-          "seconds": 7
+          "x": -12000,
+          "y": -8000,
+          "seconds": 10
         },
         {
           "type": "move",
           "name": "first2",
-          "x": -6000,
-          "y": -4000,
-          "seconds": 7
+          "x": -12000,
+          "y": -8000,
+          "seconds": 10
         },
         {
           "type": "move",
           "name": "folks",
-          "x": -3000,
-          "y": -2000,
-          "seconds": 6
-        }
+          "x": -6000,
+          "y": -4000,
+          "seconds": 8
+        },
+        { "type": "change hero visibility", "visible": true },
+        { "type": "camera" },
+        { "type": "remove", "name": "captured" },
+        {
+          "type": "add",
+          "name": "main",
+          "sprite": "MainVillain",
+          "absolute": true,
+          "x": 290,
+          "y": 520,
+          "shadow radius": { "x": 140, "y": 60 }
+        },
+        { "type": "wait", "seconds": 4 },
+        { "type": "remove", "name": "folks" },
+        { "type": "remove", "name": "first1" },
+        { "type": "remove", "name": "first2" },
+        { "type": "free hero" },
+        { "type": "wait until within", "name": "main", "x": 1500, "y": 10000 },
+        { "type": "camera", "name": "main" },
+        { "type": "wait until within", "name": "main", "x": 1000, "y": 1000 },
+        {
+          "type": "move",
+          "name": "hero",
+          "absolute": true,
+          "x": 310,
+          "y": 520,
+          "seconds": 1
+        },
+        { "type": "transition", "next screen": "main 2" }
+      ]
+    },
+    "main 2": {
+      "characters": ["hero", "main"],
+      "actions": [
+        {
+          "type": "add",
+          "name": "main",
+          "sprite": "BossLevel2",
+          "x": 0,
+          "y": 0,
+          "shadow radius": { "x": 140, "y": 60 }
+        },
+        { "type": "camera", "name": "main" },
+        { "type": "play sound", "sound": "BossLevel2" },
+        { "type": "change hero head", "sprite": "BossLevel2Head" },
+        { "type": "wait", "seconds": 7.8 },
+        { "type": "change state", "name": "main", "state": "boss main" },
+        { "type": "play music", "music": "Boss Level 2 Music.mp3" },
+        { "type": "free hero" }
       ]
     }
   },

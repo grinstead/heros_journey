@@ -151,13 +151,19 @@ export class Hero {
 }
 
 function heroStateDying(hero, scene) {
+  const isAbyss = scene.sceneName === "main first";
+
   const sprite = makeHeroDying(scene.sceneTime);
   hero.showDamageUntil = -1;
   hero.speed = 0;
   hero.zSpeed = 0;
 
   window["bgMusic"] = null;
-  scene.audio.playOneOf(hero, HERO_DEATH);
+  if (isAbyss) {
+    scene.audio.playNamedSound(hero, "HeroCaptured");
+  } else {
+    scene.audio.playOneOf(hero, HERO_DEATH);
+  }
 
   let timeToReset = scene.sceneTime + 11;
 
@@ -167,7 +173,7 @@ function heroStateDying(hero, scene) {
     processStep: (scene) => {
       sprite.updateTime(scene.sceneTime);
       if (scene.sceneTime >= timeToReset) {
-        scene.exiting = scene.sceneName;
+        scene.exiting = isAbyss ? "abyss" : scene.sceneName;
       }
     },
     render: () => {
