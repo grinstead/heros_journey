@@ -90,7 +90,10 @@ export function collectableSquiggle(runner, object) {
 
   function waitForHero() {
     const hero = scene.hero;
-    if (magnitudeOf(hero.x - object.x, hero.y - object.y, 0) < 50) {
+    if (
+      Math.abs(hero.x - object.x) < 100 &&
+      Math.abs(hero.y - object.y) < 100
+    ) {
       scene.objects = scene.objects.filter((obj) => obj !== object);
       hero.changeState(scene, heroStateSquiggle, object);
       return null;
