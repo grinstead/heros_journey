@@ -1,5 +1,5 @@
 {
-  "opening scene": "big bad",
+  "opening scene": "search 2",
   "scenes": {
     "intro": {
       "location": {
@@ -51,10 +51,18 @@
     },
     "search 2": {
       "location": {
-        "x": 844,
-        "y": 393,
-        "width": 4000,
+        "x": 700,
+        "y": 500,
+        "width": 8000,
         "height": 3000
+      }
+    },
+    "main first": {
+      "location": {
+        "x": 600,
+        "y": 500,
+        "width": 6000,
+        "height": 2000
       }
     }
   },
@@ -344,7 +352,14 @@
           "type": "change state",
           "name": "prisoner",
           "state": "shaking"
-        }
+        },
+        {
+          "type": "wait until within",
+          "name": "prisoner",
+          "x": 400,
+          "y": 200
+        },
+        { "type": "transition", "next screen": "big bad" }
       ]
     },
     "big bad": {
@@ -399,6 +414,97 @@
         { "type": "wait" },
         { "type": "transition", "next screen": "search 2" }
       ]
+    },
+    "search 2": {
+      "characters": ["hero", "main", "first1", "first2"],
+      "actions": [
+        {
+          "type": "add",
+          "name": "main",
+          "sprite": "MainVillain",
+          "absolute": true,
+          "x": 600,
+          "y": 500,
+          "shadow radius": { "x": 140, "y": 60 }
+        },
+        { "type": "wait until within", "name": "main", "x": 1000, "y": 10000 },
+        { "type": "camera", "name": "main" },
+        { "type": "wait until within", "name": "main", "x": 400, "y": 10000 },
+        { "type": "transition", "next screen": "main first" }
+      ]
+    },
+    "main first": {
+      "characters": ["hero", "main", "first1", "first2"],
+      "actions": [
+        {
+          "type": "add",
+          "name": "main",
+          "sprite": "MainVillain",
+          "absolute": true,
+          "x": 600,
+          "y": 500,
+          "shadow radius": { "x": 140, "y": 60 }
+        },
+        { "type": "camera", "name": "main" },
+        {
+          "type": "add",
+          "name": "first1",
+          "sprite": "FirstVillainEntrance",
+          "absolute": true,
+          "x": 600,
+          "y": 520,
+          "z": 1200,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        {
+          "type": "add",
+          "name": "first2",
+          "sprite": "FirstVillainEntrance",
+          "absolute": true,
+          "x": 600,
+          "y": 480,
+          "z": 1200,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        {
+          "type": "move",
+          "name": "hero",
+          "absolute": true,
+          "x": 700,
+          "y": 500,
+          "seconds": 2
+        },
+        {
+          "type": "wait",
+          "seconds": 2.125
+        },
+        {
+          "type": "move",
+          "name": "first1",
+          "seconds": 0.5,
+          "z": -1200,
+          "ease in": true
+        },
+        {
+          "type": "move",
+          "name": "first2",
+          "seconds": 0.5,
+          "z": -1200,
+          "ease in": true
+        },
+        { "type": "wait", "seconds": 3.3 },
+        {
+          "type": "change state",
+          "name": "first1",
+          "state": "first villain main"
+        },
+        {
+          "type": "change state",
+          "name": "first2",
+          "state": "first villain main"
+        },
+        { "type": "free hero" }
+      ]
     }
   },
   "assets": [
@@ -406,9 +512,10 @@
       "type": "animated",
       "name": "MainVillain",
       "src": "Monster Truck Bad Guy",
+      "flip": true,
       "loops": true,
       "originX": 200,
-      "originY": 370
+      "originY": 350
     },
     {
       "type": "animated",
@@ -614,6 +721,7 @@
       "type": "animated",
       "name": "FirstVillainEntrance",
       "src": "First Villain Entrance",
+      "flip": true,
       "loops": true,
       "originX": 97,
       "originY": 178

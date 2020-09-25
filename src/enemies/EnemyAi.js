@@ -11,6 +11,8 @@ const initStates = new Map();
 const namedStates = new Map();
 
 initStates.set("first", firstVillainInitialState);
+initStates.set("first1", firstVillainInitialState);
+initStates.set("first2", firstVillainInitialState);
 namedStates.set("first villain main", firstVillainMain);
 
 namedStates.set("shaking", prisonerShaking);

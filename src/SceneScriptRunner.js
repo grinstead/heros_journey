@@ -326,7 +326,7 @@ function runAction(scene, runner, action) {
       scene.exiting = action.nextScreen;
       return CONTINUE;
     }
-    case "unbind hero": {
+    case "free hero": {
       scene.hero.bounds = scene.sceneBox;
       return CONTINUE;
     }
