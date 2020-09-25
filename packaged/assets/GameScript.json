@@ -1,14 +1,6 @@
 {
-  "opening scene": "intro",
+  "opening scene": "big bad",
   "scenes": {
-    "big bad": {
-      "location": {
-        "x": 0,
-        "y": 40,
-        "width": 4000,
-        "height": 4000
-      }
-    },
     "intro": {
       "location": {
         "x": 443,
@@ -31,6 +23,38 @@
         "y": 108,
         "width": 3000,
         "height": 2000
+      }
+    },
+    "home2": {
+      "location": {
+        "x": 443,
+        "y": 88,
+        "width": 20000,
+        "height": 20000
+      }
+    },
+    "search": {
+      "location": {
+        "x": 844,
+        "y": 393,
+        "width": 3000,
+        "height": 4000
+      }
+    },
+    "big bad": {
+      "location": {
+        "x": 844,
+        "y": 393,
+        "width": 3000,
+        "height": 4000
+      }
+    },
+    "search 2": {
+      "location": {
+        "x": 844,
+        "y": 393,
+        "width": 4000,
+        "height": 3000
       }
     }
   },
@@ -69,7 +93,8 @@
           "type": "absolute camera",
           "x": 443,
           "y": 80,
-          "zoom": 1
+          "zoom": 1,
+          "speed": 1
         },
         { "type": "wait", "seconds": 4 },
         { "type": "change hero visibility", "visible": true },
@@ -212,16 +237,126 @@
         },
         { "type": "camera", "name": "first" },
         { "type": "wait", "seconds": 2.8 },
+        { "type": "play music", "music": "First Fight Music.mp3" },
         {
           "type": "change state",
           "name": "first",
           "state": "first villain main"
+        },
+        { "type": "wait" },
+        { "type": "transition", "next screen": "home2" }
+      ]
+    },
+    "home2": {
+      "characters": ["hero", "main", "treasure", "slave"],
+      "actions": [
+        { "type": "play sound", "sound": "MainVillainDriveBy" },
+        {
+          "type": "add",
+          "name": "main",
+          "sprite": "MainVillain",
+          "x": 0,
+          "y": 0,
+          "shadow radius": { "x": 60, "y": 20 }
+        },
+        {
+          "type": "add",
+          "name": "treasure",
+          "sprite": "Treasure",
+          "x": 0,
+          "y": 0,
+          "z": 240
+        },
+        {
+          "type": "add",
+          "name": "slave",
+          "sprite": "Slave",
+          "absolute": true,
+          "x": 800,
+          "y": 260,
+          "shadow radius": { "x": 20, "y": 10 }
+        },
+        {
+          "type": "move",
+          "name": "main",
+          "absolute": true,
+          "x": 934,
+          "y": 210,
+          "seconds": 5
+        },
+        {
+          "type": "move",
+          "name": "treasure",
+          "absolute": true,
+          "x": 934,
+          "y": 210,
+          "seconds": 5
+        },
+        { "type": "camera", "name": "main" },
+        { "type": "wait", "seconds": 3 },
+        { "type": "camera" },
+        { "type": "change hero head", "sprite": "Narration3Head" },
+        { "type": "play sound", "sound": "Narration3" },
+        {
+          "type": "change sprite",
+          "name": "slave",
+          "sprite": "SlaveNarration3"
+        },
+        { "type": "wait", "seconds": 2 },
+        { "type": "remove", "name": "main" },
+        { "type": "remove", "name": "treasure" },
+        { "type": "wait", "seconds": 8 },
+        {
+          "type": "move",
+          "name": "hero",
+          "absolute": true,
+          "x": 830,
+          "y": 260,
+          "seconds": 4
+        },
+        { "type": "wait", "seconds": 26 },
+        {
+          "type": "transition",
+          "next screen": "search"
         }
       ]
     },
-    "test2": {
-      "characters": ["hero", "villain"],
+    "search": {
+      "characters": ["hero", "prisoner", "villager"],
       "actions": [
+        {
+          "type": "add",
+          "name": "villager",
+          "sprite": "Slave",
+          "absolute": true,
+          "x": 800,
+          "y": 260,
+          "shadow radius": { "x": 20, "y": 10 }
+        },
+        {
+          "type": "add",
+          "name": "prisoner",
+          "sprite": "SlaveCage",
+          "x": 800,
+          "y": 0
+        },
+        {
+          "type": "change state",
+          "name": "prisoner",
+          "state": "shaking"
+        }
+      ]
+    },
+    "big bad": {
+      "characters": ["hero", "big", "prisoner"],
+      "actions": [
+        {
+          "type": "add",
+          "name": "prisoner",
+          "sprite": "SlaveCage",
+          "x": 800,
+          "y": 0
+        },
         {
           "type": "play sound",
           "sound": "BigBadGuyLandingSound"
@@ -232,9 +367,10 @@
         },
         {
           "type": "add",
-          "name": "villain",
+          "name": "big",
           "sprite": "BigBadGuyLanding",
-          "x": 0,
+          "flip": true,
+          "x": 800,
           "y": 0,
           "z": 1200,
           "shadow radius": { "x": 40, "y": 20 }
@@ -245,23 +381,34 @@
         },
         {
           "type": "move",
-          "name": "villain",
+          "name": "big",
           "seconds": 0.325,
           "z": -1200,
           "ease in": true
         },
-        { "type": "camera", "name": "villain" },
         { "type": "wait" },
-        { "type": "move", "name": "hero", "seconds": 2, "x": -100 },
-        { "type": "fight" }
+        {
+          "type": "change state",
+          "name": "prisoner",
+          "state": "knocked over"
+        },
+        { "type": "camera", "name": "big" },
+        { "type": "wait", "seconds": 3 },
+        { "type": "play music", "music": "Fight 2 Music.mp3" },
+        { "type": "change state", "name": "big", "state": "big bad main" },
+        { "type": "wait" },
+        { "type": "transition", "next screen": "search 2" }
       ]
     }
   },
   "assets": [
     {
       "type": "animated",
-      "name": "MonsterTruck",
-      "src": "Monster Truck Bad Guy"
+      "name": "MainVillain",
+      "src": "Monster Truck Bad Guy",
+      "loops": true,
+      "originX": 200,
+      "originY": 370
     },
     {
       "type": "animated",
@@ -290,6 +437,7 @@
       "type": "animated",
       "name": "BigBadGuyLanding",
       "src": "Big Bad Guy Landing",
+      "flip": true,
       "originX": 92,
       "originY": 254
     },
@@ -297,9 +445,45 @@
       "type": "animated",
       "name": "BigBadGuy",
       "src": "Big Bad Guy Marching",
+      "flip": true,
       "loops": true,
       "originX": 92,
       "originY": 254
+    },
+    {
+      "type": "animated",
+      "name": "BigBadGuyShooting",
+      "src": "Big Bad Guy Shooting",
+      "flip": true,
+      "originX": 92,
+      "originY": 254
+    },
+    {
+      "type": "animated",
+      "name": "BigBadGuyDying",
+      "src": "Big Bad Guy Dying",
+      "originX": 92,
+      "originY": 254
+    },
+    {
+      "type": "audio",
+      "name": "BigBadGuyDying",
+      "src": "Big Bad Guy Dying.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "BigBadGuyHit1",
+      "src": "Big Bad Guy Hit 1.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "BigBadGuyHit2",
+      "src": "Big Bad Guy Hit 2.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "BigBadGuyHit3",
+      "src": "Big Bad Guy Hit 3.mp3"
     },
     {
       "type": "static",
@@ -394,9 +578,21 @@
       "src": "Narration 2.mp3"
     },
     {
+      "type": "audio",
+      "name": "Narration3",
+      "src": "Narration 3.mp3"
+    },
+    {
       "type": "animated",
       "name": "Narration2Head",
       "src": "Narration 2",
+      "originX": 101,
+      "originY": 187
+    },
+    {
+      "type": "animated",
+      "name": "Narration3Head",
+      "src": "Narration 3 Head",
       "originX": 101,
       "originY": 187
     },
@@ -468,12 +664,25 @@
       "src": "First Villain Hit 3.mp3"
     },
     {
+      "type": "audio",
+      "name": "MainVillainDriveBy",
+      "src": "Main Villain Drive by.mp3"
+    },
+    {
       "type": "animated",
       "name": "Squiggle",
       "src": "Golden Squiggle",
       "loops": true,
       "originX": 46,
       "originY": 48
+    },
+    {
+      "type": "animated",
+      "name": "Treasure",
+      "src": "Squiggles And Triangle",
+      "loops": true,
+      "originX": 49,
+      "originY": 95
     },
     {
       "type": "animated",
@@ -490,6 +699,32 @@
       "flip": true,
       "originX": 200,
       "originY": 370
+    },
+    {
+      "type": "animated",
+      "name": "SlaveNarration3",
+      "src": "Slave Narration 3",
+      "originX": 90,
+      "originY": 184
+    },
+    {
+      "type": "animated",
+      "name": "SlaveCage",
+      "src": "Slave Shaking Bars",
+      "originX": 135,
+      "originY": 254
+    },
+    {
+      "type": "audio",
+      "name": "SlaveCage",
+      "src": "Slave shaking bars.mp3"
+    },
+    {
+      "type": "animated",
+      "name": "Slave",
+      "src": "Slave",
+      "originX": 90,
+      "originY": 184
     },
     {
       "type": "audio",
