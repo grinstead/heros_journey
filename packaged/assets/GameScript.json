@@ -1156,6 +1156,81 @@
       "type": "audio",
       "name": "FirstVillainIntroSound",
       "src": "First Villain Entrance.mp3"
-    }
+    },
+    {
+      "type": "audio",
+      "name": "BossHit",
+      "src": "Boss Hit.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "BossHit2",
+      "src": "Boss Hit 2.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "BossHit3",
+      "src": "Boss Hit 3.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "BossDeath",
+      "src": "Boss Death.mp3"
+    },
+    {
+      "type": "animated",
+      "name": "BossDying",
+      "src": "Boss Dying",
+      "flip": true,
+      "originX": 200,
+      "originY": 370
+    },
+    {
+      "type": "audio",
+      "name": "Narration6",
+      "src": "Narration 6.mp3"
+    },
+    {
+      "type": "animated",
+      "name": "Narration6Head",
+      "src": "Narration 6 Head",
+      "originX": 101,
+      "originY": 187
+    },
+    {
+      "type": "animated",
+      "name": "FinalNarrationHead",
+      "src": "Final Narration Head",
+      "originX": 101,
+      "originY": 187
+    },
+    {
+      "type": "audio",
+      "name": "FinalNarration",
+      "src": "Final Narration.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "MinionRunaway",
+      "src": "Minion Runaway.mp3"
+    },
+    {
+      "type": "audio",
+      "name": "Squiggles",
+      "src": "Squiggles.mp3"
+    },
+    {
+      "type": "animated",
+      "name": "HipHipHooray",
+      "src": "Hip Hip Hooray",
+      "originX": 164,
+      "originY": 439
+    },
+    {
+      "type": "animated",
+      "name": "GameBy",
+      "src": "Game By",
+      "originX": 480,
+      "originY": 600
   ]
 }
