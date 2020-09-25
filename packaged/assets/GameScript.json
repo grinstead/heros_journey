@@ -1,5 +1,5 @@
 {
-  "opening scene": "abyss",
+  "opening scene": "search 2",
   "scenes": {
     "intro": {
       "location": {
@@ -424,7 +424,18 @@
       ]
     },
     "search 2": {
-      "characters": ["hero", "folks", "folk1", "folk2", "broken"],
+      "characters": [
+        "hero",
+        "folks",
+        "folk1",
+        "folk2",
+        "broken",
+        "s1",
+        "s2",
+        "s4",
+        "s3",
+        "s5"
+      ],
       "actions": [
         {
           "type": "add",
@@ -454,6 +465,61 @@
           "y": 20,
           "sprite": "Slave"
         },
+        {
+          "type": "add",
+          "name": "s1",
+          "sprite": "Squiggle",
+          "absolute": true,
+          "x": 752,
+          "y": 432,
+          "z": 40,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        {
+          "type": "add",
+          "name": "s2",
+          "sprite": "Squiggle",
+          "absolute": true,
+          "x": 757,
+          "y": 474,
+          "z": 40,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        {
+          "type": "add",
+          "name": "s3",
+          "sprite": "Squiggle",
+          "absolute": true,
+          "x": 817,
+          "y": 421,
+          "z": 40,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        {
+          "type": "add",
+          "name": "s4",
+          "sprite": "Squiggle",
+          "absolute": true,
+          "x": 788,
+          "y": 491,
+          "z": 40,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        {
+          "type": "add",
+          "name": "s5",
+          "sprite": "Squiggle",
+          "absolute": true,
+          "x": 710,
+          "y": 500,
+          "z": 40,
+          "shadow radius": { "x": 30, "y": 15 }
+        },
+        { "type": "change state", "name": "s1", "state": "collectable" },
+        { "type": "change state", "name": "s2", "state": "collectable" },
+        { "type": "change state", "name": "s3", "state": "collectable" },
+        { "type": "change state", "name": "s4", "state": "collectable" },
+        { "type": "change state", "name": "s5", "state": "collectable" },
         {
           "type": "wait until within",
           "name": "folks",
@@ -1232,5 +1298,6 @@
       "src": "Game By",
       "originX": 480,
       "originY": 600
+    }
   ]
 }

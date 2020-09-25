@@ -1,0 +1,64 @@
+{
+    "ANIMATION": {
+        "name": "Slaves Broken Cage",
+        "SYMBOL_name": "3 Slaves Standing.swf",
+        "TIMELINE": {
+            "LAYERS": [
+                {
+                    "Layer_name": "Layer_1",
+                    "Frames": [
+                        {
+                            "index": 0,
+                            "duration": 1,
+                            "elements": [
+                                {
+                                    "ATLAS_SPRITE_instance": {
+                                        "name": "0000",
+                                        "Matrix3D": {
+                                            "m00": 1.0,
+                                            "m01": 0.0,
+                                            "m02": 0.0,
+                                            "m03": 0.0,
+                                            "m10": 0.0,
+                                            "m11": 1.0,
+                                            "m12": 0.0,
+                                            "m13": 0.0,
+                                            "m20": 0.0,
+                                            "m21": 0.0,
+                                            "m22": 1.0,
+                                            "m23": 0.0,
+                                            "m30": 129.0,
+                                            "m31": 166.0,
+                                            "m32": 0.0,
+                                            "m33": 1.0
+                                        },
+                                        "DecomposedMatrix": {
+                                            "Position": {
+                                                "x": 129.0,
+                                                "y": 166.0,
+                                                "z": 0.0
+                                            },
+                                            "Rotation": {
+                                                "x": 0.0,
+                                                "y": -0.0,
+                                                "z": 0.0
+                                            },
+                                            "Scaling": {
+                                                "x": 1.0,
+                                                "y": 1.0,
+                                                "z": 1.0
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "metadata": {
+        "framerate": 16.0
+    }
+}
