@@ -12,6 +12,9 @@ import { SpriteBuilder } from "../Sprite.js";
 export function killOffEnemy(scene, object, makeSprite, soundName) {
   // the max is just precautionary
   scene.inFight = Math.max(0, scene.inFight - 1);
+  if (!scene.inFight) {
+    window["bgMusic"] = null;
+  }
 
   const sprite = makeSprite(scene.sceneTime);
   object.sprite = sprite;

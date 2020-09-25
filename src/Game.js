@@ -312,6 +312,7 @@ export class Game {
       const audio = ambientAudio.audio;
       audio.pause();
       audio.remove();
+      ambientAudio = null;
     }
   }
 

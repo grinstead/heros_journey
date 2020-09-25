@@ -16,8 +16,9 @@ import { killOffEnemy } from "./utils.js";
 
 const ARM_HEIGHT = 178 - 118;
 const ARM_LENGTH = 95 - 2;
-const HEALTH = 20;
+const HEALTH = 30;
 const SWEEP_TIME = 0.5;
+const MAX_STAGE = 8;
 
 const VILLAIN_HIT_SOUNDS = [
   "FirstVillainHit1",
@@ -30,6 +31,7 @@ const VILLAIN_HIT_SOUNDS = [
  * @property {number} heroDirection
  * @property {number} dirOffset
  * @property {!Sprite} armSprite
+ * @property {number} stage
  */
 let VillainState;
 
@@ -38,10 +40,14 @@ let VillainState;
  * @returns {VillainState}
  */
 export function firstVillainInitialState(scene) {
+  const stage = scene.sceneName !== "call to action" ? 3 : 0;
+
   return {
     heroDirection: 0,
     dirOffset: 0,
     armSprite: makeFirstVillainArm(scene.sceneTime),
+    stage: stage,
+    startStage: stage,
   };
 }
 
@@ -87,7 +93,7 @@ export function firstVillainMain(runner, object) {
       if (sceneTime - startTime > SWEEP_TIME) {
         state.dirOffset = 0;
         bulletCooldown = sceneTime + 0.2;
-        sweepCooldown = startTime + (object.damage > 10 ? 1 : 2);
+        sweepCooldown = startTime + interpolate(state.stage, MAX_STAGE, 2, 0.4);
         return fireSimple;
       }
 
@@ -122,7 +128,9 @@ export function firstVillainMain(runner, object) {
 
   function fireSimple() {
     const sceneTime = scene.sceneTime;
-    if (sceneTime >= sweepCooldown) return fireSweep;
+    if (stateOf(object).stage > 0 && sceneTime >= sweepCooldown) {
+      return fireSweep;
+    }
 
     if (sceneTime > bulletCooldown) {
       bulletCooldown = sceneTime + 0.2;
@@ -159,11 +167,15 @@ export function firstVillainMain(runner, object) {
       scene.audio.playOneOf(object, VILLAIN_HIT_SOUNDS);
     }
 
+    const state = stateOf(object);
+    state.stage = Math.min(
+      MAX_STAGE,
+      Math.floor(object.damage / 5) + state.startStage
+    );
+
     // 90 degrees off center, forms a circle
     object.direction = arctan(object.x, -object.y);
-    object.speed = interpolate(object.damage, HEALTH, 200, 400);
-
-    const state = stateOf(object);
+    object.speed = 200 + 50 * state.stage;
     const hero = scene.hero;
     state.heroDirection = arctan(hero.y - object.y, hero.x - object.x);
     object.mirrorX = hero.x < object.x;
