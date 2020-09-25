@@ -60,7 +60,7 @@ const FPS_SMOOTHING = 0.9;
 const MAX_FRAME_TIME = 1 / 10;
 const BULLET_R = 10;
 const DMG_COLOR = 0.4;
-const BULLET_SHADOW = { x: 10, y: 5 };
+const BULLET_SHADOW = { x: BULLET_R, y: BULLET_R };
 const WHITEBOARD_LAG = 10;
 const BULLET_MARGIN = 100;
 
@@ -138,18 +138,18 @@ export class Game {
     let scene = world.activeScene;
 
     while (scene.exiting != null) {
-      window["bgMusic"] = null;
-
       const exiting = scene.exiting;
       scene.exiting = null;
       scene.bullets = [];
 
+      let oldSceneHealth = -1;
       const oldSceneBox = scene.sceneBox;
       const hero = scene.hero;
       let heroX = hero.x + oldSceneBox.originX;
       let heroY = hero.y + oldSceneBox.originY;
 
       if (exiting === scene.sceneName) {
+        oldSceneHealth = scene.heroTotalHealth;
         const entering = scene.entering;
         if (entering != null) {
           heroX = entering.heroX;
@@ -157,9 +157,16 @@ export class Game {
         }
 
         world.resetScene(exiting);
+      } else {
+        window["bgMusic"] = null;
       }
 
       scene = world.getScene(exiting);
+
+      // make it easier each reset
+      if (oldSceneHealth !== -1) {
+        scene.heroTotalHealth = oldSceneHealth + 10;
+      }
 
       scene.entering = { heroX, heroY };
       heroX -= scene.sceneBox.originX;
@@ -822,6 +829,12 @@ function checkBullets(bullets, x, y, shadowRadius, isFriendly) {
   const minTestX = x - shadowRadius.x - BULLET_R;
   const maxTestX = x + shadowRadius.x + BULLET_R;
 
+  // Add a box for enemy collisions
+  const x1 = x - shadowRadius.x / 4;
+  const x2 = x + shadowRadius.x / 4;
+  const y1 = y - shadowRadius.y * 4;
+  const y2 = y + shadowRadius.y * 4;
+
   let i = 0;
   const numBullets = bullets.length;
   while (i < numBullets && bullets[i].x < minTestX) {
@@ -830,13 +843,21 @@ function checkBullets(bullets, x, y, shadowRadius, isFriendly) {
 
   while (i < numBullets && bullets[i].x < maxTestX) {
     const bullet = bullets[i++];
-    if (
-      !bullet.isDead &&
-      bullet.isFriendly !== isFriendly &&
-      distanceFromEllipseSortOf(x, y, shadowRadius, bullet) < BULLET_R
-    ) {
-      bullet.isDead = true;
-      hits++;
+    if (!bullet.isDead && bullet.isFriendly !== isFriendly) {
+      let hit =
+        distanceFromEllipseSortOf(x, y, shadowRadius, bullet) < BULLET_R;
+
+      // add some generous hit detection against enemies
+      if (!hit && !isFriendly) {
+        const bx = bullet.x;
+        const by = bullet.y;
+        hit = x1 < bx && bx < x2 && y1 < by && by < y2;
+      }
+
+      if (hit) {
+        bullet.isDead = true;
+        hits++;
+      }
     }
   }
 
