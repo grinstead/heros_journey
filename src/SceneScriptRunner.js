@@ -315,6 +315,7 @@ function runAction(scene, runner, action) {
       sceneCamera.target.y = y - scene.sceneBox.originY;
       sceneCamera.target.zoom = zoom;
       sceneCamera.speed = action.speed;
+      sceneCamera.subtarget = null;
 
       return CONTINUE;
     }

@@ -126,7 +126,7 @@
           "x": 443,
           "y": 80,
           "zoom": 1,
-          "speed": 1
+          "speed": 0.8
         },
         { "type": "wait", "seconds": 4 },
         { "type": "change hero visibility", "visible": true },
@@ -825,9 +825,9 @@
           "type": "move",
           "name": "hero",
           "absolute": true,
-          "x": 430,
-          "y": 60,
-          "seconds": 20
+          "x": 156,
+          "y": 170,
+          "seconds": 6
         },
         {
           "type": "add",
@@ -842,15 +842,25 @@
           "type": "change hero head",
           "sprite": "FinalNarrationHead"
         },
-        { "type": "wait", "seconds": 13 },
+        { "type": "wait", "seconds": 6 },
+        {
+          "type": "move",
+          "name": "hero",
+          "absolute": true,
+          "x": 430,
+          "y": 60,
+          "seconds": 14
+        },
+        { "type": "wait", "seconds": 7 },
         { "type": "camera", "name": "folks" },
         { "type": "wait", "seconds": 42 },
+        { "type": "free hero" },
         {
           "type": "absolute camera",
           "zoom": 0,
           "x": 480,
           "y": 320,
-          "speed": 0.5
+          "speed": 0.3
         }
       ]
     }
